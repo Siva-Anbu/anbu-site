@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAP BRIM for Insurance | FSCD Academy</title>
+<meta name="description" content="What SAP BRIM is, how subscription order management, mediation, charging, convergent invoicing and contract accounting fit together, and how BRIM works next to FSCD for pay-per-use and partner insurance products.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+</style>
+<link rel="stylesheet" href="/theme.css?v=20261021c">
+<link rel="stylesheet" href="/lms.css?v=20261021c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="brim">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">SAP BRIM: billing for new kinds of insurance</h1>
+<p class="lede">What SAP BRIM is, how its parts fit together, and how it works next to FSCD when an insurer sells pay-per-use, subscription or partner products. Told with Mette's new pay-per-km car insurance.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>This lesson builds on <a href="/basics">Lesson 1</a> (contract accounts, open items) and <a href="/accounting">Lesson 4</a> (postings and the general ledger). All names, prices and codes are made up for learning. SAP has renamed parts of BRIM over the years, so confirm the product names and versions on your own project.</p></div>
+
+<h2 id="meet">Mette tries something new</h2>
+<p>ABC Forsikring launches <strong>ABC Km</strong>: car insurance where you pay per kilometre you drive. Mette works from home now and drives much less, so she switches. Her price is:</p>
+<div class="cast">
+<div><b>Base fee</b><span>DKK 199 a month, whatever she drives</span></div>
+<div><b>Per kilometre</b><span>DKK 0.45 for every km, counted by a small box in her car</span></div>
+<div><b>Her May</b><span>820 km driven → 199 + 369 = <b style="display:inline">DKK 568</b></span></div>
+<div><b>Bill</b><span>One monthly bill, paid by Betalingsservice as before</span></div>
+</div>
+<p>This product is hard for a classic premium setup: the amount is different every month and it depends on thousands of small <em>usage events</em> from the car. This is exactly what SAP BRIM was built for. All amounts in this lesson include tax, to keep the numbers simple.</p>
+
+<h2 id="what">1. What is SAP BRIM?</h2>
+<p><strong>BRIM</strong> stands for <strong>Billing and Revenue Innovation Management</strong>. It's SAP's set of tools for companies that bill for <em>subscriptions</em> and <em>usage</em>: telecom companies, energy, streaming, car sharing, and more and more insurers. In newer SAP material you'll also see names like <em>SAP S/4HANA subscription billing</em> or <em>quote-to-cash for subscriptions</em>, but most project teams still say "BRIM".</p>
+<div class="tbl"><table><thead><tr><th>Classic insurance billing (FSCD)</th><th>BRIM-style billing</th></tr></thead><tbody>
+<tr><td>Premium is calculated by the policy system</td><td>Price is calculated from usage, as it happens</td></tr>
+<tr><td>Fixed schedule: yearly, quarterly, monthly</td><td>Amount changes every period</td></tr>
+<tr><td>A few postings per customer per year</td><td>Thousands of small events per customer per month</td></tr>
+<tr><td>One insurer, one customer</td><td>Often partners too: car makers, phone companies, shops</td></tr>
+</tbody></table></div>
+
+<h2 id="parts">2. The parts of BRIM, in simple words</h2>
+<p>BRIM is not one screen. It's a chain of components, each with one job. Think of a factory line: raw events go in on the left, and a bill and an accounting entry come out on the right.</p>
+
+<div class="fig" role="img" aria-label="BRIM chain: subscription order management creates the contract, convergent mediation collects raw events, convergent charging puts a price on them, convergent invoicing builds the bill, contract accounting holds the open item and collects the money">
+<svg viewBox="0 0 760 270">
+<defs><marker id="p1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="p2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>
+<rect class="bx" x="200" y="10" width="360" height="54" rx="8"/><text class="t" x="380" y="33" text-anchor="middle">SOM · Subscription Order Management</text><text class="s" x="380" y="52" text-anchor="middle">Mette signs up for ABC Km → contract and price plan</text>
+<rect class="bx" x="10" y="110" width="130" height="100" rx="8"/><text class="t" x="75" y="140" text-anchor="middle">Raw events</text><text class="s" x="75" y="162" text-anchor="middle">trips from the</text><text class="s" x="75" y="178" text-anchor="middle">car box</text>
+<rect class="bx" x="162" y="110" width="130" height="100" rx="8"/><text class="t" x="227" y="140" text-anchor="middle">CM</text><text class="s" x="227" y="162" text-anchor="middle">Mediation:</text><text class="s" x="227" y="178" text-anchor="middle">collect &amp; clean</text>
+<rect class="bx" x="314" y="110" width="130" height="100" rx="8"/><text class="t" x="379" y="140" text-anchor="middle">CC</text><text class="s" x="379" y="162" text-anchor="middle">Charging:</text><text class="s" x="379" y="178" text-anchor="middle">put a price on it</text>
+<rect class="bx hl" x="466" y="110" width="130" height="100" rx="8"/><text class="t" x="531" y="140" text-anchor="middle">CI</text><text class="s" x="531" y="162" text-anchor="middle">Invoicing:</text><text class="s" x="531" y="178" text-anchor="middle">build the bill</text>
+<rect class="bx hl" x="618" y="110" width="130" height="100" rx="8"/><text class="t" x="683" y="140" text-anchor="middle">FI-CA</text><text class="s" x="683" y="162" text-anchor="middle">open item, payment,</text><text class="s" x="683" y="178" text-anchor="middle">dunning</text>
+<path class="gfile" d="M140,160 H160" marker-end="url(#p1)"/><path class="gfile" d="M292,160 H312" marker-end="url(#p1)"/><path class="gfile" d="M444,160 H464" marker-end="url(#p1)"/><path class="gfile" d="M596,160 H616" marker-end="url(#p1)"/>
+<path class="lin" d="M300,64 V108" marker-end="url(#p2)"/><path class="lin" d="M460,64 L520,108" marker-end="url(#p2)"/>
+<text class="lab-file" x="380" y="250" text-anchor="middle">FI-CA is the same contract accounting that FSCD is built on</text>
+</svg>
+</div>
+<p class="cap">SOM sets up the contract; CM, CC and CI turn usage into a bill; FI-CA collects the money. RAR (revenue accounting) can sit at the end for some products.</p>
+
+<div class="tbl"><table><thead><tr><th>Part</th><th>Full name</th><th>Its one job</th><th>Mette example</th></tr></thead><tbody>
+<tr><td>SOM</td><td>Subscription Order Management</td><td>Sells and manages the subscription: what the customer bought, from when, at which price plan</td><td>Mette's ABC Km contract from 01.05, plan "Km Standard"</td></tr>
+<tr><td>CM</td><td>Convergent Mediation (by DigitalRoute)</td><td>Collects raw events from outside systems, removes duplicates and bad data, passes them on</td><td>63 trip records from the car box in May</td></tr>
+<tr><td>CC</td><td>Convergent Charging</td><td>Rates each event: how much does this cost under the customer's price plan?</td><td>A 14 km trip × DKK 0.45 = DKK 6.30</td></tr>
+<tr><td>CI</td><td>Convergent Invoicing</td><td>Collects all priced items for the period, groups them and creates the invoice</td><td>One May bill: base fee + 820 km = DKK 568</td></tr>
+<tr><td>FI-CA</td><td>Contract Accounting</td><td>Holds the open item, collects payment, runs dunning, posts to the GL</td><td>DKK 568 collected by Betalingsservice on 15.06</td></tr>
+<tr><td>RAR</td><td>Revenue Accounting and Reporting</td><td>Decides when revenue is recognised for some non-insurance services (section 7)</td><td>Only used for extra services, not the insurance itself</td></tr>
+</tbody></table></div>
+
+<h2 id="fscd">3. BRIM and FSCD: same accounting heart</h2>
+<p>Here's the most important idea for an FSCD BA. <strong>FSCD and BRIM both sit on FI-CA</strong> (Contract Accounting). FSCD is the insurance version of FI-CA; BRIM's invoicing (CI) posts into FI-CA. So in an insurer, both can post into the <strong>same business partner and the same contract account</strong>.</p>
+
+<div class="fig" role="img" aria-label="Two sources feed one contract account: classic policies come from the policy system through FSCD, usage-based products come through BRIM convergent invoicing; payments, dunning and the GL transfer then work the same for both">
+<svg viewBox="0 0 760 260">
+<defs><marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="f2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
+<rect class="bx" x="10" y="20" width="200" height="80" rx="8"/><text class="t" x="110" y="52" text-anchor="middle">Policy system</text><text class="s" x="110" y="74" text-anchor="middle">home insurance · DKK 3,600/yr</text>
+<rect class="bx" x="10" y="150" width="200" height="80" rx="8"/><text class="t" x="110" y="182" text-anchor="middle">BRIM (SOM, CC, CI)</text><text class="s" x="110" y="204" text-anchor="middle">ABC Km · DKK 568 for May</text>
+<rect class="bx hl" x="280" y="70" width="200" height="110" rx="8"/><text class="t" x="380" y="100" text-anchor="middle">Mette's contract</text><text class="t" x="380" y="118" text-anchor="middle">account (FI-CA)</text><text class="s" x="380" y="142" text-anchor="middle">all her open items</text><text class="s" x="380" y="158" text-anchor="middle">in one place</text>
+<rect class="bx" x="550" y="20" width="200" height="56" rx="8"/><text class="t" x="650" y="53" text-anchor="middle">Payments (Lesson 2)</text>
+<rect class="bx" x="550" y="98" width="200" height="56" rx="8"/><text class="t" x="650" y="131" text-anchor="middle">Dunning (Lesson 3)</text>
+<rect class="bx" x="550" y="176" width="200" height="56" rx="8"/><text class="t" x="650" y="209" text-anchor="middle">GL transfer (Lesson 4)</text>
+<path class="gfile" d="M210,60 C245,60 245,100 278,100" marker-end="url(#f1)"/><path class="gfile" d="M210,190 C245,190 245,150 278,150" marker-end="url(#f1)"/>
+<path class="gin" d="M480,125 C515,125 515,48 548,48" marker-end="url(#f2)"/><path class="gin" d="M480,125 H548" marker-end="url(#f2)"/><path class="gin" d="M480,125 C515,125 515,204 548,204" marker-end="url(#f2)"/>
+</svg>
+</div>
+<p class="cap">Different roads in, the same road out. Everything you learned in Lessons 1 to 4 still applies once the bill reaches FI-CA.</p>
+<div class="tip"><b>What this means for you</b>
+<p>Mette can get <strong>one combined bill</strong> or one Betalingsservice debit for her home insurance and her ABC Km. A payment clears items from both. Dunning, returns, write-offs and the GL transfer work exactly as before. The new things to learn are mostly <em>before</em> FI-CA: contracts, rating and invoicing.</p></div>
+
+<h2 id="journey">4. The journey of one month of kilometres</h2>
+<p>Let's follow Mette's May from the car to her bank account.</p>
+<ol class="timeline">
+<li><span class="d">01.05 · contract:</span> SOM creates the ABC Km subscription. In FI-CA/CI this becomes a <strong>provider contract</strong> linked to Mette's business partner and contract account, and in CC a matching contract with her price plan.</li>
+<li><span class="d">During May · usage:</span> each trip sends a record (date, car, km). Mediation (CM) checks it: right car? already received? Then it passes it to Charging.</li>
+<li><span class="d">During May · rating:</span> Charging (CC) prices each trip: 14 km × DKK 0.45 = DKK 6.30. The priced result is sent to CI as a <strong>billable item</strong>.</li>
+<li><span class="d">31.05 · billing:</span> the billing run in CI collects all of Mette's billable items for May (63 trips, 820 km, DKK 369) plus the base fee (DKK 199) and creates a <strong>billing document</strong>.</li>
+<li><span class="d">01.06 · invoicing:</span> the invoicing run turns the billing document into an <strong>invoice</strong> and posts it in FI-CA. Now there is an open item of <strong>DKK 568</strong>, due 15.06.</li>
+<li><span class="d">15.06 · payment:</span> FSCD/FI-CA's payment run collects it by Betalingsservice (Lesson 2). If it bounces, the return and dunning steps from Lesson 3 kick in.</li>
+</ol>
+
+<div class="fig" role="img" aria-label="Many small trip records become billable items, are summed into one billing document and one invoice of DKK 568, which becomes one open item in contract accounting">
+<svg viewBox="0 0 760 200">
+<defs><marker id="j1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
+<rect class="bx" x="10" y="30" width="150" height="130" rx="8"/><text class="t" x="85" y="56" text-anchor="middle">63 trips</text><text class="s" x="85" y="80" text-anchor="middle">14 km · 6.30</text><text class="s" x="85" y="98" text-anchor="middle">22 km · 9.90</text><text class="s" x="85" y="116" text-anchor="middle">8 km · 3.60</text><text class="s" x="85" y="134" text-anchor="middle">…</text>
+<rect class="bx" x="200" y="30" width="160" height="130" rx="8"/><text class="t" x="280" y="56" text-anchor="middle">Billable items</text><text class="s" x="280" y="82" text-anchor="middle">in CI, waiting</text><text class="s" x="280" y="100" text-anchor="middle">for the billing run</text><text class="s" x="280" y="128" text-anchor="middle">820 km · DKK 369</text>
+<rect class="bx hl" x="400" y="30" width="160" height="130" rx="8"/><text class="t" x="480" y="56" text-anchor="middle">Bill for May</text><text class="s" x="480" y="82" text-anchor="middle">Base fee 199</text><text class="s" x="480" y="100" text-anchor="middle">Kilometres 369</text><text class="t" x="480" y="130" text-anchor="middle">DKK 568</text>
+<rect class="bx" x="600" y="30" width="150" height="130" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="675" y="64" text-anchor="middle">Open item</text><text class="s" x="675" y="88" text-anchor="middle">in FI-CA</text><text class="s" x="675" y="106" text-anchor="middle">due 15.06</text><text class="s" x="675" y="124" text-anchor="middle">DKK 568</text>
+<path class="gin" d="M160,95 H198" marker-end="url(#j1)"/><path class="gin" d="M360,95 H398" marker-end="url(#j1)"/><path class="gin" d="M560,95 H598" marker-end="url(#j1)"/>
+<text class="lab-in" x="380" y="190" text-anchor="middle">many small items in → one bill → one open item</text>
+</svg>
+</div>
+<p class="cap">The customer never sees 63 lines unless you want them to: the invoice can show a summary and a trip list as an attachment.</p>
+
+<div class="term"><h4>Billable item</h4><p><strong>In simple words:</strong> one priced line waiting to be billed. It knows the customer, the contract, the amount and what it's for.</p><p class="ex">Example: "Mette, ABC Km, trip on 12.05, 14 km, <b>DKK 6.30</b>". If something is wrong (no contract found, say), it lands in an error status and must be fixed before billing.</p></div>
+<div class="term"><h4>Billing vs invoicing</h4><p><strong>In simple words:</strong> <em>billing</em> collects and adds up the items; <em>invoicing</em> makes the bill the customer sees and posts it to accounting. They are two separate runs in CI.</p><p class="ex">Example: billing on 31.05 makes the billing document; invoicing on 01.06 makes the <b>DKK 568</b> invoice and the open item. Invoicing can also put the home insurance premium on the same bill.</p></div>
+<div class="term"><h4>Provider contract</h4><p><strong>In simple words:</strong> the FI-CA/CI record of "what this customer subscribed to". It ties the business partner, contract account and pricing together, so billable items know where to go.</p><p class="ex">Example: Mette's provider contract for ABC Km, valid from 01.05.2026. If she cancels on 31.08, usage after that date is rejected.</p></div>
+
+<h2 id="partners">5. Partners: when someone else sells the insurance</h2>
+<p>Insurers increasingly sell through partners: a phone shop offers screen insurance, an electricity company offers home insurance, a car maker offers insurance with a new car. BRIM can bill the customer <em>and</em> settle money with the partner.</p>
+
+<div class="fig" role="img" aria-label="Partner settlement: phone company TeleNord bills the customer DKK 49 a month for phone insurance, passes the premium to ABC Forsikring, and ABC pays TeleNord a commission of DKK 7.35">
+<svg viewBox="0 0 760 210">
+<defs><marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
+<rect class="bx" x="10" y="60" width="170" height="90" rx="8"/><text class="t" x="95" y="94" text-anchor="middle">Customer</text><text class="s" x="95" y="116" text-anchor="middle">phone + insurance</text><text class="s" x="95" y="132" text-anchor="middle">on one phone bill</text>
+<rect class="bx" x="295" y="60" width="170" height="90" rx="8"/><text class="t" x="380" y="94" text-anchor="middle">TeleNord</text><text class="s" x="380" y="116" text-anchor="middle">phone company</text><text class="s" x="380" y="132" text-anchor="middle">(the partner)</text>
+<rect class="bx hl" x="580" y="60" width="170" height="90" rx="8"/><text class="t" x="665" y="94" text-anchor="middle">ABC Forsikring</text><text class="s" x="665" y="116" text-anchor="middle">BRIM settles with</text><text class="s" x="665" y="132" text-anchor="middle">the partner</text>
+<path class="gin" d="M180,90 H293" marker-end="url(#s1)"/><text class="lab-in" x="237" y="80" text-anchor="middle">DKK 49/month</text>
+<path class="gin" d="M465,90 H578" marker-end="url(#s1)"/><text class="lab-in" x="522" y="80" text-anchor="middle">premium 49</text>
+<path class="gout" d="M578,125 H467" marker-end="url(#s2)"/><text class="lab-out" x="522" y="170" text-anchor="middle">15% commission: 7.35</text>
+</svg>
+</div>
+<p class="cap">In practice the partner often keeps its share and pays the net amount. Either way, BRIM tracks what each side owes.</p>
+<p>For a BA, partner deals raise new questions: who owns the customer? Who sends the bill? Who chases unpaid premium? How often is the partner settled, and on which report? BRIM's partner settlement handles the money; the business rules must come from you.</p>
+
+<h2 id="pricing">6. Pricing and products: who decides the price?</h2>
+<p>In classic FSCD, the <strong>policy system</strong> calculates the premium and FSCD only bills it. In BRIM, the price for usage is calculated in <strong>Convergent Charging</strong>, based on the price plan in the contract. That's a big change in who owns what:</p>
+<div class="tbl"><table><thead><tr><th>Question</th><th>Classic FSCD product</th><th>BRIM product</th></tr></thead><tbody>
+<tr><td>Where is the price calculated?</td><td>Policy system (underwriting rules)</td><td>Charging (CC), from the price plan; underwriting still sets the risk rate</td></tr>
+<tr><td>Where is the "contract"?</td><td>Policy in the policy system; insurance object in FSCD</td><td>Subscription in SOM; provider contract in CI; contract in CC</td></tr>
+<tr><td>What is billed?</td><td>Premium instalments on a schedule</td><td>Base fees plus usage, gathered each period</td></tr>
+<tr><td>How do changes work?</td><td>Endorsement in the policy system, new premium sent to FSCD</td><td>Change the subscription in SOM; new price applies from a date</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Many insurers use both</b>
+<p>A common design: the policy system stays the master for the <em>insurance contract</em> and the risk price, and BRIM handles the <em>usage, subscription and partner billing</em> around it. A BA's job is to draw that line clearly: which system owns which data, and what happens when they disagree.</p></div>
+
+<h2 id="rar">7. Revenue accounting: a word of caution</h2>
+<p>BRIM is often sold together with <strong>RAR</strong> (Revenue Accounting and Reporting), which helps companies follow the accounting standard <strong>IFRS 15</strong> for when to show revenue. But <strong>insurance contracts follow IFRS 17</strong>, not IFRS 15. So for an insurer:</p>
+<ul>
+<li>The <strong>insurance premium itself</strong> usually goes to the insurer's IFRS 17 and actuarial systems, as in Lesson 4, not to RAR.</li>
+<li><strong>Non-insurance services</strong> sold alongside, for example a paid driving-app subscription or roadside assistance sold as a service, may fall under IFRS 15 and could use RAR.</li>
+<li>Always ask finance which standard applies to each part of a new product <em>before</em> the design is fixed.</li>
+</ul>
+
+<h2 id="when">8. FSCD or BRIM? A simple guide</h2>
+<div class="tbl"><table><thead><tr><th>If the product…</th><th>Usually fine with FSCD alone</th><th>Consider BRIM</th></tr></thead><tbody>
+<tr><td>Price</td><td>Fixed premium from the policy system</td><td>Price depends on usage (km, hours, days, devices)</td></tr>
+<tr><td>Volume</td><td>A few postings per customer per year</td><td>Many small events per customer per month</td></tr>
+<tr><td>Sales channel</td><td>Sold directly or through agents (commission in FSCD)</td><td>Sold inside a partner's subscription, with revenue sharing</td></tr>
+<tr><td>Bill</td><td>Premium notice per policy</td><td>One combined bill with insurance and other services</td></tr>
+<tr><td>Examples</td><td>Home, classic car, life, pension</td><td>Pay-per-km car, pay-per-day travel, device insurance, embedded insurance</td></tr>
+</tbody></table></div>
+
+<h2 id="ba">9. BA toolkit for BRIM</h2>
+<h3 id="ba-questions">9.1 Questions to ask for a usage-based product</h3>
+<ol>
+<li>What is the <strong>usage event</strong> (a trip, a day abroad, a device), where does it come from, and how often?</li>
+<li>How is a usage event linked to the right customer and contract? What happens to events with no contract?</li>
+<li>What is the <strong>price plan</strong>: base fee, price per unit, tiers, caps (for example "never more than DKK 900 a month")?</li>
+<li>What is the <strong>billing period</strong> and the cut-off for late events (a trip from 31.05 that arrives on 03.06)?</li>
+<li>Does the product appear on a <strong>combined bill</strong> with classic policies?</li>
+<li>Is there a <strong>partner</strong>? Who bills, who collects, who is paid what, and how often?</li>
+<li>Which parts are insurance (IFRS 17) and which are services (maybe IFRS 15)?</li>
+</ol>
+<h3 id="ba-tests">9.2 Test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Normal month, 820 km</td><td>Bill shows base fee 199 + km 369 = DKK 568; one open item in FI-CA</td></tr>
+<tr><td>Same trip sent twice</td><td>Mediation removes the duplicate; Mette is charged once</td></tr>
+<tr><td>Trip arrives after the billing run</td><td>Goes into next month's bill (or the agreed correction rule)</td></tr>
+<tr><td>Usage after cancellation</td><td>Rejected or flagged; not billed</td></tr>
+<tr><td>Price cap reached</td><td>Monthly km charge stops at the cap</td></tr>
+<tr><td>Combined bill with home insurance</td><td>One invoice, one Betalingsservice debit, both items cleared by one payment</td></tr>
+<tr><td>Partner settlement</td><td>Partner commission matches the agreed percentage and settlement period</td></tr>
+</tbody></table></div>
+<h3 id="ba-codes">9.3 Screens worth knowing</h3>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th></tr></thead><tbody>
+<tr><td>FKKBIXBIT_MON</td><td>Billable item monitor: see items waiting, billed or in error</td></tr>
+<tr><td>FKKBIX_MA</td><td>Mass billing run in Convergent Invoicing</td></tr>
+<tr><td>FKKINV_MA</td><td>Mass invoicing run: create invoices and post them to FI-CA</td></tr>
+<tr><td>FPL9</td><td>Account balance: the same screen as in FSCD, now with BRIM invoices too</td></tr>
+</tbody></table></div>
+<p class="cap">Codes from general BRIM/FI-CA knowledge; they vary by release and many projects use SAP Fiori apps instead. Confirm them in your own system.</p>
+
+<div class="tip"><b>A closing tip</b>
+<p>Draw the BRIM chain from section 2 for your product and write one real example under each box: the event, the price, the billable item, the bill, the open item. If you can explain Mette's DKK 568 end to end, you understand BRIM.</p></div>
+
+<h2 id="test">Test yourself</h2>
+<p>10 questions on SAP BRIM. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="brim"></div>
+
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
+<div id="suggest"></div>
+-->
+
+<footer>SAP BRIM for Insurance. Names, prices and codes are illustrative examples for learning. SAP product names and features change over time; confirm details with your project team.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+<script src="/lms.js?v=20261021c" defer></script>
+<script src="/quiz.js?v=20261021c" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
+</body>
+</html>

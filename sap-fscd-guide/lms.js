@@ -23,6 +23,10 @@
       { title: 'Finance and period-end', lessons: [
         { id: 'accounting', url: '/accounting', title: 'From FSCD to the general ledger', mins: 20,
           blurb: 'Account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end.' }
+      ] },
+      { title: 'Beyond FSCD: SAP BRIM', lessons: [
+        { id: 'brim', url: '/brim', title: 'SAP BRIM for insurance', mins: 20,
+          blurb: 'Subscriptions, usage-based pricing, convergent invoicing and partner settlement, and how BRIM works next to FSCD.' }
       ] }
     ]
   };
