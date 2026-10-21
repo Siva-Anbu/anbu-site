@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dunning, Returns and Collections | FSCD Academy</title>
+<meta name="description" content="How SAP FSCD handles customers who do not pay: dunning levels and runs, locks, returns, instalment plans, write-offs and Danish rules, explained simply for insurance business analysts.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+</style>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/lms.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="dunning">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">Dunning, returns and collections</h1>
+<p class="lede">What happens when customers don't pay: reminders, bounced payments, payment plans, write-offs and the Danish rules behind them. Told with the same customer, Mette.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>This lesson builds on <a href="/basics">Lesson 1: FSCD basics</a>. You should know what an <em>open item</em>, a <em>due date</em> and a <em>return</em> are. All names, amounts and codes are made up for learning.</p></div>
+
+<h2 id="meet">Where we left Mette</h2>
+<p>Mette Jensen in Aarhus owes ABC Forsikring <strong>DKK 8,088</strong> for her car insurance, due on <strong>15.04.2026</strong>. Her Betalingsservice debit bounced on 18.04 and FSCD added a <strong>DKK 100</strong> return fee, so she now owes <strong>DKK 8,188</strong>. In Lesson 1 she paid by MobilePay on 06.05. In this lesson we slow down and look at everything FSCD does <em>while she hasn't paid</em>, and what happens if she never does.</p>
+<div class="cast">
+<div><b>Collections team</b><span>Watches overdue money, handles calls and payment plans</span></div>
+<div><b>Finance</b><span>Cares about bad debt, fees and write-offs</span></div>
+<div><b>Compliance</b><span>Makes sure reminders follow Danish law</span></div>
+<div><b>You, the BA</b><span>Turn all their rules into FSCD settings and requirements</span></div>
+</div>
+
+<h2 id="why">1. Why collections matter</h2>
+<p>Most customers pay on time. A small share doesn't, and that share costs real money: lost premium, cover that must be stopped, angry customers and manual work. Collections in FSCD has three goals:</p>
+<div class="tbl"><table><thead><tr><th>Goal</th><th>In simple words</th><th>Mette example</th></tr></thead><tbody>
+<tr><td>Get paid</td><td>Remind the customer, politely and then firmly</td><td>An email and SMS on day 14 gets most people to pay</td></tr>
+<tr><td>Protect the company</td><td>Stop cover when premium is not paid, so ABC doesn't insure for free</td><td>After the final notice, her motor cover ends</td></tr>
+<tr><td>Treat customers fairly</td><td>Follow the law, give time, offer payment plans, don't chase disputed amounts</td><td>If she disputes the fee, dunning stops until it's sorted</td></tr>
+</tbody></table></div>
+
+<h2 id="procedure">2. The dunning procedure: levels, days and charges</h2>
+<p>A <strong>dunning procedure</strong> is the rulebook for reminders. It says how many <strong>levels</strong> there are, how many days after the due date each level starts, what is sent, and whether a fee is charged. Each contract account points to one procedure, so motor and home insurance can have different rules.</p>
+
+<div class="fig" role="img" aria-label="Dunning ladder: due date, then level 1 email and SMS at day 14, level 2 reminder letter with fee at day 30, level 3 final notice at day 45, then cancellation and collection">
+<svg viewBox="0 0 760 250">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
+<path class="gout" d="M30,200 H735" marker-end="url(#a1)"/>
+<rect class="bx" x="20" y="130" width="120" height="58" rx="8"/><text class="t" x="80" y="155" text-anchor="middle">Due date</text><text class="s" x="80" y="174" text-anchor="middle">15.04 · day 0</text>
+<rect class="bx" x="165" y="104" width="130" height="84" rx="8"/><text class="t" x="230" y="128" text-anchor="middle">Level 1</text><text class="s" x="230" y="147" text-anchor="middle">day 14 · 29.04</text><text class="s" x="230" y="164" text-anchor="middle">email + SMS</text><text class="s" x="230" y="180" text-anchor="middle">no fee</text>
+<rect class="bx" x="320" y="78" width="130" height="110" rx="8"/><text class="t" x="385" y="102" text-anchor="middle">Level 2</text><text class="s" x="385" y="121" text-anchor="middle">day 30 · 15.05</text><text class="s" x="385" y="138" text-anchor="middle">letter in e-Boks</text><text class="s" x="385" y="155" text-anchor="middle">DKK 100 fee</text>
+<rect class="bx" x="475" y="52" width="130" height="136" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="540" y="76" text-anchor="middle">Level 3</text><text class="s" x="540" y="95" text-anchor="middle">day 45 · 30.05</text><text class="s" x="540" y="112" text-anchor="middle">final notice:</text><text class="s" x="540" y="129" text-anchor="middle">"cover will stop"</text><text class="s" x="540" y="146" text-anchor="middle">DKK 100 fee</text>
+<rect class="bx hl" x="630" y="26" width="120" height="162" rx="8"/><text class="t" x="690" y="54" text-anchor="middle">After the</text><text class="t" x="690" y="72" text-anchor="middle">deadline</text><text class="s" x="690" y="96" text-anchor="middle">cover stops</text><text class="s" x="690" y="114" text-anchor="middle">policy cancelled</text><text class="s" x="690" y="132" text-anchor="middle">debt to</text><text class="s" x="690" y="150" text-anchor="middle">collection</text>
+<text class="lab-out" x="380" y="232" text-anchor="middle">Days overdue → each step is firmer than the last</text>
+</svg>
+</div>
+<p class="cap">An example ladder. Your project's days, texts and fees will differ; the shape is usually the same.</p>
+
+<div class="tbl"><table><thead><tr><th>Setting</th><th>What it means</th><th>Example value</th></tr></thead><tbody>
+<tr><td>Dunning levels</td><td>How many steps, and what each step does</td><td>3 levels: reminder, letter, final notice</td></tr>
+<tr><td>Days in arrears per level</td><td>How many days after the due date each level is reached</td><td>14, 30 and 45 days</td></tr>
+<tr><td>Minimum days between levels</td><td>Stops two reminders from arriving too close together</td><td>At least 10 days</td></tr>
+<tr><td>Charges</td><td>Fee added at a level (posted as a new line on the account)</td><td>DKK 100 at levels 2 and 3</td></tr>
+<tr><td>Minimum amount</td><td>Tiny debts are not worth a reminder</td><td>No dunning below DKK 50</td></tr>
+<tr><td>Dunning activity</td><td>What happens at the level: letter, email, SMS, cancellation request</td><td>Level 3 also tells the policy system "cancel if unpaid"</td></tr>
+</tbody></table></div>
+
+<h2 id="run">3. How a dunning run works: proposal, then activity</h2>
+<p>Dunning isn't done by hand. A nightly batch job does it in <strong>two steps</strong>, so people can check the list before anything is sent.</p>
+
+<div class="fig" role="img" aria-label="Dunning run in two steps: the proposal run selects overdue items and builds a list, a person can check or remove entries, then the activity run sends letters, posts fees and records the dunning history">
+<svg viewBox="0 0 760 210">
+<defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<rect class="bx" x="10" y="50" width="160" height="110" rx="8"/><text class="t" x="90" y="84" text-anchor="middle">Open items</text><text class="s" x="90" y="106" text-anchor="middle">overdue, not locked,</text><text class="s" x="90" y="123" text-anchor="middle">above minimum</text>
+<rect class="bx hl" x="205" y="50" width="160" height="110" rx="8"/><text class="t" x="285" y="80" text-anchor="middle">1. Proposal run</text><text class="s" x="285" y="100" text-anchor="middle">FPVA</text><text class="s" x="285" y="120" text-anchor="middle">"who would get</text><text class="s" x="285" y="137" text-anchor="middle">which level?"</text>
+<rect class="bx" x="400" y="50" width="150" height="110" rx="8"/><text class="t" x="475" y="84" text-anchor="middle">Check</text><text class="s" x="475" y="106" text-anchor="middle">collections team can</text><text class="s" x="475" y="123" text-anchor="middle">remove or adjust</text>
+<rect class="bx hl" x="585" y="50" width="165" height="110" rx="8"/><text class="t" x="667" y="80" text-anchor="middle">2. Activity run</text><text class="s" x="667" y="100" text-anchor="middle">FPVB</text><text class="s" x="667" y="120" text-anchor="middle">send, post fees,</text><text class="s" x="667" y="137" text-anchor="middle">save dunning history</text>
+<path class="gfile" d="M170,105 H203" marker-end="url(#b1)"/><path class="gfile" d="M365,105 H398" marker-end="url(#b1)"/><path class="gfile" d="M550,105 H583" marker-end="url(#b1)"/>
+<text class="lab-file" x="380" y="195" text-anchor="middle">Dunning history (FPM3) shows every level a customer reached, and when</text>
+</svg>
+</div>
+<p class="cap">Many projects run both steps automatically every night and only look at the proposal when something looks wrong.</p>
+
+<ol class="timeline">
+<li><span class="d">29.04 (day 14):</span> the proposal finds Mette's DKK 8,188 open and overdue. The activity run sends level 1 by email and SMS. No fee. A dunning history record is saved; no posting document, because no money moved.</li>
+<li><span class="d">06.05:</span> Mette pays by MobilePay. Her items are cleared, so the next run doesn't pick her up. <span class="ok">Dunning stops by itself.</span></li>
+<li><span class="d">If she hadn't paid, 15.05 (day 30):</span> level 2 letter in e-Boks and a DKK 100 fee. The fee is posted as a new open item, so the account now shows DKK 8,288.</li>
+</ol>
+
+<h2 id="rules">4. Rules that stop or change dunning</h2>
+<p>Not every overdue item should be chased. FSCD has several "brakes". Knowing them saves hours of incident analysis ("why didn't this customer get a reminder?").</p>
+<div class="term"><h4>Dunning lock</h4><p><strong>In simple words:</strong> a "do not remind" flag, on one item or the whole account, often with an end date and a reason.</p><p class="ex">Example: Mette calls and says the <b>DKK 100 fee</b> is wrong because her bank made a mistake. Customer service sets a dunning lock on the fee item with reason "disputed" until 31.05, so she gets no reminder about it while it's checked.</p></div>
+<div class="term"><h4>Grace days and minimum amounts</h4><p><strong>In simple words:</strong> small delays and tiny amounts are ignored, so customers aren't nagged about DKK 3.</p><p class="ex">Example: with a <b>DKK 50 minimum</b>, a leftover DKK 12 after a rounding difference is never dunned. It is written off instead (section 7).</p></div>
+<div class="term"><h4>Open claims or credits</h4><p><strong>In simple words:</strong> if ABC owes the customer money, it's unfair to chase them. Many projects offset first or pause dunning.</p><p class="ex">Example: Mette has an approved <b>DKK 25,000 claim</b> waiting. Instead of dunning, FSCD offsets: she receives DKK 16,812 and her premium is cleared.</p></div>
+<div class="term"><h4>Instalment plan</h4><p><strong>In simple words:</strong> items inside an active payment plan follow the plan's dates instead of the original due date (section 6).</p></div>
+
+<div class="tip"><b>BA tip: "why no reminder?" checklist</b>
+<p>Check in this order: is the item really overdue (due date and grace days)? Is the amount above the minimum? Is there a dunning lock on the item or account? Is it in an instalment plan? Did the last run actually include this account (run selection)? Is a credit or claim being offset?</p></div>
+
+<h2 id="returns">5. Returns: when a payment bounces</h2>
+<p>A <strong>return</strong> is a payment the bank sends back. Every return comes with a <strong>return reason</strong>, and FSCD can react differently to each one. This is set up in a table that a BA usually helps define.</p>
+
+<div class="fig" role="img" aria-label="Return handling: a bank return file arrives, FSCD reverses the clearing so the item is open again, then depending on the return reason it adds a fee, retries the debit, removes the mandate, or just informs the customer">
+<svg viewBox="0 0 760 260">
+<defs>
+<marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+<marker id="c2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+</defs>
+<rect class="bx" x="10" y="90" width="150" height="80" rx="8"/><text class="t" x="85" y="122" text-anchor="middle">Return file</text><text class="s" x="85" y="142" text-anchor="middle">from Nets · FP09</text>
+<rect class="bx hl" x="200" y="90" width="170" height="80" rx="8"/><text class="t" x="285" y="118" text-anchor="middle">Reverse clearing</text><text class="s" x="285" y="138" text-anchor="middle">item is open again</text><text class="s" x="285" y="154" text-anchor="middle">DKK 8,088</text>
+<path class="gbad" d="M160,130 H198" marker-end="url(#c1)"/>
+<text class="lab-file" x="545" y="20" text-anchor="middle">What happens next depends on the return reason</text>
+<rect class="bx" x="420" y="32" width="250" height="44" rx="8"/><text class="t" x="545" y="59" text-anchor="middle">Insufficient funds → fee + reminder</text>
+<rect class="bx" x="420" y="86" width="250" height="44" rx="8"/><text class="t" x="545" y="113" text-anchor="middle">Retry allowed → debit again later</text>
+<rect class="bx" x="420" y="140" width="250" height="44" rx="8"/><text class="t" x="545" y="167" text-anchor="middle">Mandate cancelled → stop debits</text>
+<rect class="bx" x="420" y="194" width="250" height="44" rx="8"/><text class="t" x="545" y="221" text-anchor="middle">Bank error → no fee, retry</text>
+<path class="gfile" d="M370,130 C395,130 395,54 418,54" marker-end="url(#c2)"/><path class="gfile" d="M370,130 C395,130 395,108 418,108" marker-end="url(#c2)"/><path class="gfile" d="M370,130 C395,130 395,162 418,162" marker-end="url(#c2)"/><path class="gfile" d="M370,130 C395,130 395,216 418,216" marker-end="url(#c2)"/>
+</svg>
+</div>
+<p class="cap">Return reasons and their actions are configuration. A BA writes down the business rule for each reason.</p>
+
+<div class="tbl"><table><thead><tr><th>Return reason (simplified)</th><th>Fee?</th><th>What FSCD does next</th><th>Why</th></tr></thead><tbody>
+<tr><td>Insufficient funds</td><td>Yes, DKK 100</td><td>Item open again; dunning continues from the original due date</td><td>Customer's responsibility</td></tr>
+<tr><td>Mandate cancelled by customer</td><td>No</td><td>Remove Betalingsservice from the contract account; send a bill with a payment slip instead</td><td>Future debits would fail too</td></tr>
+<tr><td>Account closed</td><td>No</td><td>Ask for new bank details; switch to bill</td><td>Customer probably changed bank</td></tr>
+<tr><td>Bank or technical error</td><td>No</td><td>Retry the debit in the next run</td><td>Not the customer's fault</td></tr>
+<tr><td>Disputed by customer</td><td>No</td><td>Open item plus a dunning lock; customer service investigates</td><td>Don't chase a disputed amount</td></tr>
+</tbody></table></div>
+
+<h2 id="instalments">6. Instalment plans: helping customers pay</h2>
+<p>An <strong>instalment plan</strong> splits one or more overdue items into smaller amounts with new due dates. The original items are "parked" inside the plan, and the plan's instalments become the new open items. Dunning then follows the plan. If the customer misses an instalment, the plan can be cancelled and the full amount is due again.</p>
+<div class="term"><h4>Example: Mette asks for help</h4>
+<p class="ex">On 10.05 Mette calls: she lost her job and can't pay <b>DKK 8,188</b> at once. The collections agent creates an instalment plan (FPR1): <b>3 instalments</b> on 01.06, 01.07 and 01.08.</p></div>
+<div class="tbl"><table><thead><tr><th>Instalment</th><th>Due date</th><th class="num">Amount</th><th>Status</th></tr></thead><tbody>
+<tr><td>1</td><td>01.06.2026</td><td class="num">DKK 2,730.00</td><td class="ok">Paid</td></tr>
+<tr><td>2</td><td>01.07.2026</td><td class="num">DKK 2,729.00</td><td class="ok">Paid</td></tr>
+<tr><td>3</td><td>01.08.2026</td><td class="num">DKK 2,729.00</td><td class="due">Open</td></tr>
+<tr><td colspan="2"><strong>Total</strong></td><td class="num"><strong>DKK 8,188.00</strong></td><td></td></tr>
+</tbody></table></div>
+<p><strong>BA questions for instalment plans:</strong> who may create them (call centre, self-service)? Maximum number of instalments? Is interest or a fee charged? Can disputed items be included? What happens to cover while a plan is running? What happens after one missed instalment?</p>
+
+<h2 id="end">7. The end of the road: cancellation, collection agency, write-off</h2>
+<p>If nothing works, three things can happen. They often happen in this order.</p>
+<div class="tbl"><table><thead><tr><th>Step</th><th>In simple words</th><th>Mette example (if she never paid)</th></tr></thead><tbody>
+<tr><td>Cancellation for non-payment</td><td>FSCD tells the policy system that premium is still unpaid after the final notice. The policy system stops the cover and works out what is really owed for the period that was insured.</td><td>Cover ends on 21.06. She owes premium for April to June only; the rest of the year is credited back.</td></tr>
+<tr><td>Hand over to collection (inkasso)</td><td>The remaining debt is sent to an internal recovery team or an outside debt-collection agency. FSCD marks the items as "submitted to collection" and later records what the agency recovered.</td><td>DKK 2,200 is submitted to the agency on 15.07; DKK 1,500 is recovered in September.</td></tr>
+<tr><td>Write-off</td><td>Money that will never be collected is written off. The open item is closed against a "bad debt" expense account, so the books show the loss honestly.</td><td>The last DKK 700 is written off in December (FP04).</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Small differences are written off automatically</b>
+<p>Many projects run an automatic write-off for tiny leftovers, for example anything under DKK 10 that is more than 60 days old. It saves letters that cost more than the debt.</p></div>
+
+<h2 id="denmark">8. Danish rules a BA must know</h2>
+<p>Collections is regulated. Rules change, so always confirm the current text with your compliance team. These are the usual points to check for Denmark:</p>
+<ul>
+<li><strong>Reminder fees are capped by law.</strong> The Danish Interest Act (renteloven) limits reminder fees per letter (DKK 100 at the time of writing), the number of fee-bearing reminders, and requires a gap of at least 10 days between them. FSCD's dunning charges must stay within these limits.</li>
+<li><strong>Cover can only stop after a proper written reminder.</strong> Under the Insurance Contracts Act (forsikringsaftaleloven), the reminder must clearly say that cover will stop if the premium isn't paid by a stated deadline. So the wording of the final notice is a legal requirement, not just a template.</li>
+<li><strong>Digital post counts.</strong> Letters sent to e-Boks are normally treated like paper letters, which is why most Danish insurers use it for levels 2 and 3.</li>
+<li><strong>Debt collection has its own rules.</strong> Agencies need permission, and extra collection costs are limited. FSCD only records what was handed over and what came back.</li>
+</ul>
+
+<h2 id="ba">9. BA toolkit for collections</h2>
+<h3 id="ba-codes">9.1 Screens worth knowing</h3>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
+<tr><td>FPVA</td><td>Dunning proposal run</td><td>See who would be dunned tonight and at which level</td></tr>
+<tr><td>FPVB</td><td>Dunning activity run</td><td>Actually send the reminders and post the fees</td></tr>
+<tr><td>FPM3</td><td>Dunning history</td><td>"Which reminders did Mette get, and when?"</td></tr>
+<tr><td>FP09</td><td>Returns lot</td><td>Load and post bank returns</td></tr>
+<tr><td>FPR1</td><td>Create instalment plan</td><td>Set up Mette's 3-month plan</td></tr>
+<tr><td>FP04</td><td>Write off items</td><td>Close a debt that will never be paid</td></tr>
+<tr><td>FPL9</td><td>Account balance</td><td>See fees, returns and plan items on one screen</td></tr>
+</tbody></table></div>
+<p class="cap">Codes from general FI-CA knowledge; confirm them in your own system.</p>
+
+<h3 id="ba-tests">9.2 Test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Customer pays between level 1 and level 2</td><td>No level 2 letter, no fee, dunning history shows only level 1</td></tr>
+<tr><td>Item with an active dunning lock</td><td>Not in the proposal; reminder starts again after the lock end date</td></tr>
+<tr><td>Return with reason "bank error"</td><td>No fee, debit retried in the next run</td></tr>
+<tr><td>Return with reason "mandate cancelled"</td><td>Payment method removed from the contract account, bill sent instead</td></tr>
+<tr><td>Instalment 2 is missed</td><td>Plan follows the agreed rule (reminder or cancellation), remaining amount handled correctly</td></tr>
+<tr><td>Third fee-bearing reminder</td><td>Fee and gap between letters respect the legal limits</td></tr>
+<tr><td>Automatic write-off of DKK 8</td><td>Item closed to the bad-debt account; no letter sent</td></tr>
+</tbody></table></div>
+
+<div class="tip"><b>A closing tip</b>
+<p>Draw your project's dunning ladder on one page, with days, channels, fees and the legal text for each level. It's the document collections, compliance and IT will all ask you for.</p></div>
+
+<h2 id="test">Test yourself</h2>
+<p>10 questions on dunning, returns and collections. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="dunning"></div>
+
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
+<div id="suggest"></div>
+-->
+
+<footer>Dunning, Returns and Collections in SAP FSCD. Names, amounts, fees and codes are illustrative examples for learning. Legal limits change over time; confirm current rules with your compliance team.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+<script src="/lms.js" defer></script>
+<script src="/quiz.js" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
+</body>
+</html>

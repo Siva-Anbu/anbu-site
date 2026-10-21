@@ -15,6 +15,14 @@
       { title: 'Payments in the Nordics', lessons: [
         { id: 'payments', url: '/payments', title: 'Nordic payment methods', mins: 15,
           blurb: 'Direct debit, reference numbers, e-invoices, MobilePay, Swish and Vipps, and how claims are paid out.' }
+      ] },
+      { title: 'Collections in depth', lessons: [
+        { id: 'dunning', url: '/dunning', title: 'Dunning, returns and collections', mins: 20,
+          blurb: 'Dunning levels and runs, locks, bounced payments, instalment plans, write-offs and the Danish rules behind them.' }
+      ] },
+      { title: 'Finance and period-end', lessons: [
+        { id: 'accounting', url: '/accounting', title: 'From FSCD to the general ledger', mins: 20,
+          blurb: 'Account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end.' }
       ] }
     ]
   };

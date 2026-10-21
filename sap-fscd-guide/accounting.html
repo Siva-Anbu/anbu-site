@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From FSCD to the General Ledger | FSCD Academy</title>
+<meta name="description" content="How SAP FSCD postings reach the general ledger: account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end, explained simply for insurance business analysts.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+</style>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/lms.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="accounting">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">From FSCD to the general ledger</h1>
+<p class="lede">How every FSCD posting turns into accounting: account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end. Explained with Mette's year.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>This lesson builds on <a href="/basics">Lesson 1</a> (posting documents, main and sub transactions, reconciliation keys) and <a href="/dunning">Lesson 3</a> (fees and write-offs). You don't need an accounting background: debit and credit are explained as we go. All account numbers are made up for learning.</p></div>
+
+<h2 id="meet">Why finance cares about FSCD</h2>
+<p>Finance doesn't look at Mette's account. They look at the <strong>general ledger</strong> (GL): total premium income, total money owed by customers, total claims paid. Every one of those numbers is built from millions of small FSCD postings. If the link between FSCD and the GL is wrong, the company's accounts are wrong. That's why finance teams ask BAs questions like <em>"which GL account does this new fee post to?"</em> and <em>"why doesn't FSCD match the ledger this month?"</em></p>
+<div class="tip"><b>Debit and credit in one minute</b>
+<p>Every posting has two sides that add up to the same amount. <strong>Debit</strong> = what we have or are owed goes up, or an expense goes up. <strong>Credit</strong> = income or what we owe goes up. When Mette is billed: debit "customers owe us", credit "premium income".</p></div>
+
+<h2 id="two">1. Sub-ledger and general ledger, in simple words</h2>
+<p>FSCD is a <strong>sub-ledger</strong>: it keeps one line per customer, policy and event. The GL keeps only <strong>totals per account</strong>. Each night FSCD adds up the day's postings and sends the totals to the GL. The GL account that holds "all customers' open items" is called the <strong>reconciliation account</strong>: its balance must always equal the total of the open items in FSCD.</p>
+
+<div class="fig" role="img" aria-label="Many customer postings in FSCD are summed per GL account and sent once a day to the general ledger; the receivables reconciliation account in the GL equals the total of all open items in FSCD">
+<svg viewBox="0 0 760 250">
+<defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<rect class="bx" x="10" y="20" width="210" height="210" rx="10"/><text class="t" x="115" y="46" text-anchor="middle">SAP FSCD (detail)</text>
+<rect class="bx" x="28" y="62" width="174" height="34" rx="6" style="fill:var(--card)"/><text class="s" x="115" y="84" text-anchor="middle">Mette · premium · 8,088</text>
+<rect class="bx" x="28" y="104" width="174" height="34" rx="6" style="fill:var(--card)"/><text class="s" x="115" y="126" text-anchor="middle">Erik · premium · 300</text>
+<rect class="bx" x="28" y="146" width="174" height="34" rx="6" style="fill:var(--card)"/><text class="s" x="115" y="168" text-anchor="middle">…40,000 more lines</text>
+<text class="s" x="115" y="212" text-anchor="middle">one line per customer event</text>
+<rect class="bx hl" x="290" y="85" width="170" height="80" rx="10"/><text class="t" x="375" y="113" text-anchor="middle">GL transfer</text><text class="s" x="375" y="133" text-anchor="middle">FPG1 · nightly</text><text class="s" x="375" y="150" text-anchor="middle">sums per GL account</text>
+<rect class="bx" x="530" y="20" width="220" height="210" rx="10"/><text class="t" x="640" y="46" text-anchor="middle">General ledger (totals)</text>
+<rect class="bx" x="548" y="62" width="184" height="34" rx="6" style="fill:var(--card);stroke:var(--accent)"/><text class="s" x="640" y="84" text-anchor="middle">140000 Receivables · 20.1 m</text>
+<rect class="bx" x="548" y="104" width="184" height="34" rx="6" style="fill:var(--card)"/><text class="s" x="640" y="126" text-anchor="middle">300000 Premium income</text>
+<rect class="bx" x="548" y="146" width="184" height="34" rx="6" style="fill:var(--card)"/><text class="s" x="640" y="168" text-anchor="middle">290100 Insurance tax payable</text>
+<text class="s" x="640" y="212" text-anchor="middle">one line per account per day</text>
+<path class="gfile" d="M220,125 H288" marker-end="url(#m1)"/><path class="gfile" d="M460,125 H528" marker-end="url(#m1)"/>
+</svg>
+</div>
+<p class="cap">The golden rule: total of FSCD open items = balance of the reconciliation account in the GL.</p>
+
+<h2 id="determination">2. Account determination: how FSCD picks the GL account</h2>
+<p>Nobody types a GL account into FSCD. The account is found automatically by <strong>account determination</strong>: a set of configuration tables that turn "what kind of money is this?" into "which GL accounts?". The main inputs are the <strong>company code</strong>, the <strong>division or product line</strong>, and the <strong>main and sub transaction</strong> from Lesson 1.</p>
+
+<div class="fig" role="img" aria-label="Account determination: company code, product line and main and sub transaction go into the account determination tables, which return the receivables reconciliation account, the revenue or expense account and the tax account">
+<svg viewBox="0 0 760 230">
+<defs><marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<rect class="bx" x="10" y="20" width="200" height="190" rx="10"/><text class="t" x="110" y="46" text-anchor="middle">Inputs</text>
+<text class="s" x="110" y="78" text-anchor="middle">Company code: DK01</text><text class="s" x="110" y="104" text-anchor="middle">Product line: Motor</text><text class="s" x="110" y="130" text-anchor="middle">Main transaction: 6100</text><text class="s" x="110" y="156" text-anchor="middle">Sub transaction: 0010</text><text class="s" x="110" y="190" text-anchor="middle">(net premium)</text>
+<rect class="bx hl" x="280" y="70" width="190" height="90" rx="10"/><text class="t" x="375" y="102" text-anchor="middle">Account</text><text class="t" x="375" y="120" text-anchor="middle">determination</text><text class="s" x="375" y="142" text-anchor="middle">configuration tables</text>
+<rect class="bx" x="540" y="20" width="210" height="190" rx="10"/><text class="t" x="645" y="46" text-anchor="middle">GL accounts found</text>
+<text class="s" x="645" y="80" text-anchor="middle">Receivable (reconciliation):</text><text class="t" x="645" y="98" text-anchor="middle">140000</text>
+<text class="s" x="645" y="126" text-anchor="middle">Revenue:</text><text class="t" x="645" y="144" text-anchor="middle">300000 Premium income</text>
+<text class="s" x="645" y="172" text-anchor="middle">Tax (sub 0020):</text><text class="t" x="645" y="190" text-anchor="middle">290100</text>
+<path class="gfile" d="M210,115 H278" marker-end="url(#d1)"/><path class="gfile" d="M470,115 H538" marker-end="url(#d1)"/>
+</svg>
+</div>
+
+<div class="tbl"><table><thead><tr><th>Main / Sub</th><th>Meaning</th><th>Receivable or payable account</th><th>Other side</th></tr></thead><tbody>
+<tr><td>6100 / 0010</td><td>Net premium</td><td>140000 Receivables from policyholders</td><td>300000 Premium income</td></tr>
+<tr><td>6100 / 0020</td><td>Insurance tax</td><td>140000 Receivables from policyholders</td><td>290100 Insurance tax payable</td></tr>
+<tr><td>6700 / 0010</td><td>Return fee</td><td>140000 Receivables from policyholders</td><td>300900 Fee income</td></tr>
+<tr><td>6200 / 0010</td><td>Claim payment</td><td>160000 Payables to policyholders</td><td>400000 Claims expense</td></tr>
+<tr><td>6300 / 0010</td><td>Agent commission</td><td>165000 Payables to agents</td><td>610000 Commission expense</td></tr>
+<tr><td>0060 / 0010</td><td>Incoming payment</td><td>140000 Receivables (cleared)</td><td>110100 Bank incoming clearing</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Why this matters for a BA</b>
+<p>Every new kind of money (a new fee, a new product, a new tax) needs a <strong>new main/sub transaction and its account determination</strong>. If it's missing, the posting fails or lands on a wrong account. Always ask finance: "which GL accounts, and is it taxable?" before the developers start.</p></div>
+
+<h2 id="journal">3. Mette's year as journal entries</h2>
+<p>Here is the story from Lessons 1 and 3, seen through finance's eyes. Each FSCD posting document creates these GL lines (summed with everyone else's at night).</p>
+<div class="tbl"><table><thead><tr><th>Date · event</th><th>Debit</th><th>Credit</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>01.04 · premium billed</td><td>140000 Receivables</td><td>300000 Premium income</td><td class="num">8,000.00</td></tr>
+<tr><td>01.04 · insurance tax</td><td>140000 Receivables</td><td>290100 Insurance tax payable</td><td class="num">88.00</td></tr>
+<tr><td>15.04 · direct debit collected</td><td>110100 Bank incoming clearing</td><td>140000 Receivables</td><td class="num">8,088.00</td></tr>
+<tr><td>18.04 · debit returned</td><td>140000 Receivables</td><td>110100 Bank incoming clearing</td><td class="num">8,088.00</td></tr>
+<tr><td>18.04 · return fee</td><td>140000 Receivables</td><td>300900 Fee income</td><td class="num">100.00</td></tr>
+<tr><td>06.05 · MobilePay payment</td><td>110100 Bank incoming clearing</td><td>140000 Receivables</td><td class="num">8,188.00</td></tr>
+<tr><td>10.05 · Lars's commission due</td><td>610000 Commission expense</td><td>165000 Payables to agents</td><td class="num">800.00</td></tr>
+<tr><td>10.05 · commission paid</td><td>165000 Payables to agents</td><td>110200 Bank outgoing clearing</td><td class="num">800.00</td></tr>
+<tr><td>20.07 · claim approved</td><td>400000 Claims expense</td><td>160000 Payables to policyholders</td><td class="num">25,000.00</td></tr>
+<tr><td>22.07 · claim paid</td><td>160000 Payables to policyholders</td><td>110200 Bank outgoing clearing</td><td class="num">25,000.00</td></tr>
+</tbody></table></div>
+<p><strong>Check it yourself:</strong> add up account 140000 for Mette: +8,000 +88 −8,088 +8,088 +100 −8,188 = <strong>0</strong>. Her FSCD balance is also 0. Sub-ledger and GL agree.</p>
+<div class="tip"><b>Written premium vs earned premium</b>
+<p>FSCD posts the premium when it's <em>billed</em> (written premium). Accountants also need <em>earned</em> premium: by 30.06 only 3 of Mette's 12 months have passed. That split (the unearned premium reserve) is usually calculated in finance or actuarial systems, not in FSCD. Good to know when finance asks "why is FSCD income higher than the P&amp;L?"</p></div>
+
+<h2 id="reckey">4. Reconciliation keys: the batch label's life cycle</h2>
+<p>Every FSCD posting carries a <strong>reconciliation key</strong> (Lesson 1). It groups postings into batches, so each batch can be checked and transferred once. A key goes through a simple life cycle:</p>
+
+<div class="fig" role="img" aria-label="Reconciliation key life cycle: opened, postings collected during the day, closed, transferred to the general ledger, then reconciled">
+<svg viewBox="0 0 760 170">
+<defs><marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
+<rect class="bx" x="10" y="40" width="130" height="80" rx="8"/><text class="t" x="75" y="72" text-anchor="middle">1. Open</text><text class="s" x="75" y="94" text-anchor="middle">260401-PREM-01</text>
+<rect class="bx" x="162" y="40" width="130" height="80" rx="8"/><text class="t" x="227" y="72" text-anchor="middle">2. Collect</text><text class="s" x="227" y="94" text-anchor="middle">postings all day</text>
+<rect class="bx" x="314" y="40" width="130" height="80" rx="8"/><text class="t" x="379" y="72" text-anchor="middle">3. Close</text><text class="s" x="379" y="94" text-anchor="middle">no more postings</text>
+<rect class="bx hl" x="466" y="40" width="130" height="80" rx="8"/><text class="t" x="531" y="72" text-anchor="middle">4. Transfer</text><text class="s" x="531" y="94" text-anchor="middle">GL transfer · FPG1</text>
+<rect class="bx" x="618" y="40" width="130" height="80" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="683" y="72" text-anchor="middle">5. Reconcile</text><text class="s" x="683" y="94" text-anchor="middle">totals match ✓</text>
+<path class="gin" d="M140,80 H160" marker-end="url(#r1)"/><path class="gin" d="M292,80 H312" marker-end="url(#r1)"/><path class="gin" d="M444,80 H464" marker-end="url(#r1)"/><path class="gin" d="M596,80 H616" marker-end="url(#r1)"/>
+<text class="lab-file" x="380" y="155" text-anchor="middle">Only closed keys are transferred. An open key = postings that are not in the GL yet.</text>
+</svg>
+</div>
+<p class="cap">Most projects create one key per day and per source (premium interface, payment lot, payment run, dunning…), so a problem can be traced to one batch.</p>
+
+<h2 id="gltransfer">5. The GL transfer</h2>
+<p>The <strong>GL transfer</strong> (FPG1) is a batch job, usually nightly. It takes all <strong>closed</strong> reconciliation keys that haven't been transferred yet, adds up their lines per GL account, and posts the totals as GL documents. Finance then sees one line like "premium income, 01.04, DKK 2.4 million" instead of 40,000 customer lines.</p>
+<ul>
+<li><strong>Summarised, but traceable:</strong> from the GL document you can go back to the reconciliation key, and from the key to every FSCD document.</li>
+<li><strong>Once only:</strong> a key is transferred once. Reversals and corrections come in new keys on later days.</li>
+<li><strong>If it fails:</strong> usually a missing GL account, a closed posting period in the GL, or a missing cost center or profit center. The key stays "not transferred" until it's fixed and the job runs again.</li>
+</ul>
+
+<h2 id="reconcile">6. Reconciling: does FSCD equal the ledger?</h2>
+<p>Reconciliation proves the golden rule from section 1. Finance compares the <strong>open items list</strong> in FSCD on a key date (for example FPO1, open items at 31.05) with the <strong>balance of the reconciliation accounts</strong> in the GL on the same date.</p>
+<div class="tbl"><table><thead><tr><th>Typical cause of a difference</th><th>How to spot it</th><th>Fix</th></tr></thead><tbody>
+<tr><td>A reconciliation key is still open or not transferred</td><td>List keys not yet transferred for the period</td><td>Close the key and run the GL transfer</td></tr>
+<tr><td>Someone posted directly to the reconciliation account in the GL</td><td>GL line items without an FSCD reference</td><td>Reverse it; reconciliation accounts should be blocked for manual postings</td></tr>
+<tr><td>Payments still in clarification</td><td>Payment lots or statement items not fully posted</td><td>Clear the clarification queue; agree how parked money is shown</td></tr>
+<tr><td>Different key dates or posting periods</td><td>Postings dated in May but transferred in June</td><td>Compare the same posting-date range on both sides</td></tr>
+</tbody></table></div>
+
+<h2 id="periodend">7. Month-end and year-end checklist</h2>
+<ol class="timeline">
+<li><span class="d">All batches done:</span> payment runs, payment lots, returns lots, dunning and interfaces for the month have finished.</li>
+<li><span class="d">Clarification cleared:</span> unmatched payments are assigned or handled by an agreed rule.</li>
+<li><span class="d">Keys closed and transferred:</span> every reconciliation key for the month is closed and in the GL.</li>
+<li><span class="d">Foreign currency valuation:</span> open items in a foreign currency (for example SEK policies in a Danish company) are revalued at the month-end rate, so the DKK value in the books is current.</li>
+<li><span class="d">Receivables ageing and bad-debt provision:</span> finance looks at how old the open items are (0–30, 31–60, 61–90, 90+ days) and sets aside money for what probably won't be paid.</li>
+<li><span class="d">Write-offs:</span> small and hopeless debts are written off (Lesson 3), so the books don't carry money that will never come.</li>
+<li><span class="d">Reconcile and sign off:</span> FSCD open items = GL reconciliation accounts. Finance closes the period.</li>
+</ol>
+<div class="tip"><b>Year-end extras</b>
+<p>At 31.12 finance usually also checks insurance tax payable against the tax return, credit balances owed to customers (old overpayments, unclaimed refunds), and that no postings are made into the closed year after sign-off.</p></div>
+
+<h2 id="ba">8. BA toolkit for finance integration</h2>
+<h3 id="ba-questions">8.1 Questions to ask for any new posting</h3>
+<ol>
+<li>Which main and sub transaction will it use? Is it new?</li>
+<li>Which GL accounts (receivable or payable side, and revenue or expense side)? Who in finance signs this off?</li>
+<li>Is it taxable? Which tax account?</li>
+<li>Does it need a cost center, profit center or product line for reporting?</li>
+<li>Which reconciliation key will it be posted under, and from which process?</li>
+<li>How will finance see it in their reports, and how will it be reconciled?</li>
+</ol>
+<h3 id="ba-tests">8.2 Test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Bill a premium with tax</td><td>Receivable, premium income and tax accounts are correct after the GL transfer</td></tr>
+<tr><td>New fee type</td><td>New main/sub transaction posts to the agreed fee account</td></tr>
+<tr><td>Payment, return and re-payment</td><td>Bank clearing account nets to the real money received</td></tr>
+<tr><td>Claim payout</td><td>Claims expense and payables accounts; payable cleared by the payment run</td></tr>
+<tr><td>Month-end with one key left open</td><td>Reconciliation shows the difference; it disappears after closing and transferring the key</td></tr>
+<tr><td>Open item in SEK at month-end</td><td>Foreign currency valuation posts the difference to the agreed FX account</td></tr>
+</tbody></table></div>
+<h3 id="ba-codes">8.3 Screens worth knowing</h3>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th></tr></thead><tbody>
+<tr><td>FPG1</td><td>Transfer FSCD totals to the general ledger</td></tr>
+<tr><td>FPO1</td><td>Open items list at a key date, for reconciliation</td></tr>
+<tr><td>FPL9</td><td>Customer account balance (the detail behind the totals)</td></tr>
+<tr><td>FPE3</td><td>Display a posting document, including its reconciliation key</td></tr>
+</tbody></table></div>
+<p class="cap">Codes from general FI-CA knowledge; confirm them in your own system with your finance and FI-CA colleagues.</p>
+
+<div class="tip"><b>A closing tip</b>
+<p>Ask finance for last month's reconciliation file and walk through it once with them. Seeing which keys, accounts and differences they check teaches you more than any document.</p></div>
+
+<h2 id="test">Test yourself</h2>
+<p>10 questions on FSCD and the general ledger. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="accounting"></div>
+
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
+<div id="suggest"></div>
+-->
+
+<footer>From FSCD to the General Ledger. Account numbers, amounts and codes are illustrative examples for learning, not a real chart of accounts.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+<script src="/lms.js" defer></script>
+<script src="/quiz.js" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
+</body>
+</html>
