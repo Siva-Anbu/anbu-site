@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAP FSCD Learning Guide</title>
+<meta name="description" content="SAP FSCD (FS-CD) explained in simple English for business analysts in insurance, with one worked Danish example, annotated screen mock-ups, processes, toolkit and a 30-day plan.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;margin:1em 0;font-size:13.5px}
+.chain div{flex:1 1 130px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.chain div b{display:block;font-size:14px}
+.chain div span{color:var(--muted)}
+.chain i{align-self:center;font-style:normal;color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600;font-variant-numeric:tabular-nums}
+.timeline .doc{color:var(--muted);font-size:14px}
+.ok{color:var(--ok);font-weight:600}.due{color:var(--due);font-weight:600}.bad{color:var(--bad);font-weight:600}
+/* Mock SAP screen: a picture, so it keeps its own light palette in both themes */
+.shot{margin:1.4em 0 .4em}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.screen{background:#eef1f4;color:#1d2733;border:1px solid #9aa8b6;border-radius:6px;overflow-x:auto;font:13px/1.45 "Segoe UI",Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.screen .bar{background:#354a5f;color:#fff;padding:7px 12px;font-weight:600;display:flex;justify-content:space-between;gap:12px;white-space:nowrap}
+.screen .bar span{font-weight:400;opacity:.8}
+.screen .tools{background:#dde3ea;border-bottom:1px solid #b9c4cf;padding:5px 12px;color:#44515e;white-space:nowrap}
+.screen .body{padding:12px;min-width:640px}
+.screen .grp{border:1px solid #b9c4cf;background:#fff;border-radius:3px;padding:10px 12px;margin-bottom:10px}
+.screen .grp>b{display:block;font-size:12px;color:#44515e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.screen .f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 22px}
+.screen .f div{display:flex;align-items:center;gap:8px}
+.screen .f label{width:130px;color:#44515e;flex:none}
+.screen .f output{background:#f5f7f9;border:1px solid #c5ced8;padding:1px 6px;min-width:120px;font-family:Consolas,"Courier New",monospace;font-size:12.5px}
+.screen table{font-size:12.5px;background:#fff}
+.screen th{background:#e4e9ee;color:#1d2733;border-bottom:1px solid #b9c4cf;padding:5px 8px;white-space:nowrap}
+.screen td{border-bottom:1px solid #e1e6eb;padding:5px 8px;font-weight:400;white-space:nowrap;font-family:Consolas,"Courier New",monospace}
+.screen tr.tot td{font-weight:700;background:#f5f7f9}
+.screen .st-open{color:#b35900;font-weight:700}.screen .st-clr{color:#1a7f37;font-weight:700}
+.n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#d9480f;color:#fff;font:700 11px/1 system-ui,sans-serif;flex:none}
+.legend{list-style:none;padding:0;margin:.8em 0 1.4em}
+.legend li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.legend li:last-child{border-bottom:0}
+.legend .n{margin-top:3px}
+.legend p{margin:0}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}.ba{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">SAP FSCD Learning Guide for Business Analysts</h1>
+<p class="lede">Simple English, one Danish insurance example from start to finish, and pictures of the key screens.</p>
+
+<div class="tip"><b>How to read this guide</b>
+<p>Every idea is explained twice: first in plain words, then with the same insurance customer, Mette. Read section 3 (the posting document) slowly. Once that clicks, the rest of FSCD makes sense.</p></div>
+
+<h2 id="meet">Meet the example</h2>
+<p>All names, numbers and codes below are made up for learning. Your company's codes and screens will look slightly different, but the ideas are the same.</p>
+<div class="cast">
+<div><b>ABC Forsikring A/S</b><span>The Danish insurer (our company)</span></div>
+<div><b>Mette Jensen</b><span>Customer and policyholder in Aarhus, Business Partner 1000452</span></div>
+<div><b>Motor policy MOT-2026-004512</b><span>Car insurance, 01.04.2026 to 31.03.2027</span></div>
+<div><b>Annual premium DKK 8,000</b><span>+ 1.1% insurance tax DKK 88 = <b style="display:inline">DKK 8,088</b></span></div>
+<div><b>Lars Nielsen</b><span>Insurance agent who sold the policy, earns 10% commission</span></div>
+</div>
+<div class="tip"><b>About the tax line</b>
+<p>Danish non-life premiums carry a small insurance tax (<em>skadesforsikringsafgift</em>), and motor liability cover also carries a separate, larger tax. To keep the example simple we use one 1.1% tax line. Your project will have its own tax rules.</p></div>
+
+<h2 id="what">1. What SAP FSCD is, in simple words</h2>
+<p>SAP FSCD stands for <strong>Financial Services Collections and Disbursements</strong>. In simple words: it is the part of SAP that keeps track of <strong>money coming in</strong> to the insurer and <strong>money going out</strong> of it.</p>
+<div class="ba">
+<div class="term"><h4>Money in (collections)</h4><p>Premiums customers pay, late fees, bounced-payment charges.</p><p class="ex">Mette pays <b>DKK 8,088</b> for her car insurance.</p></div>
+<div class="term"><h4>Money out (disbursements)</h4><p>Claim payments, premium refunds, agent commissions.</p><p class="ex">ABC pays Mette <b>DKK 25,000</b> after her car accident, and pays Lars <b>DKK 800</b> commission.</p></div>
+</div>
+<p><strong>A simple picture:</strong> FSCD is like a <strong>bank statement for every customer</strong>. Each line on the statement is something the customer owes or is owed, and every payment is ticked off against those lines.</p>
+<p>The <strong>policy system</strong> decides <em>how much</em> the premium is. FSCD does <em>not</em> calculate premiums. It takes the amount, bills it, collects it, chases it if unpaid, and records everything for the accountants.</p>
+<p>Two technical facts worth knowing:</p>
+<ul>
+<li>FSCD is built on <strong>FI-CA</strong> (Contract Accounts Receivable and Payable), the SAP engine for companies with millions of small, repeating payments, like telecoms and electricity companies. FSCD adds insurance features on top.</li>
+<li>FSCD is a <strong>sub-ledger</strong>: it keeps the detail for each customer and sends daily <em>totals</em> to the company's main accounts (the general ledger, FI-GL). Finance sees "DKK 20 million premium billed today"; FSCD knows that DKK 8,088 of it is Mette's.</li>
+</ul>
+<p><strong>Why it matters for a BA:</strong> almost every FSCD requirement answers one of four questions.</p>
+<div class="tbl"><table><thead><tr><th>Question</th><th>Mette example</th></tr></thead><tbody>
+<tr><td>1. What does the customer owe or get, and how is it recorded?</td><td>Premium of DKK 8,088 is billed on 01.04.2026.</td></tr>
+<tr><td>2. How is it collected or paid?</td><td>Direct debit through Betalingsservice from her bank account on 15.04.2026.</td></tr>
+<tr><td>3. What happens when it goes wrong?</td><td>The debit bounces; a DKK 100 fee is added and a reminder goes out.</td></tr>
+<tr><td>4. How does it reach accounts and reports?</td><td>The premium appears in the general ledger and in the finance team's daily report.</td></tr>
+</tbody></table></div>
+
+<h2 id="blocks">2. The building blocks, explained simply</h2>
+<p>FSCD data is arranged as a chain. Learn these five first; every conversation uses them.</p>
+<div class="chain">
+<div><b>Business Partner</b><span>Mette Jensen<br>1000452</span></div><i>→</i>
+<div><b>Contract Account</b><span>Mette's account<br>200008731</span></div><i>→</i>
+<div><b>Contract (policy)</b><span>MOT-2026-004512</span></div><i>→</i>
+<div><b>Posting Document</b><span>Premium bill<br>100000452311</span></div><i>→</i>
+<div><b>Open Item</b><span>DKK 8,088 still unpaid</span></div>
+</div>
+
+<div class="term" id="t-bp"><h4>Business Partner (BP)</h4>
+<p><strong>In simple words:</strong> any person or company ABC deals with. One record, stored once, used everywhere.</p>
+<p class="ex">Example: <b>Mette</b> is a BP. So is <b>Lars</b> the agent, the garage (autoværksted) that repairs her car, and the clinic in a health claim. One person can play several roles: if Mette later becomes an agent, she stays the same BP.</p></div>
+
+<div class="term" id="t-ca"><h4>Contract Account</h4>
+<p><strong>In simple words:</strong> the customer's "money account" at ABC, like a wallet. All bills and payments for the customer land here. It also holds the rules: how she pays (Betalingsservice), her bank details, and how reminders work.</p>
+<p class="ex">Example: Mette's contract account <b>200008731</b> holds her motor policy. If she buys home insurance (indboforsikring) later, it can sit in the same account, so she gets one combined bill.</p></div>
+
+<div class="term" id="t-co"><h4>Contract / Insurance Object (the policy)</h4>
+<p><strong>In simple words:</strong> the actual insurance policy, as FSCD sees it. Every amount is tagged with the policy it belongs to.</p>
+<p class="ex">Example: <b>MOT-2026-004512</b>. If Mette asks "what did I pay for my car policy?", you filter by this policy number.</p></div>
+
+<div class="term" id="t-doc"><h4>Posting Document</h4>
+<p><strong>In simple words:</strong> the system's <em>permanent record of one money event</em>, like a printed bill or receipt in a file. Every time money is owed, paid, refunded or charged, FSCD creates a new posting document with a number. Section 3 shows one in detail.</p>
+<p class="ex">Example: document <b>100000452311</b> records "Mette owes DKK 8,088 premium for her motor policy, due 15.04.2026".</p></div>
+
+<div class="term" id="t-oi"><h4>Open Item</h4>
+<p><strong>In simple words:</strong> a line from a posting document that is <em>not settled yet</em>. "Open" = still waiting for money (or still waiting to be paid out).</p>
+<p class="ex">Example: from 01.04 until Mette pays, her DKK 8,088 is an <b>open item</b>. After payment it becomes a <b>cleared item</b>.</p></div>
+
+<div class="term" id="t-clr"><h4>Clearing</h4>
+<p><strong>In simple words:</strong> ticking off a bill because a payment matched it. The payment and the bill close each other.</p>
+<p class="ex">Example: Mette's DKK 8,088 payment arrives and is matched to the premium bill. Both are now <b>cleared</b> and her balance is zero.</p></div>
+
+<div class="term" id="t-mst"><h4>Main and Sub Transaction</h4>
+<p><strong>In simple words:</strong> two short codes on every line that say <em>what kind of money</em> it is. The main transaction is the category; the sub transaction is the detail. Accounting uses these codes to decide which ledger account to post to.</p>
+<p class="ex">Example (made-up codes): main <b>6100 Premium</b> with sub <b>0010 Net premium</b> for DKK 8,000, and sub <b>0020 Insurance tax</b> for DKK 88. A claim payout might be main <b>6200 Claim</b>.</p></div>
+
+<div class="term" id="t-pm"><h4>Payment Method</h4>
+<p><strong>In simple words:</strong> how the money moves.</p>
+<p class="ex">Example: Mette pays by <b>direct debit through Betalingsservice</b>. Others pay by MobilePay, bank transfer, Dankort/card or a payment slip (indbetalingskort). Claims are usually paid by bank transfer to the customer or straight to the garage.</p></div>
+
+<div class="term" id="t-run"><h4>Payment Run</h4>
+<p><strong>In simple words:</strong> a scheduled batch job (often nightly) that picks up everything due and creates the bank files: debits to collect premiums, credits to pay out claims.</p>
+<p class="ex">Example: the 15.04 night run finds Mette's premium is due and adds her DKK 8,088 debit to the Betalingsservice file, along with thousands of others.</p></div>
+
+<div class="term" id="t-ret"><h4>Return (bounced payment)</h4>
+<p><strong>In simple words:</strong> the bank sends a payment back. FSCD undoes the clearing, so the bill is open again, and may add a charge.</p>
+<p class="ex">Example: Mette's account has too little money on 15.04. The bank returns the debit on 18.04. Her DKK 8,088 is open again, plus a <b>DKK 100 fee</b>.</p></div>
+
+<div class="term" id="t-dun"><h4>Dunning</h4>
+<p><strong>In simple words:</strong> the step-by-step reminder process for overdue money. Each step (level) is stronger than the last.</p>
+<p class="ex">Example: Level 1 email and SMS on day 14 overdue, level 2 reminder letter (rykker) in e-Boks on day 30, level 3 "your cover will stop" notice on day 45.</p></div>
+
+<div class="term" id="t-col"><h4>Collection (agency)</h4>
+<p><strong>In simple words:</strong> when reminders fail, the debt goes to a recovery team or outside debt-collection agency (inkasso), or the policy is cancelled for non-payment.</p>
+<p class="ex">Example: if Mette never paid, after level 3 the policy would be cancelled and the unpaid amount handed to recovery. In Denmark the Insurance Contracts Act (forsikringsaftaleloven) requires a formal written reminder with a deadline before cover can stop, so dunning rules must follow it.</p></div>
+
+<div class="term" id="t-dis"><h4>Disbursement</h4>
+<p><strong>In simple words:</strong> any money ABC pays out.</p>
+<p class="ex">Example: Mette's <b>DKK 25,000 claim</b>, a refund if she cancels mid-year, and Lars's <b>DKK 800 commission</b>.</p></div>
+
+<div class="term" id="t-rk"><h4>Reconciliation Key</h4>
+<p><strong>In simple words:</strong> a "batch label" stuck on a group of postings so finance can check that FSCD totals match the general ledger.</p>
+<p class="ex">Example: all premiums billed on 01.04.2026 carry key <b>260401-PREM-01</b>. Finance checks that key's total in FSCD equals the total in the ledger.</p></div>
+
+<div class="term" id="t-dates"><h4>Posting Date vs Document Date</h4>
+<p><strong>In simple words:</strong> <em>document date</em> is when the business event happened; <em>posting date</em> is the date it counts in the accounts. They are often the same, but not always.</p>
+<p class="ex">Example: Mette pays a payment slip at her bank on <b>31.12.2026</b> (document date), but the money is only booked at ABC on <b>04.01.2027</b> (posting date), so it counts in the new financial year (January), not December.</p></div>
+
+<div class="term" id="t-evt"><h4>Event (FKK event)</h4>
+<p><strong>In simple words:</strong> a hook where developers can add company-specific logic without changing SAP's own code.</p>
+<p class="ex">Example: "Before paying any claim above DKK 250,000, check that a second approver signed it."</p></div>
+
+<h2 id="posting-document">3. The posting document, explained with screens</h2>
+<p><strong>One line:</strong> a posting document is FSCD's permanent record of one money event, like a numbered bill or receipt in a file that can never be torn up, only cancelled with another document.</p>
+<p>Why it matters: when anyone asks "why does Mette owe this?" or "where did this DKK 100 come from?", the answer is always <em>a posting document</em>. Learn to read one and you can investigate almost any issue.</p>
+
+<h3 id="screen-premium">3.1 Screen 1: Mette's premium bill</h3>
+<p>On 01.04.2026 the policy system tells FSCD "bill Mette DKK 8,000 premium plus insurance tax". FSCD creates this posting document. You would see it in transaction <strong>FPE3 (Display Document)</strong>.</p>
+<div class="shot">
+<div class="screen" role="img" aria-label="Illustration of an FPE3 Display Document screen for Mette's premium posting document 100000452311">
+<div class="bar">Display Document: Header Data &amp; Items <span>FPE3</span></div>
+<div class="tools">Document &nbsp;Edit &nbsp;Goto &nbsp;Extras &nbsp;Environment &nbsp;System &nbsp;Help</div>
+<div class="body">
+<div class="grp"><b>Document header</b>
+<div class="f">
+<div><span class="n">1</span><label>Document number</label><output>100000452311</output></div>
+<div><span class="n">2</span><label>Document type</label><output>PR  Premium bill</output></div>
+<div><span class="n">3</span><label>Document date</label><output>01.04.2026</output></div>
+<div><span class="n">4</span><label>Posting date</label><output>01.04.2026</output></div>
+<div><span class="n">5</span><label>Currency</label><output>DKK</output></div>
+<div><span class="n">6</span><label>Reconciliation key</label><output>260401-PREM-01</output></div>
+<div><span class="n">7</span><label>Created by</label><output>POLICY_IF  (interface)</output></div>
+<div><span class="n">8</span><label>Reversed</label><output>No</output></div>
+</div></div>
+<div class="grp"><b>Line items</b>
+<table><thead><tr><th>Item</th><th><span class="n">9</span> BP</th><th><span class="n">10</span> Contract acct</th><th><span class="n">11</span> Contract</th><th><span class="n">12</span> Main / Sub</th><th>Text</th><th class="num"><span class="n">13</span> Amount</th><th><span class="n">14</span> Due date</th><th><span class="n">15</span> Status</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1000452</td><td>200008731</td><td>MOT-2026-004512</td><td>6100 / 0010</td><td>Net premium</td><td class="num">8,000.00</td><td>15.04.2026</td><td class="st-open">Open</td></tr>
+<tr><td>2</td><td>1000452</td><td>200008731</td><td>MOT-2026-004512</td><td>6100 / 0020</td><td>Insurance tax 1.1%</td><td class="num">88.00</td><td>15.04.2026</td><td class="st-open">Open</td></tr>
+<tr class="tot"><td colspan="6">Total owed by customer</td><td class="num">8,088.00</td><td></td><td></td></tr>
+</tbody></table></div>
+</div></div>
+<p class="cap">Illustration, simplified for learning. Field names and layout in your SAP system will differ slightly.</p>
+</div>
+
+<p><strong>What each number means:</strong></p>
+<ul class="legend">
+<li><span class="n">1</span><p><strong>Document number</strong>: the unique ID of this money event. Quote it in emails and tickets: "please check document 100000452311".</p></li>
+<li><span class="n">2</span><p><strong>Document type</strong>: what kind of event this is, here a premium bill. Others: payment, claim payout, return, reversal.</p></li>
+<li><span class="n">3</span><p><strong>Document date</strong>: when the business event happened (the policy started billing on 01.04).</p></li>
+<li><span class="n">4</span><p><strong>Posting date</strong>: which day and accounting month this counts in. Finance cares about this one.</p></li>
+<li><span class="n">5</span><p><strong>Currency</strong>: Danish kroner.</p></li>
+<li><span class="n">6</span><p><strong>Reconciliation key</strong>: the batch label finance uses to match FSCD totals with the ledger.</p></li>
+<li><span class="n">7</span><p><strong>Created by</strong>: who or what made it. Here the policy-system interface, not a person. Very useful when investigating.</p></li>
+<li><span class="n">8</span><p><strong>Reversed</strong>: whether this document was later cancelled by another document.</p></li>
+<li><span class="n">9</span><p><strong>BP</strong>: who owes the money: Mette.</p></li>
+<li><span class="n">10</span><p><strong>Contract account</strong>: which "wallet" the bill sits in.</p></li>
+<li><span class="n">11</span><p><strong>Contract</strong>: which policy it belongs to.</p></li>
+<li><span class="n">12</span><p><strong>Main / Sub transaction</strong>: what kind of money: net premium (0010) and insurance tax (0020). They decide which ledger accounts are used.</p></li>
+<li><span class="n">13</span><p><strong>Amount</strong>: how much. One document can have many lines; here two lines total DKK 8,088.</p></li>
+<li><span class="n">14</span><p><strong>Due date</strong>: when the money must be paid. The payment run and dunning both look at this date.</p></li>
+<li><span class="n">15</span><p><strong>Status</strong>: <span class="due">Open</span> means not paid yet. These two lines are Mette's <em>open items</em>.</p></li>
+</ul>
+
+<div class="tip"><b>Posting document vs open item: the key difference</b>
+<p>The <strong>posting document</strong> is the whole bill (header + all lines). An <strong>open item</strong> is one unpaid line inside it. When Mette pays, the document stays exactly as it is forever; only the status of its lines changes from Open to Cleared.</p></div>
+
+<h3 id="screen-account">3.2 Screen 2: Mette's account, before and after paying</h3>
+<p>Most of the time you won't open single documents. You look at the customer's whole account in <strong>FPL9 (Account Balance)</strong>, which lists every line from every posting document.</p>
+<div class="shot">
+<div class="screen" role="img" aria-label="Illustration of an FPL9 Account Balance screen for Mette's contract account, showing the history from premium bill to cleared payment">
+<div class="bar">Account Balance Display: BP 1000452 Mette Jensen, CA 200008731 <span>FPL9</span></div>
+<div class="tools">Open items &nbsp;|&nbsp; All items &nbsp;|&nbsp; Payments &nbsp;|&nbsp; Totals</div>
+<div class="body">
+<table><thead><tr><th>Posting date</th><th>Document</th><th>Doc type</th><th>Main / Sub</th><th>Text</th><th class="num">Debit (owes)</th><th class="num">Credit (paid)</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>01.04.2026</td><td>100000452311</td><td>PR</td><td>6100 / 0010</td><td>Net premium</td><td class="num">8,000.00</td><td class="num"></td><td class="st-clr">Cleared 06.05</td></tr>
+<tr><td>01.04.2026</td><td>100000452311</td><td>PR</td><td>6100 / 0020</td><td>Insurance tax 1.1%</td><td class="num">88.00</td><td class="num"></td><td class="st-clr">Cleared 06.05</td></tr>
+<tr><td>15.04.2026</td><td>100000452640</td><td>ZP</td><td>0060 / 0010</td><td>Betalingsservice debit</td><td class="num"></td><td class="num">8,088.00</td><td>Reversed</td></tr>
+<tr><td>18.04.2026</td><td>100000452877</td><td>RT</td><td>0060 / 0010</td><td>Return: insufficient funds</td><td class="num">8,088.00</td><td class="num"></td><td>Reverses 452640</td></tr>
+<tr><td>18.04.2026</td><td>100000452877</td><td>RT</td><td>6700 / 0010</td><td>Return fee</td><td class="num">100.00</td><td class="num"></td><td class="st-clr">Cleared 06.05</td></tr>
+<tr><td>06.05.2026</td><td>100000453190</td><td>ZE</td><td>0060 / 0020</td><td>MobilePay payment received</td><td class="num"></td><td class="num">8,188.00</td><td class="st-clr">Cleared</td></tr>
+<tr class="tot"><td colspan="5">Balance today</td><td class="num" colspan="2">0.00</td><td></td></tr>
+</tbody></table>
+</div></div>
+<p class="cap">Illustration. On the real screen you switch between "open items only" and "all items".</p>
+</div>
+<p><strong>How to read it:</strong> each row is one line from a posting document. Four documents tell the whole story: the bill (…2311), the direct debit (…2640), the bounce (…2877, which re-opened the bill and added DKK 100), and the MobilePay payment (…3190) that finally cleared DKK 8,188. Nothing was deleted. Every step left its own record, which is exactly what auditors want.</p>
+
+<h3 id="every-event">3.3 Every money event gets its own posting document</h3>
+<div class="tbl"><table><thead><tr><th>Event in Mette's story</th><th>Posting document created</th><th>Effect on her account</th></tr></thead><tbody>
+<tr><td>Premium billed (01.04)</td><td>100000452311, premium bill</td><td class="due">Owes DKK 8,088</td></tr>
+<tr><td>Direct debit collected (15.04)</td><td>100000452640, payment</td><td class="ok">Balance DKK 0</td></tr>
+<tr><td>Bank returns the debit (18.04)</td><td>100000452877, return + DKK 100 fee</td><td class="bad">Owes DKK 8,188</td></tr>
+<tr><td>Dunning level 1 sent (02.05)</td><td>No money moves, so no posting document. A dunning record is stored instead.</td><td>Still owes DKK 8,188</td></tr>
+<tr><td>Pays by MobilePay (06.05)</td><td>100000453190, payment</td><td class="ok">Balance DKK 0</td></tr>
+<tr><td>Claim approved (20.07)</td><td>100000461005, claim payable DKK 25,000</td><td>ABC owes Mette DKK 25,000</td></tr>
+<tr><td>Claim paid by bank transfer (22.07)</td><td>100000461322, outgoing payment</td><td class="ok">Balance DKK 0</td></tr>
+</tbody></table></div>
+
+<div class="tip"><b>Mistakes are never deleted</b>
+<p>If a premium is posted twice by mistake, you cannot delete the second document. You <strong>reverse</strong> it: FSCD creates a new document with the opposite amounts, and both stay visible. This "no rubbing out" rule is what makes FSCD trustworthy for finance and auditors.</p></div>
+
+<h2 id="landscape">4. Where FSCD sits among the other systems</h2>
+<p>FSCD never works alone. Other systems tell it <em>what</em> happened; FSCD handles the <em>money</em>.</p>
+<div class="tbl"><table><thead><tr><th>System</th><th>Its job, in simple words</th><th>Mette example</th></tr></thead><tbody>
+<tr><td>Policy administration (SAP FS-PM or a non-SAP system)</td><td>Sells and changes policies, calculates premiums</td><td>Calculates DKK 8,000 premium and sends it to FSCD to bill</td></tr>
+<tr><td>Claims (SAP FS-CM or non-SAP)</td><td>Checks and approves claims</td><td>Approves her DKK 25,000 claim and tells FSCD to pay it</td></tr>
+<tr><td>Commission (FS-ICM)</td><td>Works out agent and broker commission</td><td>Calculates Lars's DKK 800 and sends it to FSCD to pay</td></tr>
+<tr><td>FI-CA</td><td>The engine underneath FSCD</td><td>Provides documents, payment runs, dunning, clearing</td></tr>
+<tr><td>General ledger (FI-GL)</td><td>The company's main accounts</td><td>Receives the daily total of all premiums, including hers</td></tr>
+<tr><td>Business Partner (SAP BP)</td><td>Central customer and partner data</td><td>Holds Mette's name, address, CPR number and bank details</td></tr>
+<tr><td>Banks and payment channels</td><td>Actually move the money</td><td>Betalingsservice debit file goes out via Nets; bank return file comes back</td></tr>
+<tr><td>Reporting / BI</td><td>Reports for finance and management</td><td>Her bounce shows up in the "failed collections" report</td></tr>
+</tbody></table></div>
+<ul>
+<li><strong>Many requirements are really interface requirements.</strong> Policy and claims are often non-SAP systems. So the BA question is often: what data comes in, in what format, at what time, and what happens if it fails?</li>
+<li><strong>FSCD is the "money truth".</strong> If the policy system says Mette's premium is unpaid but FSCD says it is paid, finance trusts FSCD.</li>
+</ul>
+
+<h2 id="processes">5. Everyday processes, told as Mette's story</h2>
+
+<h3 id="premium-flow">5.1 Money in: collecting Mette's premium</h3>
+<ol class="timeline">
+<li><span class="d">01.04.2026: Billing.</span> The policy system sends "bill DKK 8,000 + insurance tax". FSCD creates the premium posting document. <span class="doc">Doc 100000452311, open items DKK 8,088.</span></li>
+<li><span class="d">01.04.2026, night: To accounts.</span> The day's premiums, including Mette's, are summed and posted to the general ledger.</li>
+<li><span class="d">15.04.2026: Payment run.</span> The due date arrives; the nightly run adds her DKK 8,088 to the Betalingsservice debit file for the bank. The items are cleared, assuming the money will arrive. <span class="doc">Doc 100000452640.</span></li>
+<li><span class="d">18.04.2026: Return.</span> The bank sends the debit back: insufficient funds. FSCD reverses the clearing, so the items are open again, and adds a DKK 100 fee. <span class="doc">Doc 100000452877. <span class="bad">Owes DKK 8,188.</span></span></li>
+<li><span class="d">02.05.2026: Dunning level 1.</span> 14 days overdue: an email and SMS reminder goes out automatically.</li>
+<li><span class="d">06.05.2026: Payment.</span> Mette pays DKK 8,188 by MobilePay. The payment file is loaded, FSCD matches the payment to her open items using the policy number in the reference, and clears them. <span class="doc">Doc 100000453190. <span class="ok">Balance DKK 0.</span></span></li>
+<li><span class="d">If she had never paid:</span> level 2 reminder letter in e-Boks on day 30, level 3 "your cover will stop" notice on day 45, then the policy is cancelled for non-payment and the balance goes to recovery, following company rules and the Insurance Contracts Act.</li>
+</ol>
+<div class="tip"><b>What if the payment can't be matched?</b>
+<p>If Mette forgets the policy number in her MobilePay message, FSCD can't tell whose money it is. It parks the DKK 8,188 in <strong>clarification</strong> (post-processing), and an operations user finds the right account and assigns it by hand. Reducing these is a classic BA improvement topic.</p></div>
+
+<h3 id="claim-flow">5.2 Money out: paying Mette's claim</h3>
+<ol class="timeline">
+<li><span class="d">10.07.2026: Accident.</span> Mette's car is damaged; she files claim CLM-2026-118.</li>
+<li><span class="d">20.07.2026: Payable created.</span> The claims system approves DKK 25,000 and sends it to FSCD. FSCD creates a posting document with a <em>credit</em> (money ABC owes her). <span class="doc">Doc 100000461005.</span></li>
+<li><span class="d">20.07.2026: Checks.</span> FSCD checks her bank details are valid, there is no payment block (for example a fraud review), and whether she owes anything. If she still owed the DKK 8,188 premium, it could be <strong>offset</strong>: she would receive DKK 16,812 instead.</li>
+<li><span class="d">22.07.2026: Payment run.</span> The outgoing run puts DKK 25,000 in the bank-transfer file to her account. <span class="doc">Doc 100000461322. <span class="ok">Paid.</span></span></li>
+<li><span class="d">If the bank rejects it</span> (for example a wrong registration number or account number), the payable re-opens, and someone corrects the bank details and pays again.</li>
+</ol>
+
+<h3 id="commission-flow">5.3 Money out: paying Lars's commission</h3>
+<p>The commission system calculates 10% of Mette's DKK 8,000 net premium = <strong>DKK 800</strong> and sends it to FSCD. FSCD posts it as a payable on Lars's contract account (he is a Business Partner too). The monthly commission run on 10.05.2026 pays it by bank transfer. A common business rule: <em>only pay commission once the customer's premium is actually received</em>. In our story that's 06.05, so Lars is paid in the 10.05 run, not before.</p>
+
+<h3 id="other-topics">5.4 Other topics you will meet</h3>
+<div class="tbl"><table><thead><tr><th>Topic</th><th>In simple words</th><th>Insurance example</th></tr></thead><tbody>
+<tr><td>Instalments</td><td>Splitting one premium into smaller parts</td><td>Mette pays DKK 8,088 as 12 monthly debits of DKK 674</td></tr>
+<tr><td>Transfers</td><td>Moving a balance from one item or account to another</td><td>A payment made for her old policy is moved to her renewed policy</td></tr>
+<tr><td>Interest and charges</td><td>Extra amounts for late payment or bounces</td><td>The DKK 100 return fee; waived if the bank made the mistake</td></tr>
+<tr><td>Write-off</td><td>Giving up on money that can't be collected</td><td>DKK 5 left unpaid after a rounding difference is written off automatically</td></tr>
+<tr><td>Locks (blocks)</td><td>Stopping dunning, payment or clearing for an item</td><td>Mette disputes the insurance tax amount, so dunning is blocked until it's resolved</td></tr>
+<tr><td>Reversal</td><td>Cancelling a document with an opposite document</td><td>Premium posted twice by an interface error; the duplicate is reversed</td></tr>
+<tr><td>Refund on cancellation</td><td>Paying back unused premium</td><td>Mette sells her car after 6 months; about half the premium is refunded</td></tr>
+<tr><td>Period-end and GL transfer</td><td>Sending totals to the main accounts and checking they match</td><td>On 31.12 finance checks FSCD premium totals equal the ledger</td></tr>
+<tr><td>Tax</td><td>Tax on premiums and fees</td><td>Insurance tax (skadesforsikringsafgift) on the premium; which sub transaction carries it</td></tr>
+</tbody></table></div>
+
+<h2 id="toolkit">6. Your day-to-day BA toolkit</h2>
+
+<h3 id="screens">6.1 Screens and tables worth knowing</h3>
+<p>These come from general SAP knowledge. Codes can differ by release and project, so confirm each one in your own system with a colleague before relying on it.</p>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
+<tr><td>FPL9</td><td>Account balance: all items of a contract account</td><td>"Why does Mette owe DKK 8,188?" Start here, always</td></tr>
+<tr><td>FPE3</td><td>Display one posting document</td><td>Look inside document 100000452877 to see the DKK 100 fee</td></tr>
+<tr><td>FPE1 / FPE2</td><td>Create / change a posting document</td><td>Usually operations or test-data work, rarely a BA in production</td></tr>
+<tr><td>FPCJ</td><td>Cash desk (manual counter payments)</td><td>Customer service records a payment taken in person</td></tr>
+<tr><td>FP05</td><td>Payment lot (load a batch of incoming payments)</td><td>Posting a batch of payments from a bank statement</td></tr>
+<tr><td>FPY1</td><td>Payment run</td><td>The run that created her direct debit and claim payout</td></tr>
+<tr><td>BP</td><td>Business partner maintenance</td><td>Check Mette's address and bank details</td></tr>
+<tr><td>FKKVK / FKKVKP</td><td>Tables: contract accounts / link BP to account</td><td>Find all accounts belonging to BP 1000452</td></tr>
+<tr><td>DFKKKO / DFKKOP</td><td>Tables: document header / document line items</td><td>List all open premium items due this week (for a report requirement)</td></tr>
+<tr><td>DFKKZP</td><td>Table: payment lot items</td><td>Find where an unmatched payment is parked</td></tr>
+<tr><td>SE16N</td><td>Browse table data (read-only)</td><td>Quick data checks. Ask before using it in production</td></tr>
+</tbody></table></div>
+
+<h3 id="ba-work">6.2 What a BA typically does in FSCD</h3>
+<ul>
+<li><strong>Writes requirements and user stories.</strong> Example: "As a collections officer, I want return fees waived automatically when the bank return reason is 'bank error', so customers aren't charged unfairly."</li>
+<li><strong>Does fit-gap analysis.</strong> Can standard FSCD already do it (configuration), or does it need custom development?</li>
+<li><strong>Investigates incidents.</strong> "Why was Mette charged DKK 100?" FPL9 → find document 100000452877 → it's a return with reason "insufficient funds" → the fee is correct.</li>
+<li><strong>Documents rules.</strong> Dunning days and levels, write-off limits, which payment methods each product allows.</li>
+<li><strong>Supports testing.</strong> Writes scenarios, prepares test policies, joins UAT, logs defects.</li>
+<li><strong>Translates.</strong> Business teams (finance, claims, operations) on one side; SAP consultants and developers on the other.</li>
+</ul>
+
+<h3 id="checklist">6.3 Questions to ask for any new requirement</h3>
+<ol>
+<li>Which customers and contract accounts does it affect? (All motor customers? Only Betalingsservice ones?)</li>
+<li>Which main and sub transactions are involved? (Premium? Insurance tax? A new fee?)</li>
+<li>Is money coming in or going out? Which payment method?</li>
+<li>What are the amounts, currency and tax rules? (Is insurance tax charged on the new fee?)</li>
+<li>What are the dates? (Due date, grace period, bank cut-off times)</li>
+<li>What happens when it fails? (Bounce, rejection, partial payment, duplicate)</li>
+<li>Does it change ledger postings or reports? Who in finance must agree?</li>
+<li>Which system sends or receives the data, and in what format?</li>
+<li>How will we test it, and which edge cases matter most?</li>
+</ol>
+
+<h3 id="tests">6.4 Typical test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>Example test</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Full payment by direct debit</td><td>Bill DKK 8,088, run payment on due date</td><td>Items cleared, ledger posted, policy shows "paid"</td></tr>
+<tr><td>Partial payment</td><td>Mette pays DKK 5,000 of DKK 8,088</td><td>DKK 3,088 stays open; dunning continues on the remainder</td></tr>
+<tr><td>Bounced direct debit</td><td>Load a bank return for her debit</td><td>Clearing reversed, DKK 100 fee added, dunning restarts</td></tr>
+<tr><td>Overpayment</td><td>She pays DKK 9,000 instead of DKK 8,088</td><td>DKK 912 credit on her account; refunded or kept for next premium per the rule</td></tr>
+<tr><td>Claim to a blocked account</td><td>Payment block "fraud review" on her account, then a claim</td><td>Claim not paid, reason visible, paid after block removed</td></tr>
+<tr><td>Claim with offset</td><td>Claim DKK 25,000 while DKK 8,188 is still owed</td><td>She receives DKK 16,812; premium items cleared</td></tr>
+<tr><td>Duplicate premium</td><td>Interface sends the same premium twice</td><td>Duplicate detected or reversed; customer not charged twice</td></tr>
+<tr><td>Period end</td><td>Run GL transfer on 31.12</td><td>FSCD totals equal ledger totals per reconciliation key</td></tr>
+</tbody></table></div>
+
+<h2 id="plan">7. A 30-day learning plan</h2>
+<p>About 45 to 60 minutes a day is enough. Pair every reading day with a look at real data in your project's <strong>test</strong> system.</p>
+<div class="tbl"><table><thead><tr><th>Week</th><th>Focus</th><th>Practical task</th></tr></thead><tbody>
+<tr><td>1</td><td>Sections 1 to 3: building blocks and the posting document</td><td>Pick one test policy. In FPL9 find its BP, contract account and items. Open one document in FPE3 and name every field, like screen 1 above.</td></tr>
+<tr><td>2</td><td>Money in: billing, payment, clearing, returns, dunning</td><td>Follow one premium from bill to cleared. Then find one bounced payment and explain its documents, like screen 2.</td></tr>
+<tr><td>3</td><td>Money out: claims, refunds, commission, blocks, GL transfer</td><td>Trace one claim payout from payable to bank file. Find its ledger posting.</td></tr>
+<tr><td>4</td><td>Your project: interfaces, custom logic, open requirements, incidents</td><td>Read three recent tickets and label each with one of the four questions from section 1.</td></tr>
+</tbody></table></div>
+
+<h2 id="ask-team">Ask your team in the first two weeks</h2>
+<ul>
+<li>Which systems feed FSCD (policy, claims, commission), and through which interfaces?</li>
+<li>Which payment methods and dunning procedures do we use, per product?</li>
+<li>What are our real main/sub transaction codes for premium, insurance tax, fees and claims?</li>
+<li>Is there a process map, configuration document or glossary I can read?</li>
+<li>Which custom developments or events exist, and who owns them?</li>
+<li>Who in finance is the go-to person for reconciliation questions?</li>
+<li>Which reports do users rely on most?</li>
+</ul>
+
+<h2 id="read-more">Where to read more</h2>
+<ul>
+<li>SAP Help Portal (help.sap.com): search for FI-CA and FS-CD documentation matching your release.</li>
+<li>SAP Learning (learning.sap.com) and openSAP: free introductory courses; search for FI-CA and insurance topics.</li>
+<li>SAP Community (community.sap.com): practical questions and answers from consultants.</li>
+<li>Your project's own documents: functional specifications and test cases teach the local rules fastest.</li>
+</ul>
+<div class="tip"><b>A closing tip</b>
+<p>Keep your own glossary and a one-page diagram of your project's money flow, using a story like Mette's. Writing it in your own words is the quickest way to make it stick.</p></div>
+
+<footer>SAP FSCD Learning Guide for Business Analysts. Names, numbers, codes and screens are illustrative examples for learning, not real data or real SAP screenshots. Tax rates and rules are simplified.</footer>
+</main>
+</div>
+<script>
+document.querySelectorAll('main > table').forEach(function(t){var w=document.createElement('div');w.className='tbl';t.parentNode.insertBefore(w,t);w.appendChild(t)});
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+</body>
+</html>
