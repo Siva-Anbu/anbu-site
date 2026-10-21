@@ -1,0 +1,292 @@
+{
+ "page": "payments",
+ "version": 1,
+ "questions": [
+  {
+   "q": "What is Denmark's national direct debit scheme called?",
+   "options": [
+    "Betalingsservice",
+    "Autogiro",
+    "AvtaleGiro",
+    "Swish"
+   ],
+   "answer": 0,
+   "reason": "Betalingsservice, run by Nets, is Denmark's direct debit. Autogiro is Swedish and AvtaleGiro is Norwegian."
+  },
+  {
+   "q": "What is Sweden's direct debit scheme called?",
+   "options": [
+    "Autogiro",
+    "Betalingsservice",
+    "AvtaleGiro",
+    "Vipps"
+   ],
+   "answer": 0,
+   "reason": "Autogiro runs through Bankgirot in Sweden."
+  },
+  {
+   "q": "What is Norway's direct debit scheme called?",
+   "options": [
+    "AvtaleGiro",
+    "Autogiro",
+    "Betalingsservice",
+    "MobilePay"
+   ],
+   "answer": 0,
+   "reason": "AvtaleGiro is Norway's direct debit, often combined with eFaktura."
+  },
+  {
+   "q": "Which mobile payment app is Swedish?",
+   "options": [
+    "Swish",
+    "Vipps",
+    "MobilePay",
+    "BankAxept"
+   ],
+   "answer": 0,
+   "reason": "Swish is owned by the big Swedish banks. Vipps is Norwegian; MobilePay is Danish."
+  },
+  {
+   "q": "Which mobile payment app is Norwegian?",
+   "options": [
+    "Vipps",
+    "Swish",
+    "MobilePay",
+    "Kivra"
+   ],
+   "answer": 0,
+   "reason": "Vipps is Norwegian. It merged with MobilePay into the company Vipps MobilePay."
+  },
+  {
+   "q": "What is the Norwegian payment reference number called?",
+   "options": [
+    "KID",
+    "OCR",
+    "+71",
+    "IBAN"
+   ],
+   "answer": 0,
+   "reason": "KID (customer identification) tells the insurer whose payment it is."
+  },
+  {
+   "q": "What is the Swedish payment reference number on a Bankgiro bill called?",
+   "options": [
+    "OCR number",
+    "KID",
+    "FI-kort",
+    "CPR"
+   ],
+   "answer": 0,
+   "reason": "Customers pay to the insurer's Bankgiro number with an OCR number."
+  },
+  {
+   "q": "What is a Danish payment slip with a reference number called?",
+   "options": [
+    "Indbetalingskort (FI-kort), e.g. type +71",
+    "Autogiro",
+    "eFaktura",
+    "Vipps"
+   ],
+   "answer": 0,
+   "reason": "The +71 type carries a payment ID that FSCD uses to match the payment."
+  },
+  {
+   "q": "Why do reference numbers end with a check digit?",
+   "options": [
+    "So a mistyped number can be rejected before the money is sent",
+    "To hide the customer's name",
+    "To calculate tax",
+    "To choose the currency"
+   ],
+   "answer": 0,
+   "reason": "The check digit catches typing mistakes early, which prevents unmatched payments."
+  },
+  {
+   "q": "In direct debit, who starts the payment?",
+   "options": [
+    "The insurer, through FSCD's payment run",
+    "The customer, each month",
+    "The tax authority",
+    "The app provider"
+   ],
+   "answer": 0,
+   "reason": "After a one-time mandate, FSCD's payment run sends the collection file every time."
+  },
+  {
+   "q": "What is a mandate in direct debit?",
+   "options": [
+    "The customer's one-time permission to collect",
+    "A reminder letter",
+    "A claim payment",
+    "A bank statement"
+   ],
+   "answer": 0,
+   "reason": "Called tilmelding (DK), medgivande (SE) or avtale (NO)."
+  },
+  {
+   "q": "Ingrid's AvtaleGiro maximum is NOK 2,000. The insurer tries to collect NOK 2,500. What happens?",
+   "options": [
+    "The bank refuses the debit",
+    "It is collected anyway",
+    "Only NOK 2,000 is collected silently",
+    "The policy is cancelled automatically"
+   ],
+   "answer": 0,
+   "reason": "AvtaleGiro lets the customer set a maximum per payment. A BA must check it when premiums go up."
+  },
+  {
+   "q": "Which file does Bankgirot send with incoming Swedish payments?",
+   "options": [
+    "BgMax",
+    "pain.001",
+    "OCR Giro",
+    "camt.999"
+   ],
+   "answer": 0,
+   "reason": "FSCD loads the BgMax file as a payment lot and matches each payment by its OCR number."
+  },
+  {
+   "q": "A payment arrives with no usable reference. Where does it go in FSCD?",
+   "options": [
+    "The clarification queue for manual work",
+    "It clears automatically",
+    "It is sent back to the customer at once",
+    "It is ignored"
+   ],
+   "answer": 0,
+   "reason": "Missing references are the biggest everyday pain in collections."
+  },
+  {
+   "q": "Which currencies do Denmark, Sweden and Norway use?",
+   "options": [
+    "DKK, SEK and NOK",
+    "EUR in all three",
+    "DKK, EUR and NOK",
+    "SEK in all three"
+   ],
+   "answer": 0,
+   "reason": "None of the three uses the euro."
+  },
+  {
+   "q": "What is the usual way insurers pay claims in the Nordics?",
+   "options": [
+    "Bank transfer (plus Swish payouts in Sweden)",
+    "Cheque",
+    "Cash at the branch",
+    "Direct debit"
+   ],
+   "answer": 0,
+   "reason": "Payouts are almost always bank transfers. In Sweden Swish payout is also popular."
+  },
+  {
+   "q": "Which international file format is often used for outgoing payments?",
+   "options": [
+    "ISO 20022 pain.001",
+    "BgMax",
+    "KID",
+    "CSV from Excel"
+   ],
+   "answer": 0,
+   "reason": "In SAP these files are created by the Payment Medium Workbench."
+  },
+  {
+   "q": "Which SAP tool creates the bank payment files?",
+   "options": [
+    "Payment Medium Workbench",
+    "FPL9",
+    "SE16N",
+    "FS-ICM"
+   ],
+   "answer": 0,
+   "reason": "One FSCD payment run can produce files for all three countries through the Payment Medium Workbench."
+  },
+  {
+   "q": "Which Swedish digital mailbox often receives bills?",
+   "options": [
+    "Kivra",
+    "e-Boks",
+    "Digipost",
+    "MobilePay"
+   ],
+   "answer": 0,
+   "reason": "Kivra is Swedish, e-Boks is Danish and Digipost is Norwegian."
+  },
+  {
+   "q": "Which digital mailbox is Danish?",
+   "options": [
+    "e-Boks",
+    "Kivra",
+    "Digipost",
+    "Vipps"
+   ],
+   "answer": 0,
+   "reason": "In the main guide, Mette's level 2 reminder letter goes to e-Boks."
+  },
+  {
+   "q": "How does FSCD learn that a MobilePay, Swish or Vipps payment arrived?",
+   "options": [
+    "Through a settlement report or bank statement file",
+    "The app phones the insurer",
+    "The customer emails a screenshot",
+    "It never learns"
+   ],
+   "answer": 0,
+   "reason": "The money moves fast, but FSCD still learns through a file, so the policy number in the payment is key."
+  },
+  {
+   "q": "Which FSCD transaction loads failed direct debits as a batch?",
+   "options": [
+    "FP09 (returns lot)",
+    "FP05",
+    "FPE3",
+    "FPL9"
+   ],
+   "answer": 0,
+   "reason": "FP05 loads incoming payments as payment lots; FP09 loads returns."
+  },
+  {
+   "q": "Erik's stolen bike claim of SEK 3,500 is paid in seconds. Which method?",
+   "options": [
+    "Swish payout",
+    "Autogiro",
+    "Betalingsservice",
+    "Paper cheque"
+   ],
+   "answer": 0,
+   "reason": "Swedish insurers can pay claims straight to a mobile number with Swish payout."
+  },
+  {
+   "q": "A claim payout fails because of a wrong account number. What happens in FSCD?",
+   "options": [
+    "The payable re-opens so it can be corrected and paid again",
+    "The money is lost",
+    "The claim is closed",
+    "FSCD deletes the claim"
+   ],
+   "answer": 0,
+   "reason": "The bank rejects it, the payable re-opens, someone fixes the bank details and the next run pays again."
+  },
+  {
+   "q": "Which of these is a Norwegian debit card scheme?",
+   "options": [
+    "BankAxept",
+    "Dankort",
+    "Swish",
+    "Bankgiro"
+   ],
+   "answer": 0,
+   "reason": "BankAxept is Norwegian; Dankort is Danish."
+  },
+  {
+   "q": "In the four families of payment methods, eFaktura belongs to...",
+   "options": [
+    "E-invoices in the netbank",
+    "Direct debit",
+    "Mobile payments",
+    "Cards"
+   ],
+   "answer": 0,
+   "reason": "An e-invoice puts the bill straight into the customer's netbank, ready to approve."
+  }
+ ]
+}

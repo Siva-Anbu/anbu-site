@@ -71,6 +71,7 @@ td:first-child{font-weight:500}
 .fig .num{fill:var(--accent)}
 .fig .numt{fill:#fff;font-size:11px;font-weight:700}
 .cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
@@ -303,12 +304,18 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="tip"><b>A closing tip</b>
 <p>Draw the chain from section 1 for your own project and write the real bank, scheme and file names under each box. It becomes the most useful page in your notebook.</p></div>
 
-<footer>Nordic Payment Methods in SAP FSCD. Names, amounts, account and reference numbers are illustrative examples for learning. Scheme rules, owners and file formats change over time; confirm details with your bank and project team. <a href="/">Back to the main FSCD guide</a>.</footer>
+<h2 id="test">Test yourself</h2>
+<p>10 questions on Nordic payment methods. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="payments"></div>
+
+<footer>Nordic Payment Methods in SAP FSCD. Names, amounts, account and reference numbers are illustrative examples for learning. Scheme rules, owners and file formats change over time; confirm details with your bank and project team. <a href="/">Back to the main FSCD guide</a>.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
 <script>
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
+<script src="/quiz.js" defer></script>
 </body>
 </html>

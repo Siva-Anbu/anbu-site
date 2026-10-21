@@ -1,0 +1,292 @@
+{
+ "page": "guide",
+ "version": 1,
+ "questions": [
+  {
+   "q": "What does FSCD stand for?",
+   "options": [
+    "Financial Services Collections and Disbursements",
+    "Financial System for Customer Data",
+    "Finance Settlement and Cash Distribution",
+    "Full Service Claims Department"
+   ],
+   "answer": 0,
+   "reason": "FSCD = Financial Services Collections and Disbursements: money coming in and money going out of the insurer."
+  },
+  {
+   "q": "Which system calculates the premium amount?",
+   "options": [
+    "The policy administration system",
+    "SAP FSCD",
+    "The general ledger (FI-GL)",
+    "The customer's bank"
+   ],
+   "answer": 0,
+   "reason": "The policy system decides how much the premium is. FSCD bills, collects and records it, but never calculates it."
+  },
+  {
+   "q": "FSCD is built on top of which SAP engine?",
+   "options": [
+    "FI-CA (Contract Accounts Receivable and Payable)",
+    "SAP HR",
+    "SAP MM (Materials Management)",
+    "SAP CRM"
+   ],
+   "answer": 0,
+   "reason": "FSCD adds insurance features on top of FI-CA, the SAP engine for millions of small, repeating payments."
+  },
+  {
+   "q": "FSCD is a sub-ledger. What does it send to the general ledger?",
+   "options": [
+    "Daily totals",
+    "Every single customer line",
+    "Only failed payments",
+    "Nothing; the two never talk"
+   ],
+   "answer": 0,
+   "reason": "FSCD keeps the detail per customer and sends daily totals to FI-GL."
+  },
+  {
+   "q": "What is a Business Partner (BP)?",
+   "options": [
+    "Any person or company the insurer deals with",
+    "Only the insurance agent",
+    "A bank account",
+    "A posting document"
+   ],
+   "answer": 0,
+   "reason": "Mette, Lars the agent and the garage are all Business Partners: one record, used everywhere."
+  },
+  {
+   "q": "What is a contract account?",
+   "options": [
+    "The customer's 'money account' (wallet) at the insurer",
+    "The insurer's bank account",
+    "A list of all policies in the company",
+    "The general ledger account for premiums"
+   ],
+   "answer": 0,
+   "reason": "All bills and payments for the customer land in the contract account, which also holds rules like the payment method."
+  },
+  {
+   "q": "What is a posting document?",
+   "options": [
+    "A permanent record of one money event",
+    "A letter sent to the customer",
+    "A draft that can be deleted",
+    "A list of all customers"
+   ],
+   "answer": 0,
+   "reason": "Every time money is owed, paid, refunded or charged, FSCD creates a numbered posting document."
+  },
+  {
+   "q": "What is an open item?",
+   "options": [
+    "A line that is not settled yet",
+    "A line that is fully paid",
+    "A deleted document",
+    "A new insurance policy"
+   ],
+   "answer": 0,
+   "reason": "Open means still waiting for money (or waiting to be paid out). After payment it becomes a cleared item."
+  },
+  {
+   "q": "What does 'clearing' mean?",
+   "options": [
+    "Matching a payment to a bill so both are closed",
+    "Deleting a wrong document",
+    "Sending a reminder",
+    "Cancelling a policy"
+   ],
+   "answer": 0,
+   "reason": "Clearing ticks off the bill because a payment matched it."
+  },
+  {
+   "q": "What do main and sub transactions tell you?",
+   "options": [
+    "What kind of money a line is, which decides the ledger account",
+    "Who the customer is",
+    "The customer's bank details",
+    "The due date"
+   ],
+   "answer": 0,
+   "reason": "Example: 6100/0010 net premium and 6100/0020 insurance tax. Accounting uses them to choose ledger accounts."
+  },
+  {
+   "q": "Mette's direct debit bounced. What does FSCD do?",
+   "options": [
+    "Re-opens the bill and may add a fee",
+    "Deletes the bill",
+    "Cancels the policy immediately",
+    "Nothing; the money is assumed paid"
+   ],
+   "answer": 0,
+   "reason": "A return undoes the clearing so the item is open again, and in our example a DKK 100 fee is added."
+  },
+  {
+   "q": "What is dunning?",
+   "options": [
+    "The step-by-step reminder process for overdue money",
+    "Paying claims",
+    "Calculating premiums",
+    "Sending daily totals to the ledger"
+   ],
+   "answer": 0,
+   "reason": "Each dunning level is stronger than the last: email/SMS, then a letter in e-Boks, then a 'cover will stop' notice."
+  },
+  {
+   "q": "A premium was posted twice by mistake. What is the correct fix?",
+   "options": [
+    "Reverse the duplicate with an opposite document",
+    "Delete the second document",
+    "Edit the amount to zero",
+    "Ask the bank to fix it"
+   ],
+   "answer": 0,
+   "reason": "Mistakes are never deleted in FSCD. A reversal creates a new document with opposite amounts; both stay visible."
+  },
+  {
+   "q": "Which transaction shows a customer's whole account balance?",
+   "options": [
+    "FPL9",
+    "FPE3",
+    "FPY1",
+    "SE16N"
+   ],
+   "answer": 0,
+   "reason": "FPL9 (Account Balance) lists every line from every posting document. Start every investigation here."
+  },
+  {
+   "q": "Which transaction displays a single posting document?",
+   "options": [
+    "FPE3",
+    "FPL9",
+    "FP05",
+    "BP"
+   ],
+   "answer": 0,
+   "reason": "FPE3 is Display Document, like screen 1 in the guide."
+  },
+  {
+   "q": "Which transaction is the payment run?",
+   "options": [
+    "FPY1",
+    "FPE1",
+    "FPL9",
+    "FPCJ"
+   ],
+   "answer": 0,
+   "reason": "FPY1 creates the debit files to collect premiums and the payment files to pay claims."
+  },
+  {
+   "q": "What is a reconciliation key?",
+   "options": [
+    "A batch label so finance can match FSCD totals with the ledger",
+    "The customer's password",
+    "A bank account number",
+    "A policy number"
+   ],
+   "answer": 0,
+   "reason": "Example: all premiums billed on 01.04.2026 carry key 260401-PREM-01."
+  },
+  {
+   "q": "Document date vs posting date: which one decides the accounting period?",
+   "options": [
+    "Posting date",
+    "Document date",
+    "Due date",
+    "Clearing date"
+   ],
+   "answer": 0,
+   "reason": "The posting date is when it counts in the accounts. That's why a payment booked on 04.01 counts in January."
+  },
+  {
+   "q": "In the example, Mette's net premium is DKK 8,000. What is the total with 1.1% insurance tax?",
+   "options": [
+    "DKK 8,088",
+    "DKK 8,000",
+    "DKK 8,880",
+    "DKK 9,440"
+   ],
+   "answer": 0,
+   "reason": "1.1% of 8,000 is 88, so the total is DKK 8,088."
+  },
+  {
+   "q": "Mette owes DKK 8,188 and gets a DKK 25,000 claim. With offsetting, how much is paid to her?",
+   "options": [
+    "DKK 16,812",
+    "DKK 25,000",
+    "DKK 33,188",
+    "DKK 8,188"
+   ],
+   "answer": 0,
+   "reason": "Offsetting uses the claim to pay her debt first: 25,000 - 8,188 = 16,812."
+  },
+  {
+   "q": "Lars earns 10% commission on DKK 8,000 net premium. How much?",
+   "options": [
+    "DKK 800",
+    "DKK 808.80",
+    "DKK 80",
+    "DKK 8,000"
+   ],
+   "answer": 0,
+   "reason": "Commission is usually on net premium: 10% of 8,000 = 800."
+  },
+  {
+   "q": "A common rule for agent commission is to pay it...",
+   "options": [
+    "Only after the customer's premium is received",
+    "Before the policy starts",
+    "Whenever the agent asks",
+    "Only once a year"
+   ],
+   "answer": 0,
+   "reason": "In the story Mette pays on 06.05, so Lars is paid in the 10.05 commission run, not before."
+  },
+  {
+   "q": "A payment arrives without a policy number. Where does it go?",
+   "options": [
+    "Clarification (post-processing), for manual assignment",
+    "It is automatically refunded",
+    "It is cleared against a random customer",
+    "It is deleted"
+   ],
+   "answer": 0,
+   "reason": "FSCD can't tell whose money it is, so an operations user assigns it by hand."
+  },
+  {
+   "q": "What is an FKK event?",
+   "options": [
+    "A hook where developers add company-specific logic",
+    "A type of bank file",
+    "A dunning level",
+    "A customer complaint"
+   ],
+   "answer": 0,
+   "reason": "Events let projects add rules, like a second approver for big claims, without changing SAP's own code."
+  },
+  {
+   "q": "If the policy system and FSCD disagree on whether a premium is paid, who does finance trust?",
+   "options": [
+    "FSCD",
+    "The policy system",
+    "The customer",
+    "The agent"
+   ],
+   "answer": 0,
+   "reason": "FSCD is the 'money truth'."
+  },
+  {
+   "q": "What happens to a posting document when the customer pays?",
+   "options": [
+    "It stays the same; only its lines change from Open to Cleared",
+    "It is deleted",
+    "It is replaced by a new bill",
+    "Its amount becomes zero"
+   ],
+   "answer": 0,
+   "reason": "Documents are permanent. Only the status of their lines changes."
+  }
+ ]
+}
