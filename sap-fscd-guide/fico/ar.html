@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounts Receivable: From Sale to Cash | FICO Academy</title>
+<meta name="description" content="How SAP FI-AR handles a sale from order to cash: customer business partner, billing and its FI posting, bank statement matching with FI-kort, payment differences, dunning, ageing and DSO, explained simply for business analysts.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+</style>
+<link rel="stylesheet" href="/theme.css?v=20261021d">
+<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="fico-ar">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">Accounts receivable: from sale to cash</h1>
+<p class="lede">Nordlys Møbler sells 10 oak tables to Hygge Hjem A/S. Follow the money from the sales order to the bank statement, and learn what SAP posts at each step, what happens when a customer pays too little or not at all, and how to check it yourself.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>This is Lesson 3 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a> (company code, GL accounts, debit and credit, the Universal Journal) and mirrors <a href="/fico/ap">Lesson 2: Accounts payable</a>, where Nordlys Møbler was the one paying. About a 20-minute read. All names, amounts and numbers are made up for learning.</p></div>
+
+<h2 id="meet">Meet the people and the customer</h2>
+<p>You are <strong>Sofie Holm</strong>, a business analyst in the finance team of Nordlys Møbler A/S in Aarhus (company code <strong>DK01</strong>, currency DKK). In Lesson 2 you followed money going <em>out</em> to a supplier. Now you follow money coming <em>in</em> from a customer. <strong>Accounts receivable</strong> (AR, in SAP called FI-AR) is the part of finance that tracks what customers owe the company and collects it.</p>
+<div class="cast">
+<div><b>Hygge Hjem A/S</b><span>Furniture shop chain in Copenhagen. Business Partner <strong>100250</strong>. Our customer.</span></div>
+<div><b>Sales team</b><span>Takes the order and agrees the price. Works in SD (Sales and Distribution).</span></div>
+<div><b>Peter Lund</b><span>Finance manager. Watches overdue customers and the cash coming in.</span></div>
+<div><b>Sofie Holm (you)</b><span>Business analyst. Turns finance rules into requirements and tests.</span></div>
+</div>
+<ol class="timeline">
+<li><span class="d">10.03:</span> Hygge Hjem orders 10 oak tables at DKK 12,000.00 each: DKK 120,000.00 net.</li>
+<li><span class="d">13.03:</span> the tables leave the warehouse (delivery and goods issue).</li>
+<li><span class="d">15.03:</span> Nordlys Møbler sends the invoice: 120,000.00 + 25% VAT 30,000.00 = <strong>DKK 150,000.00</strong>, payment terms 14 days net, due <strong>29.03</strong>.</li>
+<li><span class="d">27.03:</span> Hygge Hjem pays by bank transfer with an FI-kort (+71) reference. The bank statement clears the invoice automatically.</li>
+</ol>
+
+<h2 id="o2c">1. Order to cash in one picture</h2>
+<p><strong>Order to cash</strong> (O2C) is the whole journey from a customer's order to the money in the bank. Most of the steps happen in <strong>SD</strong>, the sales module. Only some of them create a posting in <strong>FI</strong>, the finance module. A good BA knows exactly which ones.</p>
+
+<div class="fig" role="img" aria-label="Order to cash flow: sales order VA01, delivery and goods issue VL01N, billing VF01, accounting document, incoming payment, clearing. Goods issue, billing and payment post to finance.">
+<svg viewBox="0 0 760 250">
+<defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<text class="lab-file" x="190" y="22" text-anchor="middle">Logistics (SD and stock)</text>
+<text class="lab-in" x="565" y="22" text-anchor="middle">Finance (FI-AR)</text>
+<rect class="bx" x="10" y="40" width="110" height="90" rx="8"/><text class="t" x="65" y="68" text-anchor="middle">Sales order</text><text class="s" x="65" y="88" text-anchor="middle">VA01 · 10.03</text><text class="s" x="65" y="106" text-anchor="middle">no posting</text>
+<rect class="bx" x="135" y="40" width="120" height="90" rx="8"/><text class="t" x="195" y="68" text-anchor="middle">Delivery</text><text class="s" x="195" y="88" text-anchor="middle">VL01N · 13.03</text><text class="s" x="195" y="106" text-anchor="middle">goods issue</text>
+<rect class="bx hl" x="270" y="40" width="110" height="90" rx="8"/><text class="t" x="325" y="68" text-anchor="middle">Billing</text><text class="s" x="325" y="88" text-anchor="middle">VF01 · 15.03</text><text class="s" x="325" y="106" text-anchor="middle">the invoice</text>
+<rect class="bx hl" x="395" y="40" width="115" height="90" rx="8"/><text class="t" x="452" y="62" text-anchor="middle">Accounting</text><text class="t" x="452" y="80" text-anchor="middle">document</text><text class="s" x="452" y="104" text-anchor="middle">open item</text>
+<rect class="bx" x="525" y="40" width="110" height="90" rx="8"/><text class="t" x="580" y="68" text-anchor="middle">Payment</text><text class="s" x="580" y="88" text-anchor="middle">bank · 27.03</text><text class="s" x="580" y="106" text-anchor="middle">FF_5</text>
+<rect class="bx hl" x="650" y="40" width="100" height="90" rx="8"/><text class="t" x="700" y="68" text-anchor="middle">Clearing</text><text class="s" x="700" y="88" text-anchor="middle">item closed</text><text class="s" x="700" y="106" text-anchor="middle">balance 0</text>
+<path class="gfile" d="M120,85 H133" marker-end="url(#ar1)"/><path class="gfile" d="M255,85 H268" marker-end="url(#ar1)"/><path class="gfile" d="M380,85 H393" marker-end="url(#ar1)"/><path class="gfile" d="M510,85 H523" marker-end="url(#ar1)"/><path class="gfile" d="M635,85 H648" marker-end="url(#ar1)"/>
+<rect class="bx" x="135" y="160" width="120" height="58" rx="8"/><text class="s" x="195" y="182" text-anchor="middle">FI: cost of goods</text><text class="s" x="195" y="199" text-anchor="middle">sold / inventory</text>
+<rect class="bx" x="270" y="160" width="240" height="58" rx="8"/><text class="s" x="390" y="182" text-anchor="middle">FI: receivable 150,000 /</text><text class="s" x="390" y="199" text-anchor="middle">revenue 120,000 + VAT 30,000</text>
+<rect class="bx" x="525" y="160" width="225" height="58" rx="8"/><text class="s" x="637" y="182" text-anchor="middle">FI: bank 150,000 /</text><text class="s" x="637" y="199" text-anchor="middle">receivable 150,000 (cleared)</text>
+<path class="lin" d="M195,130 V158"/><path class="lin" d="M325,130 V158"/><path class="lin" d="M580,130 V158"/>
+<text class="lin-t" x="380" y="242" text-anchor="middle">Dashed lines: the steps that create a posting in finance</text>
+</svg>
+</div>
+<p class="cap">The sales order only promises. Goods issue moves stock value, billing creates the receivable, and the payment clears it.</p>
+
+<div class="tbl"><table><thead><tr><th>Step</th><th>Posts to FI?</th><th>What changes in the books</th></tr></thead><tbody>
+<tr><td>Sales order (VA01)</td><td>No</td><td>Nothing. It is a promise to deliver. It may reserve stock and check the credit limit.</td></tr>
+<tr><td>Goods issue (VL01N, then post goods issue)</td><td>Yes</td><td>Debit cost of goods sold, credit finished goods inventory, at the tables' production cost. The tables are gone, so their value leaves stock.</td></tr>
+<tr><td>Billing (VF01)</td><td>Yes</td><td>Receivable from Hygge Hjem, sales revenue and output VAT (section 3).</td></tr>
+<tr><td>Incoming payment</td><td>Yes</td><td>Money in the bank, receivable cleared (section 4).</td></tr>
+</tbody></table></div>
+<p>In S/4HANA all these postings land in the same table, the <strong>Universal Journal (ACDOCA)</strong>, so finance and controlling see the same numbers. The sales order, delivery and invoice are linked in a <strong>document flow</strong>, which you can open from VA03 or VF03 to see every step and its status.</p>
+
+<h2 id="customer">2. The customer as a Business Partner</h2>
+<p>In S/4HANA a customer is a <strong>Business Partner (BP)</strong>, maintained with transaction BP. One BP can play several <strong>roles</strong>: the role "FI customer" holds the finance data, the role "customer" holds the sales data. Hygge Hjem is BP <strong>100250</strong> with both roles. Here is what finance cares about:</p>
+<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> the GL account that collects the total of all customer balances. You never post to it directly; every customer posting updates it automatically.</p><p class="ex">Example: Hygge Hjem's reconciliation account is <b>140000 Trade receivables</b>. When the invoice posts to the customer, 140000 goes up by the same DKK 150,000.00. The balance sheet shows 140000; AR shows who owes what.</p></div>
+<div class="term"><h4>Payment terms</h4><p><strong>In simple words:</strong> a key that tells SAP when the invoice is due, and whether there is a discount for paying early.</p><p class="ex">Example: <b>14 days net</b>. Invoice dated 15.03 + 14 days = due <b>29.03</b>.</p></div>
+<div class="term"><h4>Credit limit</h4><p><strong>In simple words:</strong> the most the customer may owe at any one time. If a new order would push them over it, the order is blocked until someone approves it.</p><p class="ex">Example: Hygge Hjem has a limit of <b>DKK 500,000.00</b>. With nothing else open, the DKK 150,000.00 order passes. In S/4HANA this lives in <b>SAP Credit Management</b> (screen UKM_BP), which can also give each customer a risk class and a score.</p></div>
+<div class="term"><h4>Dunning procedure</h4><p><strong>In simple words:</strong> the rulebook for payment reminders: how many levels, how many days apart, and any fees (section 6).</p></div>
+<div class="term"><h4>VAT and CVR number</h4><p><strong>In simple words:</strong> the CVR number is the Danish company registration number. It is stored on the BP and printed on invoices, and it matters for VAT reporting.</p><p class="ex">Example: Hygge Hjem is a Danish company, so the invoice carries 25% Danish VAT (moms). A customer in Germany would usually get an invoice without Danish VAT (reverse charge), which needs a different tax code.</p></div>
+
+<h2 id="billing">3. Billing and the FI posting (15.03)</h2>
+<p>On 15.03 the billing clerk creates the invoice in SD with VF01. When the billing document is saved and released to accounting, SAP creates the <strong>accounting document</strong> on its own. Nobody types a journal entry.</p>
+<div class="tbl"><table><thead><tr><th>Line</th><th>Debit / Credit</th><th>Account</th><th style="text-align:right">DKK</th></tr></thead><tbody>
+<tr><td>1</td><td>Debit</td><td>Customer 100250 Hygge Hjem (reconciliation account 140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
+<tr><td>2</td><td>Credit</td><td>800000 Sales revenue: domestic</td><td class="num" style="text-align:right">120,000.00</td></tr>
+<tr><td>3</td><td>Credit</td><td>175000 Output VAT (salgsmoms), tax code for 25% output VAT</td><td class="num" style="text-align:right">30,000.00</td></tr>
+</tbody></table></div>
+<p class="cap">Accounting document dated 15.03.2026, document type RV (billing transfer) in many systems. Debits 150,000.00 = credits 120,000.00 + 30,000.00.</p>
+<p>How does SAP know to use 800000 and 175000? Through <strong>account determination</strong>. The SD invoice is built from <strong>condition types</strong>: small price building blocks such as "base price" and "output tax". Consultants set up rules that map each condition type to a GL account. The customer line goes to the reconciliation account from the BP.</p>
+
+<div class="fig" role="img" aria-label="Account determination: the base price condition of 120,000 goes to account 800000 sales revenue, the output tax condition of 30,000 goes to 175000 output VAT, and the customer total of 150,000 goes to 140000 via the reconciliation account on the business partner">
+<svg viewBox="0 0 760 240">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<text class="lab-file" x="120" y="22" text-anchor="middle">SD invoice (conditions)</text>
+<text class="lab-file" x="380" y="22" text-anchor="middle">Rule</text>
+<text class="lab-in" x="640" y="22" text-anchor="middle">FI accounts</text>
+<rect class="bx" x="20" y="38" width="200" height="50" rx="8"/><text class="t" x="120" y="60" text-anchor="middle">Base price</text><text class="s" x="120" y="78" text-anchor="middle">10 × 12,000 = 120,000</text>
+<rect class="bx" x="20" y="104" width="200" height="50" rx="8"/><text class="t" x="120" y="126" text-anchor="middle">Output tax 25%</text><text class="s" x="120" y="144" text-anchor="middle">30,000</text>
+<rect class="bx" x="20" y="170" width="200" height="50" rx="8"/><text class="t" x="120" y="192" text-anchor="middle">Invoice total</text><text class="s" x="120" y="210" text-anchor="middle">150,000 owed by 100250</text>
+<rect class="bx" x="290" y="38" width="180" height="50" rx="8"/><text class="s" x="380" y="60" text-anchor="middle">revenue account</text><text class="s" x="380" y="77" text-anchor="middle">determination</text>
+<rect class="bx" x="290" y="104" width="180" height="50" rx="8"/><text class="s" x="380" y="126" text-anchor="middle">tax code →</text><text class="s" x="380" y="143" text-anchor="middle">tax account</text>
+<rect class="bx" x="290" y="170" width="180" height="50" rx="8"/><text class="s" x="380" y="192" text-anchor="middle">BP 100250 →</text><text class="s" x="380" y="209" text-anchor="middle">reconciliation account</text>
+<rect class="bx hl" x="540" y="38" width="200" height="50" rx="8"/><text class="t" x="640" y="60" text-anchor="middle">800000 Revenue</text><text class="s" x="640" y="78" text-anchor="middle">credit 120,000</text>
+<rect class="bx hl" x="540" y="104" width="200" height="50" rx="8"/><text class="t" x="640" y="126" text-anchor="middle">175000 Output VAT</text><text class="s" x="640" y="144" text-anchor="middle">credit 30,000</text>
+<rect class="bx hl" x="540" y="170" width="200" height="50" rx="8"/><text class="t" x="640" y="192" text-anchor="middle">140000 Receivables</text><text class="s" x="640" y="210" text-anchor="middle">debit 150,000</text>
+<path class="gfile" d="M220,63 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,63 H538" marker-end="url(#ar2)"/>
+<path class="gfile" d="M220,129 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,129 H538" marker-end="url(#ar2)"/>
+<path class="gfile" d="M220,195 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,195 H538" marker-end="url(#ar2)"/>
+</svg>
+</div>
+<p class="cap">Revenue account determination can depend on sales organisation, customer group and material group. A BA confirms the business rule; a consultant builds it.</p>
+<div class="tip"><b>BA tip: "the invoice did not reach accounting"</b>
+<p>If a billing document exists but no accounting document, it is often blocked for transfer, usually because an account could not be determined. The billing clerk sees an error such as "account determination error". Ask for the condition type and the missing rule, not just "it failed".</p></div>
+
+<h2 id="payment">4. Incoming payment (27.03)</h2>
+<p>Danish businesses often pay with an <strong>FI-kort</strong> (in English: a payment slip). Type <strong>+71</strong> carries a 15-digit <strong>payment ID</strong> that Nordlys Møbler prints on its invoice. Hygge Hjem types it into their bank when they pay, and the bank passes it back to Nordlys Møbler on the bank statement. That is what makes automatic matching possible.</p>
+<p>Each morning, Danske Bank sends the <strong>electronic bank statement</strong> for the day before, as a <strong>camt.053</strong> file (the modern XML format) or an older <strong>MT940</strong> file. Finance loads it with <strong>FF_5</strong>, often as a scheduled job. For every line, SAP reads the reference, looks for the matching open item and, if it finds one, posts and clears in one go.</p>
+
+<div class="fig" role="img" aria-label="Bank statement matching: Danske Bank sends a camt.053 file, FF_5 imports it and searches for the +71 payment ID. If found, the invoice is cleared automatically. If not found, the line goes to FEBAN for manual post-processing, where a clerk finds the invoice and clears it.">
+<svg viewBox="0 0 760 260">
+<defs>
+<marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="bx" x="10" y="90" width="140" height="80" rx="8"/><text class="t" x="80" y="120" text-anchor="middle">Danske Bank</text><text class="s" x="80" y="140" text-anchor="middle">camt.053 / MT940</text>
+<rect class="bx hl" x="190" y="90" width="150" height="80" rx="8"/><text class="t" x="265" y="120" text-anchor="middle">FF_5 import</text><text class="s" x="265" y="140" text-anchor="middle">read each line</text>
+<rect class="bx" x="380" y="90" width="140" height="80" rx="8"/><text class="t" x="450" y="118" text-anchor="middle">Find invoice</text><text class="s" x="450" y="138" text-anchor="middle">by +71 payment ID</text><text class="s" x="450" y="154" text-anchor="middle">and amount</text>
+<rect class="bx hl" x="575" y="20" width="175" height="80" rx="8" style="stroke:var(--ok)"/><text class="t" x="662" y="48" text-anchor="middle">Found: auto-clear</text><text class="s" x="662" y="68" text-anchor="middle">posted and cleared</text><text class="s" x="662" y="84" text-anchor="middle">no one touches it</text>
+<rect class="bx" x="575" y="160" width="175" height="80" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="662" y="188" text-anchor="middle">Not found</text><text class="s" x="662" y="208" text-anchor="middle">FEBAN: clerk finds</text><text class="s" x="662" y="224" text-anchor="middle">the item, then clears</text>
+<path class="gfile" d="M150,130 H188" marker-end="url(#ar3)"/><path class="gfile" d="M340,130 H378" marker-end="url(#ar3)"/>
+<path class="gin" d="M520,120 C548,120 548,60 573,60" marker-end="url(#ar4)"/>
+<path class="gbad" d="M520,140 C548,140 548,200 573,200" marker-end="url(#ar5)"/>
+<text class="lab-in" x="450" y="60" text-anchor="middle">reference OK</text>
+<text class="lab-bad" x="450" y="205" text-anchor="middle">no or wrong reference</text>
+</svg>
+</div>
+<p class="cap">The rules that read references from the statement are called search strings and interpretation algorithms. Their quality decides how much manual work finance has.</p>
+
+<p>Hygge Hjem's DKK 150,000.00 arrives on 27.03 with the right payment ID. SAP posts two small entries through a <strong>clearing account</strong>, a "waiting room" account that should always end at zero:</p>
+<div class="tbl"><table><thead><tr><th>Date · step</th><th>Debit</th><th>Credit</th><th style="text-align:right">DKK</th></tr></thead><tbody>
+<tr><td>27.03 · bank side</td><td>110000 Bank: Danske Bank</td><td>113100 Bank incoming clearing</td><td class="num" style="text-align:right">150,000.00</td></tr>
+<tr><td>27.03 · customer side</td><td>113100 Bank incoming clearing</td><td>Customer 100250 (140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
+</tbody></table></div>
+<p class="cap">The second posting also <strong>clears</strong> the invoice: the open item and the payment get the same clearing document and date, and the item moves from "open" to "cleared".</p>
+<p>If there were no reference, the first line would still post (the money is in the bank), but the customer side would wait in <strong>FEBAN</strong>. 113100 would show a balance until someone matches it. That makes 113100 a handy health check: a balance that grows means unmatched payments.</p>
+<div class="term"><h4>Manual incoming payment: F-28</h4><p><strong>In simple words:</strong> a screen to post a customer payment by hand, choose which open items it pays, and clear them.</p><p class="ex">Example: if Hygge Hjem had brought a cheque or the bank file had failed, a clerk would use <b>F-28</b>: bank account 110000, amount 150,000.00, customer 100250, then select the open invoice. Many projects use the Fiori app "Post incoming payments" instead.</p></div>
+
+<h2 id="differences">5. When the amount doesn't match</h2>
+<p>Real customers do not always pay the exact amount. SAP has a standard answer for each case. Here they are, using the same DKK 150,000.00 invoice.</p>
+<h3 id="partial">5.1 Partial payment or residual item</h3>
+<p>Suppose Hygge Hjem pays only DKK 100,000.00. The clerk can post it in two ways:</p>
+
+<div class="fig" role="img" aria-label="Partial payment versus residual item. Partial payment: invoice 150,000 stays open and a payment of 100,000 is added, both open and linked. Residual item: invoice 150,000 is cleared by the payment and a new open item of 50,000 is created.">
+<svg viewBox="0 0 760 230">
+<defs><marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<text class="lab-file" x="185" y="22" text-anchor="middle">Partial payment</text>
+<text class="lab-file" x="575" y="22" text-anchor="middle">Residual item</text>
+<rect class="bx" x="20" y="40" width="330" height="54" rx="8"/><text class="t" x="185" y="63" text-anchor="middle">Invoice 150,000 · open</text><text class="s" x="185" y="82" text-anchor="middle">original item stays, due date 29.03 kept</text>
+<rect class="bx" x="20" y="108" width="330" height="54" rx="8"/><text class="t" x="185" y="131" text-anchor="middle">Payment −100,000 · open</text><text class="s" x="185" y="150" text-anchor="middle">linked to the invoice</text>
+<text class="lin-t" x="185" y="192" text-anchor="middle">Balance 50,000; both items stay open</text>
+<text class="s" x="185" y="212" text-anchor="middle">Good for keeping the invoice history visible</text>
+<rect class="bx" x="410" y="40" width="330" height="54" rx="8"/><text class="t" x="575" y="63" text-anchor="middle">Invoice 150,000 · cleared</text><text class="s" x="575" y="82" text-anchor="middle">closed by the payment</text>
+<rect class="bx hl" x="410" y="108" width="330" height="54" rx="8"/><text class="t" x="575" y="131" text-anchor="middle">New item 50,000 · open</text><text class="s" x="575" y="150" text-anchor="middle">new due date can be set</text>
+<path class="gfile" d="M575,94 V106" marker-end="url(#ar6)"/>
+<text class="lin-t" x="575" y="192" text-anchor="middle">Balance 50,000; one small item open</text>
+<text class="s" x="575" y="212" text-anchor="middle">Good for a tidy open-item list</text>
+<path class="lin" d="M380,40 V215"/>
+</svg>
+</div>
+<p class="cap">Either way the customer still owes DKK 50,000.00. The choice changes what the open-item list and dunning letters show.</p>
+
+<h3 id="small">5.2 Short payments, overpayments and tolerances</h3>
+<div class="tbl"><table><thead><tr><th>Case</th><th>Example</th><th>What SAP usually does</th></tr></thead><tbody>
+<tr><td>Tiny short payment</td><td>Pays 149,950.00 (bank fee deducted)</td><td>Inside the <strong>payment difference tolerance</strong>, so the 50.00 is written off automatically to an expense account and the invoice is cleared.</td></tr>
+<tr><td>Bigger short payment</td><td>Pays 147,000.00 without explanation</td><td>Outside tolerance. The clerk posts a residual item of 3,000.00 with a <strong>reason code</strong> such as "price dispute", so someone follows up.</td></tr>
+<tr><td>Overpayment</td><td>Pays 151,000.00</td><td>Invoice cleared, 1,000.00 stays as a credit on the customer's account. It can be paid back or used against the next invoice.</td></tr>
+</tbody></table></div>
+<p class="cap">Tolerance amounts are set per company code and can be limited per user, so a clerk cannot write off large amounts.</p>
+
+<h3 id="discount">5.3 Cash discount</h3>
+<p>Imagine the terms had been <strong>"2% within 8 days, otherwise 14 days net"</strong>. The discount is 2% of the gross amount: 2% × 150,000.00 = <strong>3,000.00</strong>. If Hygge Hjem paid by 23.03, they could pay <strong>DKK 147,000.00</strong> and the invoice would still be fully cleared. Because the price really went down, the VAT goes down too, so in Denmark the discount is usually split between net and VAT:</p>
+<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th style="text-align:right">DKK</th></tr></thead><tbody>
+<tr><td>Debit</td><td>113100 Bank incoming clearing (the money received)</td><td class="num" style="text-align:right">147,000.00</td></tr>
+<tr><td>Debit</td><td>Cash discount granted (expense account set by your project)</td><td class="num" style="text-align:right">2,400.00</td></tr>
+<tr><td>Debit</td><td>175000 Output VAT (VAT on the discount: 3,000 × 20%)</td><td class="num" style="text-align:right">600.00</td></tr>
+<tr><td>Credit</td><td>Customer 100250 (140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
+</tbody></table></div>
+<p class="cap">147,000 + 2,400 + 600 = 150,000. The VAT share of a gross amount at 25% VAT is 20% (25/125). Whether VAT is adjusted depends on the tax code setup; confirm with your tax team.</p>
+<p>In our story the terms are 14 days net, so there is no discount and Hygge Hjem pays the full 150,000.00.</p>
+
+<h3 id="credit-memo">5.4 Credit memos</h3>
+<p>A <strong>credit memo</strong> is a "negative invoice". Suppose one table arrived scratched and Nordlys Møbler agrees to take DKK 12,000.00 net off. Sales creates a credit memo (from a credit memo request in SD), and FI posts the reverse of the invoice: debit revenue 12,000.00 (or a sales deductions account), debit output VAT 3,000.00, credit the customer 15,000.00. Hygge Hjem would then owe 150,000 − 15,000 = <strong>DKK 135,000.00</strong>.</p>
+
+<h2 id="dunning">6. When customers don't pay</h2>
+<p>In our story Hygge Hjem pays two days early. But suppose they had not. <strong>Dunning</strong> is the process of sending payment reminders. In SAP the <strong>dunning run</strong> (<strong>F150</strong>) works in two steps: a <strong>proposal</strong> lists who would get which reminder, someone checks it, and then the <strong>print run</strong> sends the letters and records the new dunning level on each item.</p>
+
+<div class="fig" role="img" aria-label="Example dunning ladder after the due date of 29.03: level 1 friendly reminder on 08.04, level 2 reminder with fee on 22.04, level 3 final notice on 06.05, then legal action or debt collection">
+<svg viewBox="0 0 760 240">
+<defs><marker id="ar7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
+<path class="gout" d="M30,200 H735" marker-end="url(#ar7)"/>
+<rect class="bx" x="20" y="130" width="120" height="58" rx="8"/><text class="t" x="80" y="155" text-anchor="middle">Due date</text><text class="s" x="80" y="174" text-anchor="middle">29.03 · day 0</text>
+<rect class="bx" x="165" y="104" width="130" height="84" rx="8"/><text class="t" x="230" y="128" text-anchor="middle">Level 1</text><text class="s" x="230" y="147" text-anchor="middle">day 10 · 08.04</text><text class="s" x="230" y="164" text-anchor="middle">friendly reminder</text><text class="s" x="230" y="180" text-anchor="middle">no fee</text>
+<rect class="bx" x="320" y="78" width="130" height="110" rx="8"/><text class="t" x="385" y="102" text-anchor="middle">Level 2</text><text class="s" x="385" y="121" text-anchor="middle">day 24 · 22.04</text><text class="s" x="385" y="138" text-anchor="middle">second reminder</text><text class="s" x="385" y="155" text-anchor="middle">fee within the law</text>
+<rect class="bx" x="475" y="52" width="130" height="136" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="540" y="76" text-anchor="middle">Level 3</text><text class="s" x="540" y="95" text-anchor="middle">day 38 · 06.05</text><text class="s" x="540" y="112" text-anchor="middle">final notice</text><text class="s" x="540" y="129" text-anchor="middle">credit block</text><text class="s" x="540" y="146" text-anchor="middle">on new orders</text>
+<rect class="bx hl" x="630" y="26" width="120" height="162" rx="8"/><text class="t" x="690" y="54" text-anchor="middle">After that</text><text class="s" x="690" y="80" text-anchor="middle">debt collection</text><text class="s" x="690" y="98" text-anchor="middle">or legal action</text><text class="s" x="690" y="122" text-anchor="middle">bad debt</text><text class="s" x="690" y="140" text-anchor="middle">provision</text>
+<text class="lab-out" x="380" y="228" text-anchor="middle">Days overdue → each level is firmer than the last</text>
+</svg>
+</div>
+<p class="cap">An example ladder with at least 10 days between letters. Your project's days, texts and fees will differ.</p>
+
+<h3 id="dk-rules">6.1 Danish rules to check</h3>
+<p>Reminders and interest are regulated by the Danish Interest Act (<strong>renteloven</strong>). Rules change, so treat these as points to <strong>confirm with your legal or finance team</strong>, not as legal advice:</p>
+<ul>
+<li><strong>Reminder fees</strong> are capped (DKK 100 per reminder at the time of writing), only a limited number of fee-bearing reminders are allowed, and there must be at least <strong>10 days</strong> between them.</li>
+<li><strong>Business to business:</strong> when a business customer pays late, the creditor may be entitled to a fixed <strong>compensation of DKK 310</strong> for collection costs. Check how this combines with reminder fees in your company's policy.</li>
+<li><strong>Interest on late payment</strong> is usually allowed from the due date between businesses, at a statutory rate (the central bank reference rate plus a fixed margin) unless the contract says otherwise. SAP can calculate it with an interest run or as part of dunning.</li>
+</ul>
+
+<h3 id="bad-debt">6.2 Bad debt: provision and write-off</h3>
+<p>If a debt looks doubtful, finance books a <strong>provision</strong>: an expense now, for money that probably won't come, while the item stays open. If the customer goes bankrupt and the money is really lost, the item is <strong>written off</strong>: the receivable is cleared against a bad debt expense account. Output VAT on a confirmed loss can usually be reclaimed from <strong>SKAT</strong> (the Danish tax agency); confirm the rules with your tax team.</p>
+
+<h2 id="report">7. Customer line items, ageing and checking it yourself</h2>
+<p><strong>FBL5N</strong> (or the Fiori app "Manage customer line items") lists every item for a customer: open, cleared, or both. It is the first screen to open when someone asks "has Hygge Hjem paid?".</p>
+<div class="tbl"><table><thead><tr><th>Status</th><th>Doc. date</th><th>Type</th><th>Due</th><th style="text-align:right">DKK</th><th>Clearing</th></tr></thead><tbody>
+<tr><td>Cleared</td><td>15.03.2026</td><td>RV invoice</td><td>29.03.2026</td><td class="num" style="text-align:right">150,000.00</td><td>27.03.2026</td></tr>
+<tr><td>Cleared</td><td>27.03.2026</td><td>Payment (bank statement)</td><td>27.03.2026</td><td class="num" style="text-align:right">−150,000.00</td><td>27.03.2026</td></tr>
+</tbody></table></div>
+<p class="cap">A simplified FBL5N view for customer 100250 with "all items" selected. Both lines share one clearing document.</p>
+
+<h3 id="ageing">7.1 Ageing and DSO</h3>
+<p>An <strong>ageing report</strong> sorts open items by how many days they are overdue. Peter Lund looks at it every month: money in the 90+ bucket is at risk.</p>
+<div class="tbl"><table><thead><tr><th>Bucket (days overdue)</th><th>What it usually means</th></tr></thead><tbody>
+<tr><td>Not yet due</td><td>Normal. Hygge Hjem's invoice sat here from 15.03 to 29.03.</td></tr>
+<tr><td>0–30</td><td>A little late. Level 1 reminder.</td></tr>
+<tr><td>31–60</td><td>Worth a phone call. Level 2 or 3.</td></tr>
+<tr><td>61–90</td><td>Serious. Credit block, talk of collection.</td></tr>
+<tr><td>90+</td><td>Probably needs a provision or collection agency.</td></tr>
+</tbody></table></div>
+<p><strong>DSO</strong> (days sales outstanding) says how many days of sales are waiting to be paid on average: receivables ÷ sales × number of days. Example: receivables of DKK 300,000.00 at the end of a quarter, sales (incl. VAT) of DKK 1,350,000.00 in that 90-day quarter: 300,000 ÷ 1,350,000 × 90 = <strong>20 days</strong>. Lower is better.</p>
+
+<h3 id="check">7.2 Check it yourself</h3>
+<p>After 27.03, look up each account in FS10N (account balance) or FBL3N. The story adds up like this:</p>
+<div class="tbl"><table><thead><tr><th>Account</th><th style="text-align:right">Debits</th><th style="text-align:right">Credits</th><th style="text-align:right">Balance</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>140000 Trade receivables</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td>Hygge Hjem owes nothing</td></tr>
+<tr><td>800000 Sales revenue</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">120,000.00</td><td class="num" style="text-align:right">120,000.00 Cr</td><td>Income from the sale</td></tr>
+<tr><td>175000 Output VAT</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">30,000.00</td><td class="num" style="text-align:right">30,000.00 Cr</td><td>Owed to SKAT with the VAT return</td></tr>
+<tr><td>113100 Bank incoming clearing</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td>Waiting room is empty: all matched</td></tr>
+<tr><td>110000 Bank: Danske Bank</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">150,000.00 Dr</td><td>The cash arrived</td></tr>
+<tr><td><strong>Total</strong></td><td class="num" style="text-align:right"><strong>450,000.00</strong></td><td class="num" style="text-align:right"><strong>450,000.00</strong></td><td></td><td>Debits = credits</td></tr>
+</tbody></table></div>
+<p class="cap">Goods issue (cost of goods sold and inventory) is left out here to keep the sum simple; it balances on its own.</p>
+
+<h2 id="ba">8. BA toolkit for accounts receivable</h2>
+<h3 id="ba-questions">8.1 Questions to ask</h3>
+<ul>
+<li>Which payment methods do customers use (FI-kort +71, bank transfer, direct debit), and which reference do they send?</li>
+<li>What share of incoming payments should clear automatically? Who works the FEBAN queue, and by when?</li>
+<li>What are the payment difference tolerances, per company and per user? Which reason codes do we need?</li>
+<li>Partial payment or residual item: which does finance prefer, and why?</li>
+<li>Who sets and approves credit limits? What happens to an order that is blocked?</li>
+<li>What does each dunning level say, after how many days, with which fee, and does legal approve the texts?</li>
+<li>When is a debt provisioned, and who approves a write-off?</li>
+</ul>
+
+<h3 id="ba-tests">8.2 Test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>Expected result</th></tr></thead><tbody>
+<tr><td>Bill 10 tables at DKK 12,000.00 with 25% VAT</td><td>Accounting document: debit customer 150,000, credit 800000 120,000, credit 175000 30,000. Due date 29.03.</td></tr>
+<tr><td>Bank statement line with correct +71 payment ID</td><td>Posted and cleared automatically; 113100 back to zero</td></tr>
+<tr><td>Bank statement line without reference</td><td>Bank posted, line waits in FEBAN; clearing it by hand clears the invoice</td></tr>
+<tr><td>Customer pays DKK 50.00 short</td><td>Inside tolerance: difference written off, invoice cleared</td></tr>
+<tr><td>Customer pays DKK 100,000.00</td><td>Residual or partial item of 50,000 as agreed; dunning picks up only what is still open</td></tr>
+<tr><td>New order of DKK 400,000.00 while 150,000 is open</td><td>Exceeds the DKK 500,000.00 limit: order blocked for credit check</td></tr>
+<tr><td>Dunning run 10 days after due date</td><td>Level 1 letter, no fee; second run less than 10 days later sends nothing new</td></tr>
+</tbody></table></div>
+
+<h3 id="ba-screens">8.3 Screens worth knowing</h3>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
+<tr><td>BP</td><td>Maintain Business Partner</td><td>Check reconciliation account, payment terms, dunning procedure</td></tr>
+<tr><td>VA03</td><td>Display sales order</td><td>See the order and its document flow</td></tr>
+<tr><td>VF03</td><td>Display billing document</td><td>Check the invoice and jump to its accounting document</td></tr>
+<tr><td>FBL5N</td><td>Customer line items</td><td>"Has Hygge Hjem paid?"</td></tr>
+<tr><td>F-28</td><td>Post incoming payment</td><td>Post and clear a payment by hand</td></tr>
+<tr><td>FF_5</td><td>Import electronic bank statement</td><td>Load the daily camt.053 or MT940 file</td></tr>
+<tr><td>FEBAN</td><td>Bank statement post-processing</td><td>Match payments the system could not</td></tr>
+<tr><td>F150</td><td>Dunning run</td><td>Create and print reminders</td></tr>
+<tr><td>UKM_BP</td><td>Credit management</td><td>See or change a customer's credit limit and exposure</td></tr>
+</tbody></table></div>
+<p class="cap">Codes come from general SAP knowledge and differ by release; many projects use Fiori apps (such as "Manage customer line items" and "Reprocess bank statement items") instead. Confirm them in your own system.</p>
+
+<div class="tip"><b>A closing tip</b>
+<p>Watch the bank incoming clearing account (113100). If it is zero at the end of each day, payments are matching well. If it keeps growing, ask why: it is often missing references on invoices, or a search string that needs fixing.</p></div>
+
+<h2 id="test">Test yourself</h2>
+<p>10 questions on accounts receivable. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="fico-ar"></div>
+
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
+<div id="suggest"></div>
+-->
+
+<footer>Accounts receivable in SAP FICO. Names, amounts, account numbers and codes are illustrative examples for learning. Legal limits and tax rules change over time; confirm current rules with your legal, tax and finance teams.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+<script src="/lms.js?v=20261021d" defer></script>
+<script src="/quiz.js?v=20261021d" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
+</body>
+</html>
