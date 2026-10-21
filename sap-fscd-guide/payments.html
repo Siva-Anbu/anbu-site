@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nordic Payments in FSCD</title>
+<title>Nordic Payments | FSCD Academy</title>
 <meta name="description" content="Payment methods in Denmark, Sweden and Norway, explained simply for SAP FSCD business analysts in insurance, with examples and diagrams of how the money flows.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
@@ -76,17 +76,19 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
 <link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/lms.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
 </head>
-<body>
+<body data-lesson="payments">
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
-<div class="pages"><a href="/">FSCD guide</a><a class="on" href="/payments">Nordic payments</a></div>
 <h1 id="top">Nordic Payment Methods in SAP FSCD</h1>
 <p class="lede">How insurance customers in Denmark, Sweden and Norway pay, how insurers pay them back, and what SAP FSCD does at each step. Simple words, simple pictures.</p>
 
 <div class="tip"><b>Before you start</b>
-<p>Read the <a href="/">main FSCD guide</a> first if words like <em>open item</em>, <em>clearing</em> or <em>payment run</em> are new. This page builds on them. All names, amounts and numbers are made up for learning.</p></div>
+<p>Read <a href="/basics">Lesson 1: FSCD basics</a> first if words like <em>open item</em>, <em>clearing</em> or <em>payment run</em> are new. This page builds on them. All names, amounts and numbers are made up for learning.</p></div>
 
 <h2 id="meet">Meet the three customers</h2>
 <div class="cast">
@@ -309,9 +311,11 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p>10 questions on Nordic payment methods. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="payments"></div>
 
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
 <div id="suggest"></div>
+-->
 
-<footer>Nordic Payment Methods in SAP FSCD. Names, amounts, account and reference numbers are illustrative examples for learning. Scheme rules, owners and file formats change over time; confirm details with your bank and project team. <a href="/">Back to the main FSCD guide</a>.
+<footer>Nordic Payment Methods in SAP FSCD. Names, amounts, account and reference numbers are illustrative examples for learning. Scheme rules, owners and file formats change over time; confirm details with your bank and project team. <a href="/basics">Back to Lesson 1</a>.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
@@ -319,7 +323,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
+<script src="/lms.js" defer></script>
 <script src="/quiz.js" defer></script>
-<script src="/suggest.js" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
 </body>
 </html>

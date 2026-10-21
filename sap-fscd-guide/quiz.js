@@ -132,6 +132,7 @@
       bar.appendChild(again);
       var msg = score === picked.length ? 'Perfect score! 🎉' : score >= 7 ? 'Well done!' : 'Keep learning. Read the reasons below and try again.';
       var result = el('div', 'qz-score', 'You scored ' + score + ' out of ' + picked.length + '. ' + msg);
+      document.dispatchEvent(new CustomEvent('quiz:submitted', { detail: { page: page, score: score, total: picked.length } }));
       box.insertBefore(result, form);
       result.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
