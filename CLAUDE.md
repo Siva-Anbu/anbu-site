@@ -14,3 +14,5 @@ Every lesson page must have:
   Upload the same file to Cloudinary (cloud `dnqfhp432`, raw asset, public_id `sap-fscd-guide/quiz/NAME.json`, folder `sap-fscd-guide/quiz`); quiz.js reads Cloudinary first and falls back to the local copy.
 - The shared colour theme: `<link rel="stylesheet" href="/theme.css">` right after the page's `</style>`.
 - The suggestion box, commented out for now: `<!-- <div id="suggest"></div> -->` and `<!-- <script src="/suggest.js" defer></script> -->`. The owner will ask to switch it back on (FormSubmit did not deliver).
+- Shared files (`lms.js`, `lms.css`, `theme.css`, `quiz.js`) are linked with a version tag, e.g. `/lms.js?v=20261021b`. When you change one of them, bump the tag on every page so browsers fetch the new copy.
+- Deploy to a preview first, check every file's hash, then deploy the same file list to production.
