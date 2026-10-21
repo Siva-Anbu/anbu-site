@@ -263,7 +263,7 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <rect class="bx" x="20" y="30" width="128" height="72" rx="8"/><circle class="num" cx="36" cy="46" r="10"/><text class="numt" x="36" y="50" text-anchor="middle">1</text><text class="t" x="90" y="70" text-anchor="middle">Sub-ledgers</text><text class="s" x="84" y="88" text-anchor="middle">AP and AR done</text>
 <rect class="bx" x="168" y="30" width="128" height="72" rx="8"/><circle class="num" cx="184" cy="46" r="10"/><text class="numt" x="184" y="50" text-anchor="middle">2</text><text class="t" x="238" y="70" text-anchor="middle">Bank</text><text class="s" x="232" y="88" text-anchor="middle">reconciled</text>
 <rect class="bx" x="316" y="30" width="128" height="72" rx="8"/><circle class="num" cx="332" cy="46" r="10"/><text class="numt" x="332" y="50" text-anchor="middle">3</text><text class="t" x="386" y="70" text-anchor="middle">GR/IR</text><text class="s" x="380" y="88" text-anchor="middle">reviewed</text>
-<rect class="bx" x="464" y="30" width="128" height="72" rx="8"/><circle class="num" cx="480" cy="46" r="10"/><text class="numt" x="480" y="50" text-anchor="middle">4</text><text class="t" x="534" y="70" text-anchor="middle">Accruals</text><text class="s" x="528" y="88" text-anchor="middle">electricity</text>
+<rect class="bx" x="464" y="30" width="128" height="72" rx="8"/><circle class="num" cx="480" cy="46" r="10"/><text class="numt" x="480" y="50" text-anchor="middle">4</text><text class="t" x="534" y="70" text-anchor="middle">Accruals</text><text class="s" x="528" y="88" text-anchor="middle">accounting fees</text>
 <rect class="bx hl" x="612" y="30" width="128" height="72" rx="8"/><circle class="num" cx="628" cy="46" r="10"/><text class="numt" x="628" y="50" text-anchor="middle">5</text><text class="t" x="682" y="70" text-anchor="middle">Depreciation</text><text class="s" x="676" y="88" text-anchor="middle">AFAB</text>
 <rect class="bx" x="612" y="160" width="128" height="72" rx="8"/><circle class="num" cx="628" cy="176" r="10"/><text class="numt" x="628" y="180" text-anchor="middle">6</text><text class="t" x="682" y="200" text-anchor="middle">FX valuation</text><text class="s" x="676" y="218" text-anchor="middle">FAGL_FCV</text>
 <rect class="bx" x="464" y="160" width="128" height="72" rx="8"/><circle class="num" cx="480" cy="176" r="10"/><text class="numt" x="480" y="180" text-anchor="middle">7</text><text class="t" x="534" y="200" text-anchor="middle">CO allocations</text><text class="s" x="528" y="218" text-anchor="middle">Lesson 4</text>
@@ -287,12 +287,12 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 </ol>
 
 <h3 id="accruals">5.2 Step 4: accruals</h3>
-<p>The electricity for March has been used, but the supplier's invoice won't come until mid-April. If Nordlys waits for the invoice, March looks DKK 18,000 too cheap and April too expensive. (This is the DKK 18,000 you saw on cost centre 1000 in Lesson 4: it reached March through this accrual.) So Peter posts an <strong>accrual</strong>: a cost for March, owed to someone, without an invoice yet. It goes to a new account, <strong>190000 Accrued expenses</strong> (a liability: money owed but not yet invoiced).</p>
+<p>Electricity needs nothing here: the March bill of DKK 18,000 was already posted and paid on 04.03 (Lesson 1). But Nordlys's external accountant helped with the March bookkeeping, and her invoice of <strong>DKK 12,000</strong> (net) won't arrive until mid-April. If Nordlys waits for the invoice, March looks DKK 12,000 too cheap and April too expensive. So Peter posts an <strong>accrual</strong>: a cost for March, owed to someone, without an invoice yet. The cost goes to a new account, <strong>476500 Accounting and audit fees</strong>, on cost centre 3000 Administration. The other side goes to a new account, <strong>190000 Accrued expenses</strong> (a liability: money owed but not yet invoiced).</p>
 <div class="tbl"><table><thead><tr><th>31.03.2026</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>473000 Electricity (cost centre 1000)</td><td>Debit</td><td class="num">18,000.00</td></tr>
-<tr><td>190000 Accrued expenses</td><td>Credit</td><td class="num">18,000.00</td></tr>
+<tr><td>476500 Accounting and audit fees (cost centre 3000)</td><td>Debit</td><td class="num">12,000.00</td></tr>
+<tr><td>190000 Accrued expenses</td><td>Credit</td><td class="num">12,000.00</td></tr>
 </tbody></table></div>
-<p>The entry is posted with a <strong>reversal date of 01.04.2026</strong>. On 01.04 SAP posts the exact opposite. When the real invoice arrives in April and is posted to 473000, the reversal and the invoice cancel out, so April carries no electricity cost for March. March shows the cost once; April doesn't show it twice.</p>
+<p>The entry is posted with a <strong>reversal date of 01.04.2026</strong>. On 01.04 SAP posts the exact opposite. When the real invoice arrives in April and is posted to 476500, the reversal and the invoice cancel out, so April carries no accounting cost for March. March shows the cost once; April doesn't show it twice.</p>
 
 <h3 id="steps5">5.3 Steps 5 and 6: depreciation and foreign currency</h3>
 <p><strong>Depreciation:</strong> Peter runs AFAB for period 03.2026 as described in section 4.</p>
@@ -306,7 +306,7 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 
 <h3 id="steps7">5.4 Steps 7 and 8: CO allocations and the VAT report</h3>
 <p><strong>CO allocations:</strong> now that all March costs are in (including the accrual and depreciation), Jonas runs the IT assessment and the other cycles from Lesson 4, and settles internal order 700100 if needed. Running them earlier would have missed costs.</p>
-<p><strong>VAT report:</strong> the Danish VAT return (<em>momsangivelse</em>) is filed with SKAT, the Danish tax agency. It is output VAT minus input VAT for the period. In this story Nordlys reports monthly (large companies do; smaller ones report quarterly or half-yearly). Using only the two story invoices in March:</p>
+<p><strong>VAT report:</strong> the Danish VAT return (<em>momsangivelse</em>) is filed with SKAT, the Danish tax agency. It is output VAT minus input VAT for the period. In this story Nordlys reports monthly (large companies do; smaller ones report quarterly or half-yearly). Using only the oak invoice and the sale (we leave out the VAT on smaller bills, such as electricity, to keep the example short):</p>
 <div class="tbl"><table><thead><tr><th>March 2026</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>Output VAT on 175000 (sale to Hygge Hjem)</td><td class="num">30,000.00</td></tr>
 <tr><td>Input VAT on 154000 (oak from Jysk Træ)</td><td class="num">−20,000.00</td></tr>
@@ -324,8 +324,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="term"><h4>Balance sheet</h4><p><strong>In simple words:</strong> a photo on one day. What the company owns (<b>assets</b>) on one side, and who it belongs to on the other: outsiders (<b>liabilities</b>, money owed) and the owners (<b>equity</b>). Assets = liabilities + equity, always.</p></div>
 <p>The two are linked: the profit of the period becomes part of equity. That's why one wrong posting can make both reports wrong.</p>
 
-<div class="fig" role="img" aria-label="The March profit of DKK 47,100 from the P&amp;L flows into equity on the balance sheet. Assets of 1,000,000 equal liabilities of 202,500 plus equity of 797,500">
-<svg viewBox="0 0 760 270">
+<div class="fig" role="img" aria-label="The March profit of DKK 35,100 from the P&amp;L flows into equity on the balance sheet. Assets of 982,000 equal liabilities of 196,500 plus equity of 785,500">
+<svg viewBox="0 0 760 280">
 <defs><marker id="cl-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
 <text class="lab-file" x="130" y="22" text-anchor="middle">P&amp;L March (a video)</text>
 <rect class="bx" x="20" y="34" width="220" height="196" rx="8"/>
@@ -333,27 +333,28 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="s" x="36" y="82">Rent</text><text class="s" x="224" y="82" text-anchor="end">−50,000</text>
 <text class="s" x="36" y="104">Electricity</text><text class="s" x="224" y="104" text-anchor="end">−18,000</text>
 <text class="s" x="36" y="126">Depreciation</text><text class="s" x="224" y="126" text-anchor="end">−5,000</text>
-<text class="s" x="36" y="148">FX gain</text><text class="s" x="224" y="148" text-anchor="end">100</text>
-<line x1="36" y1="162" x2="224" y2="162" style="stroke:var(--line);stroke-width:1.5"/>
-<text class="t" x="36" y="188">Profit</text><text class="t" x="224" y="188" text-anchor="end">47,100</text>
+<text class="s" x="36" y="148">Accounting fees</text><text class="s" x="224" y="148" text-anchor="end">−12,000</text>
+<text class="s" x="36" y="170">FX gain</text><text class="s" x="224" y="170" text-anchor="end">100</text>
+<line x1="36" y1="182" x2="224" y2="182" style="stroke:var(--line);stroke-width:1.5"/>
+<text class="t" x="36" y="210">Profit</text><text class="t" x="224" y="210" text-anchor="end">35,100</text>
 <text class="lab-file" x="560" y="22" text-anchor="middle">Balance sheet 31.03 (a photo)</text>
 <rect class="bx" x="380" y="34" width="170" height="196" rx="8"/>
 <text class="t" x="465" y="60" text-anchor="middle">Assets</text>
 <text class="s" x="465" y="120" text-anchor="middle">machine, stock,</text>
 <text class="s" x="465" y="138" text-anchor="middle">bank</text>
-<text class="t" x="465" y="210" text-anchor="middle">1,000,000</text>
+<text class="t" x="465" y="210" text-anchor="middle">982,000</text>
 <rect class="bx" x="570" y="34" width="170" height="80" rx="8"/>
 <text class="t" x="655" y="60" text-anchor="middle">Liabilities</text>
 <text class="s" x="655" y="80" text-anchor="middle">owed to others</text>
-<text class="t" x="655" y="102" text-anchor="middle">202,500</text>
+<text class="t" x="655" y="102" text-anchor="middle">196,500</text>
 <rect class="bx hl" x="570" y="124" width="170" height="106" rx="8"/>
 <text class="t" x="655" y="150" text-anchor="middle">Equity</text>
 <text class="s" x="655" y="170" text-anchor="middle">owners' share,</text>
 <text class="s" x="655" y="186" text-anchor="middle">incl. March profit</text>
-<text class="t" x="655" y="212" text-anchor="middle">797,500</text>
-<path class="gin" d="M240,184 C420,250 520,250 568,200" marker-end="url(#cl-c)"/>
-<text class="lab-in" x="300" y="258">profit adds to equity</text>
-<text class="lin-t" x="560" y="258" text-anchor="middle">=</text>
+<text class="t" x="655" y="212" text-anchor="middle">785,500</text>
+<path class="gin" d="M240,206 C290,272 600,268 652,234" marker-end="url(#cl-c)"/>
+<text class="lab-in" x="60" y="262">profit adds to equity →</text>
+<text class="t" x="560" y="137" text-anchor="middle">=</text>
 </svg>
 </div>
 <p class="cap">A deliberately tiny, made-up picture. A real P&amp;L also has wages, materials, IT costs and much more.</p>
@@ -363,25 +364,26 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="tbl"><table><thead><tr><th>Line</th><th>Account</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>Sales revenue (10 oak tables)</td><td>800000</td><td class="num">120,000.00</td></tr>
 <tr><td>Rent</td><td>470000</td><td class="num">−50,000.00</td></tr>
-<tr><td>Electricity (the accrual)</td><td>473000</td><td class="num">−18,000.00</td></tr>
+<tr><td>Electricity (billed and paid 04.03)</td><td>473000</td><td class="num">−18,000.00</td></tr>
 <tr><td>Depreciation (CNC machine)</td><td>481000</td><td class="num">−5,000.00</td></tr>
+<tr><td>Accounting and audit fees (the accrual)</td><td>476500</td><td class="num">−12,000.00</td></tr>
 <tr><td>Unrealised exchange rate gain</td><td>(valuation)</td><td class="num">100.00</td></tr>
-<tr><td><strong>Profit for the slice</strong></td><td></td><td class="num"><strong>47,100.00</strong></td></tr>
+<tr><td><strong>Profit for the slice</strong></td><td></td><td class="num"><strong>35,100.00</strong></td></tr>
 </tbody></table></div>
-<p class="cap">120,000 − 50,000 − 18,000 − 5,000 + 100 = 47,100. VAT is not in the P&amp;L: it is money passing through to SKAT, so it sits on balance sheet accounts.</p>
+<p class="cap">120,000 − 50,000 − 18,000 − 5,000 − 12,000 + 100 = 35,100. VAT is not in the P&amp;L: it is money passing through to SKAT, so it sits on balance sheet accounts.</p>
 
 <h3 id="bs">6.2 Check it yourself: does the balance sheet balance?</h3>
-<p>Here is a tiny, made-up balance sheet for Nordlys on 31.03.2026. The bank and equity figures are invented to keep it small; the rest come from the story.</p>
+<p>Here is a tiny, made-up balance sheet for Nordlys on 31.03.2026. The bank and equity figures are invented to keep it small (the bank balance is already after paying the electricity bill on 04.03); the rest come from the story.</p>
 <div class="tbl"><table><thead><tr><th>Assets</th><th class="num">DKK</th><th>Liabilities and equity</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>CNC machine, book value</td><td class="num">585,000</td><td>Payable: Jysk Træ (due 07.04)</td><td class="num">100,000</td></tr>
 <tr><td>Oak timber in stock</td><td class="num">80,000</td><td>Payable: German supplier (revalued)</td><td class="num">74,500</td></tr>
-<tr><td>Bank: Danske Bank</td><td class="num">335,000</td><td>Accrued electricity (190000)</td><td class="num">18,000</td></tr>
+<tr><td>Bank: Danske Bank</td><td class="num">317,000</td><td>Accrued accounting fees (190000)</td><td class="num">12,000</td></tr>
 <tr><td>Receivable: Hygge Hjem (paid 27.03)</td><td class="num">0</td><td>VAT owed to SKAT</td><td class="num">10,000</td></tr>
 <tr><td></td><td></td><td>Equity: capital and earlier profits</td><td class="num">750,400</td></tr>
-<tr><td></td><td></td><td>Equity: March profit</td><td class="num">47,100</td></tr>
-<tr><td><strong>Total assets</strong></td><td class="num"><strong>1,000,000</strong></td><td><strong>Total liabilities and equity</strong></td><td class="num"><strong>1,000,000</strong></td></tr>
+<tr><td></td><td></td><td>Equity: March profit</td><td class="num">35,100</td></tr>
+<tr><td><strong>Total assets</strong></td><td class="num"><strong>982,000</strong></td><td><strong>Total liabilities and equity</strong></td><td class="num"><strong>982,000</strong></td></tr>
 </tbody></table></div>
-<p>Add it up: assets 585,000 + 80,000 + 335,000 = <strong>1,000,000</strong>. Liabilities 100,000 + 74,500 + 18,000 + 10,000 = <strong>202,500</strong>. Equity 750,400 + 47,100 = <strong>797,500</strong>. And 202,500 + 797,500 = <strong>1,000,000</strong>. It balances. In SAP, the balance sheet can never be out of balance, because every document has debits equal to credits. If a report doesn't balance, look for a wrong report setup, not a wrong posting.</p>
+<p>Add it up: assets 585,000 + 80,000 + 317,000 = <strong>982,000</strong>. Liabilities 100,000 + 74,500 + 12,000 + 10,000 = <strong>196,500</strong>. Equity 750,400 + 35,100 = <strong>785,500</strong>. And 196,500 + 785,500 = <strong>982,000</strong>. It balances. In SAP, the balance sheet can never be out of balance, because every document has debits equal to credits. If a report doesn't balance, look for a wrong report setup, not a wrong posting.</p>
 
 <h2 id="yearend">7. Year-end in brief</h2>
 <p>December is closed like any other month, plus some extra work. The year-end close for 2026 will happen in January and February 2027.</p>
@@ -413,12 +415,12 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="s" x="622" y="114" text-anchor="middle">year-end adjustments</text>
 <path class="gfile" d="M380,130 V158" marker-end="url(#cl-d)"/>
 <text class="lab-file" x="392" y="148">balance carry-forward (FAGLGVTR)</text>
-<rect class="bx hl" x="60" y="164" width="300" height="64" rx="8"/>
-<text class="t" x="210" y="190" text-anchor="middle">Balance sheet accounts</text>
-<text class="s" x="210" y="210" text-anchor="middle">balances move into 2027 (machine, bank, payables)</text>
-<rect class="bx hl" x="400" y="164" width="300" height="64" rx="8"/>
-<text class="t" x="550" y="190" text-anchor="middle">P&amp;L accounts</text>
-<text class="s" x="550" y="210" text-anchor="middle">start 2027 at zero; profit goes to equity</text>
+<rect class="bx hl" x="40" y="164" width="330" height="64" rx="8"/>
+<text class="t" x="205" y="190" text-anchor="middle">Balance sheet accounts</text>
+<text class="s" x="205" y="210" text-anchor="middle">balances move into 2027 as opening balances</text>
+<rect class="bx hl" x="390" y="164" width="330" height="64" rx="8"/>
+<text class="t" x="555" y="190" text-anchor="middle">P&amp;L accounts</text>
+<text class="s" x="555" y="210" text-anchor="middle">start 2027 at zero; profit goes to equity</text>
 </svg>
 </div>
 <p class="cap">Special periods use the posting date 31.12 but are kept apart from December, so December's own figures stay clean.</p>
