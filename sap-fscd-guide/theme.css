@@ -1,0 +1,18 @@
+/* Shared colour theme for every page: a soft sea-green tint.
+   Loaded after each page's own <style>, so these tokens win. */
+:root{--bg:#f1f6f5;--fg:#1d2b2a;--muted:#55666a;--line:#d5e3df;--accent:#0f766e;--head:#e2efeb;--card:#fff;--tip:#e7f4f0;--tipline:#b4d9cf;--box:#eef5f3;--band1:#d8eee8;--band2:#e6eef8}
+@media (prefers-color-scheme:dark){:root{--bg:#111a1a;--fg:#e3ecea;--muted:#9db0ad;--line:#26393a;--accent:#5fd4c4;--head:#18292a;--card:#162222;--tip:#142a28;--tipline:#245049;--box:#1b2b2b;--band1:#163432;--band2:#1a2638}}
+body{background:var(--bg)}
+body::before{content:"";display:block;height:6px;background:linear-gradient(90deg,var(--accent),#3b82c4)}
+main>h1:first-of-type{color:var(--accent)}
+main>.lede{border-left:4px solid var(--accent);padding-left:12px}
+.pages+h1,.pages{position:relative}
+.pages{background:linear-gradient(90deg,var(--band1),var(--band2));border-radius:999px;padding:6px;display:inline-flex}
+.pages a{border-color:transparent}
+.pages a.on{background:var(--card)}
+h2{border-top-color:var(--line)}
+h2::before{content:"";display:inline-block;width:8px;height:1.05em;background:var(--accent);border-radius:3px;margin-right:10px;vertical-align:-2px}
+nav a:hover,nav a:focus{background:var(--head);border-radius:0 6px 6px 0}
+.term,.cast div,.chain div,.tbl{box-shadow:0 1px 2px rgba(15,60,55,.06)}
+footer{background:linear-gradient(90deg,var(--band1),var(--band2));border-top:0;border-radius:10px;padding:14px 18px}
+@media (prefers-color-scheme:dark){body .qz-btn,body .sg-btn{color:#0b1f1d}}

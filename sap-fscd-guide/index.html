@@ -86,6 +86,7 @@ td:first-child{font-weight:500}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}.ba{grid-template-columns:1fr}}
 </style>
+<link rel="stylesheet" href="/theme.css">
 </head>
 <body>
 <div class="layout">
@@ -443,6 +444,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p>10 questions on the FSCD basics on this page. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="guide"></div>
 
+<div id="suggest"></div>
+
 <footer>SAP FSCD Learning Guide for Business Analysts. Names, numbers, codes and screens are illustrative examples for learning, not real data or real SAP screenshots. Tax rates and rules are simplified.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
@@ -453,5 +456,6 @@ var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
 <script src="/quiz.js" defer></script>
+<script src="/suggest.js" defer></script>
 </body>
 </html>
