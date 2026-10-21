@@ -88,17 +88,19 @@
           email: email.value.trim() || '(not given)',
           suggestion: text.value.trim()
         })
+      }).catch(function () {
+        throw new Error('Could not reach the mail service. Your network or browser may be blocking formsubmit.co.');
       }).then(function (r) { return r.json(); }).then(function (res) {
-        if (String(res.success) !== 'true') throw new Error(res.message || 'failed');
+        if (String(res.success) !== 'true') throw new Error(res.message || 'The mail service did not accept the message.');
         form.innerHTML = '';
         var ok = el('p', 'sg-msg', '✓ Thank you! Your suggestion has been sent.');
         ok.style.color = 'var(--ok)';
         form.appendChild(ok);
-      }).catch(function () {
+      }).catch(function (err) {
         send.disabled = false;
         send.textContent = 'Send suggestion';
         msg.style.color = 'var(--bad)';
-        msg.textContent = 'Sorry, it could not be sent just now. Please try again in a moment.';
+        msg.textContent = 'Sorry, it could not be sent. (' + err.message + ')';
       });
     });
 
