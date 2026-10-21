@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FICO basics, with a Danish example | FICO Academy</title>
+<meta name="description" content="SAP FI and CO explained in simple English for business analysts: what FICO is, how a company is set up in SAP, debit and credit, GL accounts, one journal entry read field by field and the Universal Journal, with a Danish furniture maker as the example.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ok{color:var(--ok);font-weight:600}.due{color:var(--due);font-weight:600}.bad{color:var(--bad);font-weight:600}
+/* Mock SAP screen: a picture, so it keeps its own light palette in both themes */
+.shot{margin:1.4em 0 .4em}
+.screen{background:#eef1f4;color:#1d2733;border:1px solid #9aa8b6;border-radius:6px;overflow-x:auto;font:13px/1.45 "Segoe UI",Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.screen .bar{background:#354a5f;color:#fff;padding:7px 12px;font-weight:600;display:flex;justify-content:space-between;gap:12px;white-space:nowrap}
+.screen .bar span{font-weight:400;opacity:.8}
+.screen .tools{background:#dde3ea;border-bottom:1px solid #b9c4cf;padding:5px 12px;color:#44515e;white-space:nowrap}
+.screen .body{padding:12px;min-width:640px}
+.screen .grp{border:1px solid #b9c4cf;background:#fff;border-radius:3px;padding:10px 12px;margin-bottom:10px}
+.screen .grp>b{display:block;font-size:12px;color:#44515e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.screen .f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 22px}
+.screen .f div{display:flex;align-items:center;gap:8px}
+.screen .f label{width:130px;color:#44515e;flex:none}
+.screen .f output{background:#f5f7f9;border:1px solid #c5ced8;padding:1px 6px;min-width:120px;font-family:Consolas,"Courier New",monospace;font-size:12.5px}
+.screen table{font-size:12.5px;background:#fff}
+.screen th{background:#e4e9ee;color:#1d2733;border-bottom:1px solid #b9c4cf;padding:5px 8px;white-space:nowrap}
+.screen td{border-bottom:1px solid #e1e6eb;padding:5px 8px;font-weight:400;white-space:nowrap;font-family:Consolas,"Courier New",monospace}
+.screen tr.tot td{font-weight:700;background:#f5f7f9}
+.screen .st-open{color:#b35900;font-weight:700}.screen .st-clr{color:#1a7f37;font-weight:700}
+.n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#d9480f;color:#fff;font:700 11px/1 system-ui,sans-serif;flex:none}
+.legend{list-style:none;padding:0;margin:.8em 0 1.4em}
+.legend li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.legend li:last-child{border-bottom:0}
+.legend .n{margin-top:3px}
+.legend p{margin:0}
+</style>
+<link rel="stylesheet" href="/theme.css?v=20261021d">
+<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="fico-basics">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">FICO basics, with a Danish example</h1>
+<p class="lede">What SAP FI and CO are, how a company is set up in SAP, and how one journal entry works. Told with one Danish furniture maker, Nordlys Møbler, and one rent payment.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>This is the first lesson of the FICO course, so you need no SAP or accounting background. If you took the FSCD course, its <a href="/basics">first lesson</a> uses the same idea of a posting document, so some of this will feel familiar. All names, amounts, account numbers and codes below are made up for learning.</p></div>
+
+<h2 id="meet">Meet the example: Nordlys Møbler A/S</h2>
+<p><strong>Nordlys Møbler A/S</strong> is a furniture maker in Aarhus. It makes oak dining tables and chairs, buys oak timber from a supplier in Silkeborg and sells to furniture shops across Denmark. It runs SAP S/4HANA. In SAP the company is called <strong>company code DK01</strong> and it keeps its books in Danish kroner (<strong>DKK</strong>).</p>
+<p>You are <strong>Sofie Holm</strong>, a new business analyst (BA) in the finance team. In this course you follow Nordlys Møbler through 2026, one business event at a time.</p>
+<div class="cast">
+<div><b>Sofie Holm (you)</b><span>New BA in finance. Turns business needs into SAP requirements and tests</span></div>
+<div><b>Peter Lund</b><span>Finance manager. Signs off the monthly accounts and the VAT return</span></div>
+<div><b>Maria Berg</b><span>Accounts payable clerk. Posts supplier invoices and bank payments</span></div>
+<div><b>Jonas Krogh</b><span>Controller. Watches costs per department and profit per product</span></div>
+<div><b>Jysk Træ ApS</b><span>Supplier of oak timber, Silkeborg (business partner 300120)</span></div>
+<div><b>Hygge Hjem A/S</b><span>Customer, a furniture shop chain in Copenhagen (business partner 100250)</span></div>
+</div>
+
+<h2 id="what">1. What SAP FICO is, in simple words</h2>
+<p>SAP is one big system that runs a whole company: buying, selling, making things, paying people. It is split into <strong>modules</strong>, one per business area. <strong>FICO</strong> is two modules that work as a pair:</p>
+<div class="term"><h4>FI: Financial Accounting</h4><p><strong>In simple words:</strong> the company's official books. Every krone in and out is recorded so the company can produce its balance sheet, its profit and loss statement (P&amp;L) and its VAT return. It looks <em>outward</em>: the tax agency, auditors, banks and owners read it.</p><p class="ex">Example: at year end, Peter Lund sends the <b>annual report</b> of Nordlys Møbler to the Danish Business Authority. The numbers come from FI.</p></div>
+<div class="term"><h4>CO: Controlling</h4><p><strong>In simple words:</strong> the company's internal view of the same money. It answers "which department spent what?" and "which product makes money?". It looks <em>inward</em>: managers read it to make decisions.</p><p class="ex">Example: Jonas Krogh wants to know if <b>tables or chairs</b> earn more. FI only says "the company made a profit". CO splits it by product.</p></div>
+
+<div class="tbl"><table><thead><tr><th>Question</th><th>FI (Financial Accounting)</th><th>CO (Controlling)</th></tr></thead><tbody>
+<tr><td>Who reads it?</td><td>Authorities, auditors, banks, owners</td><td>Managers inside the company</td></tr>
+<tr><td>Main reports</td><td>Balance sheet, P&amp;L, VAT return</td><td>Cost centre reports, profit per product</td></tr>
+<tr><td>Rules</td><td>Fixed by law and accounting standards</td><td>The company decides</td></tr>
+<tr><td>Key objects</td><td>Company code, GL accounts, suppliers, customers, assets</td><td>Controlling area, cost centres, profit centres, internal orders</td></tr>
+<tr><td>Nordlys Møbler example</td><td>"Rent of DKK 50,000 was paid from the bank"</td><td>"That rent belongs to Administration, cost centre 3000"</td></tr>
+</tbody></table></div>
+
+<h3 id="modules">1.1 Where FICO sits among the other modules</h3>
+<p>Most postings in FI and CO are not typed by finance people. They are created automatically when someone else does their job: a warehouse worker receives oak, a sales clerk bills a customer, the payroll run pays salaries. Every one of these events has a money effect, and that effect lands in FI and CO.</p>
+
+<div class="fig" role="img" aria-label="Other SAP modules feed FICO: purchasing (MM), sales (SD), production (PP), payroll (HR) and banks all send postings into FI and CO. FI produces the balance sheet, P&amp;L and VAT return; CO produces cost centre reports and profit per product.">
+<svg viewBox="0 0 760 300">
+<defs>
+<marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
+</defs>
+<rect class="bx" x="10" y="20" width="180" height="46" rx="8"/><text class="t" x="100" y="40" text-anchor="middle">MM: purchasing</text><text class="s" x="100" y="57" text-anchor="middle">buys and receives oak</text>
+<rect class="bx" x="10" y="76" width="180" height="46" rx="8"/><text class="t" x="100" y="96" text-anchor="middle">SD: sales</text><text class="s" x="100" y="113" text-anchor="middle">sells and bills tables</text>
+<rect class="bx" x="10" y="132" width="180" height="46" rx="8"/><text class="t" x="100" y="152" text-anchor="middle">PP: production</text><text class="s" x="100" y="169" text-anchor="middle">turns oak into tables</text>
+<rect class="bx" x="10" y="188" width="180" height="46" rx="8"/><text class="t" x="100" y="208" text-anchor="middle">HR: payroll</text><text class="s" x="100" y="225" text-anchor="middle">pays salaries</text>
+<rect class="bx" x="10" y="244" width="180" height="46" rx="8"/><text class="t" x="100" y="264" text-anchor="middle">Bank</text><text class="s" x="100" y="281" text-anchor="middle">statements, payments</text>
+<path class="gin" d="M190,43 H276" marker-end="url(#m1)"/><path class="gin" d="M190,99 H276" marker-end="url(#m1)"/><path class="gin" d="M190,155 H276" marker-end="url(#m1)"/><path class="gin" d="M190,211 H276" marker-end="url(#m1)"/><path class="gin" d="M190,267 H276" marker-end="url(#m1)"/>
+<rect class="bx hl" x="280" y="10" width="220" height="285" rx="10"/>
+<text class="lab-file" x="390" y="32" text-anchor="middle">SAP FICO</text>
+<rect class="bx" x="300" y="44" width="180" height="100" rx="8"/><text class="t" x="390" y="70" text-anchor="middle">FI</text><text class="s" x="390" y="90" text-anchor="middle">Financial accounting</text><text class="s" x="390" y="108" text-anchor="middle">external view: law,</text><text class="s" x="390" y="125" text-anchor="middle">tax, auditors, owners</text>
+<text class="lin-t" x="390" y="166" text-anchor="middle">one posting feeds both</text>
+<rect class="bx" x="300" y="180" width="180" height="100" rx="8"/><text class="t" x="390" y="206" text-anchor="middle">CO</text><text class="s" x="390" y="226" text-anchor="middle">Controlling</text><text class="s" x="390" y="244" text-anchor="middle">internal view: costs</text><text class="s" x="390" y="261" text-anchor="middle">and profit for managers</text>
+<rect class="bx" x="565" y="30" width="185" height="46" rx="8"/><text class="t" x="657" y="50" text-anchor="middle">Balance sheet, P&amp;L</text><text class="s" x="657" y="67" text-anchor="middle">for owners, auditors</text>
+<rect class="bx" x="565" y="86" width="185" height="46" rx="8"/><text class="t" x="657" y="106" text-anchor="middle">VAT return</text><text class="s" x="657" y="123" text-anchor="middle">to the tax agency</text>
+<rect class="bx" x="565" y="170" width="185" height="46" rx="8"/><text class="t" x="657" y="190" text-anchor="middle">Cost centre reports</text><text class="s" x="657" y="207" text-anchor="middle">spend per department</text>
+<rect class="bx" x="565" y="226" width="185" height="46" rx="8"/><text class="t" x="657" y="246" text-anchor="middle">Profit per product</text><text class="s" x="657" y="263" text-anchor="middle">tables vs chairs</text>
+<path class="gout" d="M480,94 C525,94 520,53 563,53" marker-end="url(#m2)"/><path class="gout" d="M480,94 C525,94 520,109 563,109" marker-end="url(#m2)"/>
+<path class="gout" d="M480,230 C525,230 520,193 563,193" marker-end="url(#m2)"/><path class="gout" d="M480,230 C525,230 520,249 563,249" marker-end="url(#m2)"/>
+</svg>
+</div>
+<p class="cap">Green: events from other modules that create postings. Orange: reports built from those postings. Payroll is often run outside SAP and sends its totals in by interface.</p>
+<p>This is why a FICO BA must understand a little of every other module. When Jonas asks "why is production so expensive this month?", the answer may start with a goods receipt in MM, not with anything finance did.</p>
+
+<h2 id="org">2. How a company is set up in SAP</h2>
+<p>Before anyone can post a single krone, SAP needs to know the <strong>organisational structure</strong>: which legal company it is, which accounts it uses, how its year is divided and how managers want to see costs. These settings are made once, at the start of a project, and are hard to change later. That is why BAs are asked about them early.</p>
+
+<div class="fig" role="img" aria-label="Organisational structure: client 100 at the top. Under it, company code DK01 (Nordlys Møbler A/S, DKK, chart of accounts NMKP) with its fiscal year variant and posting periods, and controlling area NM00 with cost centres 1000, 2000, 3000, 4100 and profit centres PC-TABLES and PC-CHAIRS. DK01 is assigned to NM00.">
+<svg viewBox="0 0 760 320">
+<defs><marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<rect class="bx" x="260" y="10" width="240" height="52" rx="8"/><text class="t" x="380" y="32" text-anchor="middle">Client 100</text><text class="s" x="380" y="50" text-anchor="middle">one SAP system, all data</text>
+<path class="gfile" d="M330,62 L200,98" marker-end="url(#m3)"/><path class="gfile" d="M430,62 L560,98" marker-end="url(#m3)"/>
+<rect class="bx hl" x="30" y="100" width="320" height="72" rx="8"/><text class="t" x="190" y="124" text-anchor="middle">Company code DK01</text><text class="s" x="190" y="143" text-anchor="middle">Nordlys Møbler A/S · its own legal books</text><text class="s" x="190" y="160" text-anchor="middle">currency DKK · chart of accounts NMKP</text>
+<rect class="bx hl" x="410" y="100" width="320" height="72" rx="8"/><text class="t" x="570" y="124" text-anchor="middle">Controlling area NM00</text><text class="s" x="570" y="143" text-anchor="middle">internal view for managers</text><text class="s" x="570" y="160" text-anchor="middle">same chart of accounts NMKP</text>
+<path class="lin" d="M350,146 H410"/>
+<text class="lin-t" x="380" y="132" text-anchor="middle">assigned</text>
+<path class="gfile" d="M150,172 L100,212" marker-end="url(#m3)"/><path class="gfile" d="M230,172 L278,212" marker-end="url(#m3)"/>
+<path class="gfile" d="M530,172 L483,212" marker-end="url(#m3)"/><path class="gfile" d="M610,172 L662,212" marker-end="url(#m3)"/>
+<rect class="bx" x="15" y="214" width="165" height="60" rx="8"/><text class="t" x="97" y="238" text-anchor="middle">Fiscal year</text><text class="s" x="97" y="258" text-anchor="middle">Jan to Dec, 12 + 4</text>
+<rect class="bx" x="195" y="214" width="165" height="60" rx="8"/><text class="t" x="277" y="238" text-anchor="middle">Posting periods</text><text class="s" x="277" y="258" text-anchor="middle">opened, closed in OB52</text>
+<rect class="bx" x="400" y="214" width="165" height="60" rx="8"/><text class="t" x="482" y="238" text-anchor="middle">Cost centres</text><text class="s" x="482" y="258" text-anchor="middle">1000 · 2000 · 3000 · 4100</text>
+<rect class="bx" x="580" y="214" width="165" height="60" rx="8"/><text class="t" x="662" y="238" text-anchor="middle">Profit centres</text><text class="s" x="662" y="258" text-anchor="middle">PC-TABLES · PC-CHAIRS</text>
+<text class="lab-file" x="380" y="304" text-anchor="middle">A bigger group would add more company codes under the same client and controlling area</text>
+</svg>
+</div>
+<p class="cap">The Nordlys Møbler structure. Left side is FI (legal), right side is CO (internal).</p>
+
+<div class="tbl"><table><thead><tr><th>Object</th><th>In simple words</th><th>Nordlys Møbler</th></tr></thead><tbody>
+<tr><td>Client</td><td>The top level: one SAP installation's set of data. Everything else lives inside it.</td><td>Client 100 (the production system)</td></tr>
+<tr><td>Company code</td><td>One legal company with its own balance sheet and P&amp;L. The smallest unit that must produce full legal accounts.</td><td>DK01, Nordlys Møbler A/S, currency DKK</td></tr>
+<tr><td>Chart of accounts</td><td>The list of all GL accounts the company may use, like a dictionary of "where money can be recorded".</td><td>NMKP, with 6-digit accounts such as 110000 Bank</td></tr>
+<tr><td>Fiscal year variant</td><td>How the financial year is cut into periods.</td><td>Calendar year: 12 normal periods (one per month) plus 4 special periods (13 to 16) for year-end corrections</td></tr>
+<tr><td>Posting periods</td><td>Which periods are open for posting. Finance opens the new month and closes the old one so nobody changes a finished month.</td><td>On 01.04 Peter's team opens period 4 and, after month-end, closes period 3</td></tr>
+<tr><td>Controlling area</td><td>The unit in which CO works. One controlling area can hold several company codes.</td><td>NM00, holds DK01</td></tr>
+<tr><td>Cost centre</td><td>A place where costs happen and someone is responsible for them, usually a department.</td><td>1000 Production Aarhus, 2000 Sales, 3000 Administration, 4100 IT</td></tr>
+<tr><td>Profit centre</td><td>A part of the business you want a profit figure for: a product line, a region or a business unit.</td><td>PC-TABLES (dining tables), PC-CHAIRS (chairs)</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Why special periods?</b>
+<p>After December is finished, the auditor may still find corrections, for example a forgotten bonus accrual. Instead of reopening December, they are posted in period 13 to 16 of the same year. December stays clean, and the annual figures still include the corrections.</p></div>
+
+<h2 id="accounts">3. Debit, credit and the GL account</h2>
+<h3 id="debit-credit">3.1 Debit and credit in one minute</h3>
+<p>Accounting uses <strong>double entry</strong>: every business event is written down at least twice, once on the <strong>debit</strong> side of one account and once on the <strong>credit</strong> side of another, for the same total. Debit and credit do not mean "good" and "bad". They are simply the left and right side of an account.</p>
+<div class="tbl"><table><thead><tr><th>Kind of account</th><th>Goes up with a</th><th>Goes down with a</th><th>Nordlys Møbler example</th></tr></thead><tbody>
+<tr><td>Assets (what the company owns)</td><td>Debit</td><td>Credit</td><td>Money in Danske Bank, oak in the warehouse, the CNC machine</td></tr>
+<tr><td>Liabilities (what it owes)</td><td>Credit</td><td>Debit</td><td>Unpaid invoice from Jysk Træ, VAT owed to the tax agency</td></tr>
+<tr><td>Equity (owners' share)</td><td>Credit</td><td>Debit</td><td>Share capital, profit kept from earlier years</td></tr>
+<tr><td>Expenses (costs)</td><td>Debit</td><td>Credit</td><td>Rent, electricity, depreciation</td></tr>
+<tr><td>Revenue (income)</td><td>Credit</td><td>Debit</td><td>Sales of tables to Hygge Hjem</td></tr>
+</tbody></table></div>
+
+<div class="fig" role="img" aria-label="Two T-accounts for the March rent: account 470000 Rent has DKK 50,000 on the debit side, so the cost goes up; account 110000 Bank has DKK 50,000 on the credit side, so money goes out. Debit equals credit, so the document balances.">
+<svg viewBox="0 0 760 230">
+<defs><marker id="m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<text class="t" x="195" y="34" text-anchor="middle">470000 Rent (P&amp;L)</text>
+<path d="M60,48 H330 M195,48 V170" style="stroke:var(--fg);stroke-width:2;fill:none"/>
+<text class="s" x="127" y="70" text-anchor="middle">Debit</text><text class="s" x="262" y="70" text-anchor="middle">Credit</text>
+<text class="lab-in" x="127" y="108" text-anchor="middle">50,000.00</text>
+<text class="s" x="127" y="130" text-anchor="middle">cost goes up</text>
+<text class="t" x="565" y="34" text-anchor="middle">110000 Bank (balance sheet)</text>
+<path d="M430,48 H700 M565,48 V170" style="stroke:var(--fg);stroke-width:2;fill:none"/>
+<text class="s" x="497" y="70" text-anchor="middle">Debit</text><text class="s" x="632" y="70" text-anchor="middle">Credit</text>
+<text class="lab-out" x="632" y="108" text-anchor="middle">50,000.00</text>
+<text class="s" x="632" y="130" text-anchor="middle">money goes out</text>
+<path class="gfile" d="M425,104 H345" marker-end="url(#m4)"/>
+<text class="lin-t" x="385" y="92" text-anchor="middle">DKK 50,000</text>
+<text class="lab-file" x="380" y="210" text-anchor="middle">Debit 50,000 = Credit 50,000, so the document balances</text>
+</svg>
+</div>
+<p class="cap">A "T-account" is how accountants sketch an account on paper: debits on the left, credits on the right.</p>
+<div class="tip"><b>How SAP shows it</b>
+<p>In SAP reports a debit is a positive number and a credit is a negative number. So in the bank account's line items you will see <strong>-50,000.00</strong> for the rent. Every document must add up to <strong>0.00</strong>, otherwise SAP refuses to post it.</p></div>
+
+<h3 id="gl">3.2 The GL account (FS00)</h3>
+<p>A <strong>GL account</strong> (general ledger account) is one "box" in the books where amounts of one kind are collected: bank, rent, sales. You create and view it in transaction <strong>FS00</strong>. Every GL account is one of two big kinds:</p>
+<div class="term"><h4>Balance sheet account</h4><p><strong>In simple words:</strong> things the company owns or owes on a given day. The balance <em>carries forward</em> into the next year.</p><p class="ex">Example: the bank balance on 31.12.2026 is the opening balance on 01.01.2027.</p></div>
+<div class="term"><h4>P&amp;L account</h4><p><strong>In simple words:</strong> income and costs for a period. At year end the total profit or loss moves to a retained earnings account in equity, and the P&amp;L accounts start again from zero.</p><p class="ex">Example: rent for 2026 adds up to <b>DKK 600,000</b> (12 × 50,000). On 01.01.2027 account 470000 starts at zero.</p></div>
+<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> a summary account in the GL for a whole group of customers or suppliers. You never post to it directly. When Maria posts an invoice to the supplier Jysk Træ, SAP updates the supplier's own account <em>and</em> account 160000 at the same moment. So the GL always agrees with the supplier list.</p><p class="ex">Example: if Nordlys Møbler owes 40 suppliers a total of <b>DKK 900,000</b>, account 160000 shows 900,000 and the 40 supplier accounts add up to the same 900,000.</p></div>
+<p>In S/4HANA, FS00 also holds the <strong>cost element</strong> setting that CO needs. A P&amp;L account such as Rent is a <em>primary cost element</em> (the cost comes from outside the company). An account that only moves cost inside the company, such as 940000, is a <em>secondary cost element</em> and only lives in CO.</p>
+
+<div class="tbl"><table><thead><tr><th>Account</th><th>Name</th><th>Type</th><th>What it collects</th></tr></thead><tbody>
+<tr><td>110000</td><td>Bank: Danske Bank</td><td>Balance sheet (asset)</td><td>Money on the company's bank account</td></tr>
+<tr><td>140000</td><td>Trade receivables</td><td>Balance sheet, reconciliation account for customers</td><td>What customers such as Hygge Hjem owe</td></tr>
+<tr><td>160000</td><td>Trade payables</td><td>Balance sheet, reconciliation account for suppliers</td><td>What the company owes suppliers such as Jysk Træ</td></tr>
+<tr><td>154000</td><td>Input VAT (købsmoms)</td><td>Balance sheet</td><td>VAT paid on purchases, to be claimed back</td></tr>
+<tr><td>175000</td><td>Output VAT (salgsmoms)</td><td>Balance sheet</td><td>VAT charged on sales, to be paid to the tax agency</td></tr>
+<tr><td>470000</td><td>Rent</td><td>P&amp;L, primary cost</td><td>Monthly rent of the Aarhus building</td></tr>
+<tr><td>800000</td><td>Sales revenue: domestic</td><td>P&amp;L, revenue</td><td>Sales of tables and chairs in Denmark</td></tr>
+<tr><td>940000</td><td>Secondary cost: IT assessment</td><td>CO only, secondary cost</td><td>IT costs shared out to other departments</td></tr>
+</tbody></table></div>
+
+<h2 id="journal">4. The journal entry, explained with a screen</h2>
+<p>A <strong>journal entry</strong> (in SAP: an accounting document) is the permanent record of one business event. It has a <strong>header</strong> (information about the whole document) and two or more <strong>line items</strong> (one per account touched). Once posted it is never deleted. A mistake is fixed by posting a <em>reversal</em> document.</p>
+<p>The story: on 25.02.2026 the landlord sends the rent invoice for March. On 01.03.2026 Maria Berg pays <strong>DKK 50,000</strong> from Danske Bank and posts it with transaction FB50 (enter a GL account document). Sofie opens the result in <strong>FB03 (Display Document)</strong>.</p>
+<div class="shot">
+<div class="screen" role="img" aria-label="Illustration of an FB03 Display Document screen for document 100000017 in company code DK01: debit 470000 Rent DKK 50,000 on cost centre 3000, credit 110000 Bank DKK 50,000">
+<div class="bar">Display Document: Data Entry View <span>FB03</span></div>
+<div class="tools">Document &nbsp;Edit &nbsp;Goto &nbsp;Extras &nbsp;Settings &nbsp;Environment &nbsp;System &nbsp;Help</div>
+<div class="body">
+<div class="grp"><b>Document header</b>
+<div class="f">
+<div><span class="n">1</span><label>Document number</label><output>100000017</output></div>
+<div><span class="n">2</span><label>Company code</label><output>DK01</output></div>
+<div><span class="n">3</span><label>Fiscal year</label><output>2026</output></div>
+<div><span class="n">4</span><label>Document type</label><output>SA  G/L account doc.</output></div>
+<div><span class="n">5</span><label>Document date</label><output>25.02.2026</output></div>
+<div><span class="n">6</span><label>Posting date</label><output>01.03.2026</output></div>
+<div><span class="n">7</span><label>Period</label><output>3</output></div>
+<div><span class="n">8</span><label>Currency</label><output>DKK</output></div>
+<div><span class="n">9</span><label>Reference</label><output>HUSLEJE-2603</output></div>
+<div><span class="n">10</span><label>Entered by</label><output>MBERG</output></div>
+</div></div>
+<div class="grp"><b>Line items</b>
+<table><thead><tr><th>Itm</th><th><span class="n">11</span> PK</th><th><span class="n">12</span> Account</th><th>Description</th><th class="num"><span class="n">13</span> Amount</th><th><span class="n">14</span> Cost ctr</th><th><span class="n">15</span> Text</th></tr></thead>
+<tbody>
+<tr><td>001</td><td>40</td><td>470000</td><td>Rent</td><td class="num">50,000.00</td><td>3000</td><td>Rent March 2026</td></tr>
+<tr><td>002</td><td>50</td><td>110000</td><td>Bank: Danske Bank</td><td class="num">-50,000.00</td><td></td><td>Rent March 2026</td></tr>
+<tr class="tot"><td colspan="4">Balance</td><td class="num">0.00</td><td></td><td></td></tr>
+</tbody></table></div>
+</div></div>
+<p class="cap">Illustration, simplified for learning. Field names and layout in your SAP system will differ slightly, and many teams use the Fiori app "Manage Journal Entries" instead.</p>
+</div>
+
+<p><strong>What each number means:</strong></p>
+<ul class="legend">
+<li><span class="n">1</span><p><strong>Document number</strong>: the unique ID of this entry inside company code DK01 and fiscal year 2026. Numbers come from a number range per document type. Always quote it: "please check document 100000017 in DK01, 2026".</p></li>
+<li><span class="n">2</span><p><strong>Company code</strong>: whose books it is in. DK01, Nordlys Møbler.</p></li>
+<li><span class="n">3</span><p><strong>Fiscal year</strong>: together with document number and company code, it makes the document unique. The same number can exist again in 2027.</p></li>
+<li><span class="n">4</span><p><strong>Document type</strong>: what kind of entry this is. SA is a plain GL account document. Others you will meet: KR (supplier invoice), DR (customer invoice), AA (asset posting). The type controls the number range and which accounts are allowed.</p></li>
+<li><span class="n">5</span><p><strong>Document date</strong>: the date on the original paper, here the landlord's invoice (25.02).</p></li>
+<li><span class="n">6</span><p><strong>Posting date</strong>: the date the entry counts in the books. It decides the period. This is the date finance cares about.</p></li>
+<li><span class="n">7</span><p><strong>Period</strong>: derived from the posting date and the fiscal year variant. 01.03 is period 3 (March). Period 3 must be open in OB52, or SAP refuses the posting.</p></li>
+<li><span class="n">8</span><p><strong>Currency</strong>: Danish kroner. A euro invoice would show EUR here and SAP would also store the DKK value.</p></li>
+<li><span class="n">9</span><p><strong>Reference</strong>: the outside document's number, here the landlord's invoice number. Very useful when searching.</p></li>
+<li><span class="n">10</span><p><strong>Entered by</strong>: the user who posted it (Maria). For automatic postings you see a batch or interface user.</p></li>
+<li><span class="n">11</span><p><strong>Posting key (PK)</strong>: a two-digit code that says debit or credit and what kind of account. <strong>40</strong> = debit to a GL account, <strong>50</strong> = credit to a GL account. (For suppliers and customers other keys are used, for example 31 for a supplier invoice.)</p></li>
+<li><span class="n">12</span><p><strong>Account</strong>: which GL account the line goes to: 470000 Rent and 110000 Bank.</p></li>
+<li><span class="n">13</span><p><strong>Amount</strong>: positive for debit, negative for credit. The lines add up to 0.00, so the document balances.</p></li>
+<li><span class="n">14</span><p><strong>Cost centre</strong>: the CO part of the line. Rent is a cost, so SAP asks "which department?". Answer: 3000 Administration. The bank line has none, because a bank account is not a cost.</p></li>
+<li><span class="n">15</span><p><strong>Text</strong>: a short note for humans. Good texts save hours of investigation later.</p></li>
+</ul>
+
+<div class="tip"><b>Document date vs posting date: the classic question</b>
+<p>If the landlord's invoice (document date 25.02) were posted with posting date 28.02, the cost would count in <strong>February</strong>. Posted on 01.03, it counts in <strong>March</strong>. Same paper, different month. That choice is why month-end reports can surprise people.</p></div>
+
+<h2 id="acdoca">5. The Universal Journal (ACDOCA)</h2>
+<p>In older SAP systems (SAP ECC), FI and CO kept their own tables, and finance spent days checking that they agreed. In <strong>S/4HANA</strong> there is one table for both: the <strong>Universal Journal</strong>, table <strong>ACDOCA</strong>. Every line item of every posting is one row in it, and that row carries both the FI view (company code, GL account, amount) and the CO view (cost centre, profit centre, order).</p>
+
+<div class="fig" role="img" aria-label="Universal Journal: postings from FI, purchasing, sales, assets and CO allocations all write rows into one table ACDOCA. From ACDOCA come the balance sheet, P&amp;L, cost centre reports and margin analysis.">
+<svg viewBox="0 0 760 290">
+<defs>
+<marker id="m5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="m6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
+</defs>
+<rect class="bx" x="10" y="20" width="180" height="44" rx="8"/><text class="t" x="100" y="47" text-anchor="middle">FI: rent (FB50)</text>
+<rect class="bx" x="10" y="74" width="180" height="44" rx="8"/><text class="t" x="100" y="101" text-anchor="middle">MM: oak received</text>
+<rect class="bx" x="10" y="128" width="180" height="44" rx="8"/><text class="t" x="100" y="155" text-anchor="middle">SD: tables billed</text>
+<rect class="bx" x="10" y="182" width="180" height="44" rx="8"/><text class="t" x="100" y="209" text-anchor="middle">Assets: depreciation</text>
+<rect class="bx" x="10" y="236" width="180" height="44" rx="8"/><text class="t" x="100" y="263" text-anchor="middle">CO: allocations</text>
+<path class="gin" d="M190,42 C225,42 225,150 258,150" marker-end="url(#m5)"/><path class="gin" d="M190,96 C225,96 225,150 258,150" marker-end="url(#m5)"/><path class="gin" d="M190,150 H258" marker-end="url(#m5)"/><path class="gin" d="M190,204 C225,204 225,150 258,150" marker-end="url(#m5)"/><path class="gin" d="M190,258 C225,258 225,150 258,150" marker-end="url(#m5)"/>
+<rect class="bx hl" x="260" y="40" width="240" height="220" rx="10"/>
+<text class="t" x="380" y="70" text-anchor="middle">Universal Journal</text><text class="lab-file" x="380" y="90" text-anchor="middle">table ACDOCA</text>
+<text class="s" x="380" y="122" text-anchor="middle">one row per line item, with:</text>
+<text class="s" x="380" y="146" text-anchor="middle">company code · GL account</text>
+<text class="s" x="380" y="168" text-anchor="middle">amount · posting date · period</text>
+<text class="s" x="380" y="190" text-anchor="middle">cost centre · profit centre</text>
+<text class="s" x="380" y="212" text-anchor="middle">order · asset · customer · supplier</text>
+<rect class="bx" x="565" y="40" width="185" height="44" rx="8"/><text class="t" x="657" y="67" text-anchor="middle">Balance sheet</text>
+<rect class="bx" x="565" y="96" width="185" height="44" rx="8"/><text class="t" x="657" y="123" text-anchor="middle">P&amp;L statement</text>
+<rect class="bx" x="565" y="152" width="185" height="44" rx="8"/><text class="t" x="657" y="179" text-anchor="middle">Cost centre report</text>
+<rect class="bx" x="565" y="208" width="185" height="44" rx="8"/><text class="t" x="657" y="235" text-anchor="middle">Margin analysis</text>
+<path class="gout" d="M500,150 C535,150 530,62 563,62" marker-end="url(#m6)"/><path class="gout" d="M500,150 C535,150 530,118 563,118" marker-end="url(#m6)"/><path class="gout" d="M500,150 C535,150 530,174 563,174" marker-end="url(#m6)"/><path class="gout" d="M500,150 C535,150 530,230 563,230" marker-end="url(#m6)"/>
+</svg>
+</div>
+<p class="cap">One table in the middle: legal reports and management reports read the same rows, so they cannot disagree.</p>
+
+<p>Our rent document 100000017 becomes two rows in ACDOCA, roughly like this (simplified; the real table has hundreds of columns):</p>
+<div class="tbl"><table><thead><tr><th>Company code</th><th>Document</th><th>Line</th><th>GL account</th><th>Cost centre</th><th>Profit centre</th><th class="num">Amount DKK</th></tr></thead><tbody>
+<tr><td>DK01</td><td>100000017</td><td>1</td><td>470000 Rent</td><td>3000</td><td>(from cost centre)</td><td class="num">50,000.00</td></tr>
+<tr><td>DK01</td><td>100000017</td><td>2</td><td>110000 Bank</td><td></td><td></td><td class="num">-50,000.00</td></tr>
+</tbody></table></div>
+<p class="cap">Simplified. A cost centre is linked to a profit centre in its master data, so SAP can fill the profit centre automatically. Administration costs are often kept on a separate "central" profit centre.</p>
+<p>What this means for you as a BA: there is <strong>one version of the truth</strong>. When Jonas's cost centre report and Peter's P&amp;L show different rent totals, the difference is in the selection (dates, accounts, cost centres), not in two separate ledgers.</p>
+
+<h2 id="month">6. A month at Nordlys Møbler in five postings</h2>
+<p>Here is March 2026 in five simplified journal entries. Each one gets its own lesson later; for now just look at the debit and credit pattern. To keep the first examples simple, rent and electricity are shown without VAT.</p>
+<ol class="timeline">
+<li><span class="d">01.03, rent:</span> Maria pays March rent from Danske Bank (the FB03 document above).</li>
+<li><span class="d">04.03, electricity:</span> the electricity bill for the workshop is paid, cost centre 1000 Production.</li>
+<li><span class="d">08.03, buying oak:</span> the invoice from Jysk Træ for 20 m³ of oak arrives: 80,000 plus 25% VAT. You will see in Lesson 2 that SAP really does this in two steps (goods receipt, then invoice) through a clearing account. Here they are combined.</li>
+<li><span class="d">15.03, selling tables:</span> Nordlys Møbler bills Hygge Hjem for 10 oak tables: 120,000 plus 25% VAT (Lesson 3).</li>
+<li><span class="d">31.03, depreciation:</span> month-end posts one month of depreciation on the CNC machine: 600,000 ÷ 10 years ÷ 12 months (Lesson 5).</li>
+</ol>
+
+<div class="tbl"><table><thead><tr><th>#</th><th>Date</th><th>Account</th><th>CO object</th><th class="num">Debit DKK</th><th class="num">Credit DKK</th></tr></thead><tbody>
+<tr><td>1</td><td>01.03</td><td>470000 Rent</td><td>CC 3000</td><td class="num">50,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>110000 Bank</td><td></td><td></td><td class="num">50,000.00</td></tr>
+<tr><td>2</td><td>04.03</td><td>473000 Electricity</td><td>CC 1000</td><td class="num">18,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>110000 Bank</td><td></td><td></td><td class="num">18,000.00</td></tr>
+<tr><td>3</td><td>08.03</td><td>200000 Raw materials: oak</td><td></td><td class="num">80,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>154000 Input VAT</td><td></td><td class="num">20,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>160000 Payables (Jysk Træ)</td><td></td><td></td><td class="num">100,000.00</td></tr>
+<tr><td>4</td><td>15.03</td><td>140000 Receivables (Hygge Hjem)</td><td></td><td class="num">150,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>800000 Sales revenue</td><td>PC-TABLES</td><td></td><td class="num">120,000.00</td></tr>
+<tr><td></td><td></td><td>175000 Output VAT</td><td></td><td></td><td class="num">30,000.00</td></tr>
+<tr><td>5</td><td>31.03</td><td>481000 Depreciation</td><td>CC 1000</td><td class="num">5,000.00</td><td></td></tr>
+<tr><td></td><td></td><td>211900 Acc. depreciation</td><td></td><td></td><td class="num">5,000.00</td></tr>
+<tr><td colspan="4"><strong>Total</strong></td><td class="num"><strong>323,000.00</strong></td><td class="num"><strong>323,000.00</strong></td></tr>
+</tbody></table></div>
+
+<div class="tip"><b>Check it yourself</b>
+<p><strong>Debits:</strong> 50,000 + 18,000 + 80,000 + 20,000 + 150,000 + 5,000 = <strong>323,000</strong>.<br><strong>Credits:</strong> 50,000 + 18,000 + 100,000 + 120,000 + 30,000 + 5,000 = <strong>323,000</strong>. Equal, as they must be.</p>
+<p><strong>March result so far:</strong> revenue 120,000 minus rent 50,000, electricity 18,000 and depreciation 5,000 = <strong>DKK 47,000</strong> profit. The oak is <em>not</em> a cost yet: it sits in the warehouse as an asset until it is used to make tables.</p>
+<p><strong>Bank:</strong> only postings 1 and 2 touch the bank, so it goes down by 50,000 + 18,000 = <strong>DKK 68,000</strong>. The supplier and the customer have not paid or been paid yet: that money sits on 160000 and 140000 as open items.</p></div>
+
+<h2 id="ba">7. What a FICO BA does, plus a BA toolkit</h2>
+<p>A FICO BA stands between finance people (Peter, Maria, Jonas) and the SAP team. Typical work: write down how a business process should run in SAP, decide which accounts and cost objects each posting needs, write and run test cases, explain differences in reports, and help users during month-end. You do not need to be an accountant, but you must be able to read a journal entry and ask good questions.</p>
+
+<h3 id="ba-questions">7.1 Questions to ask</h3>
+<ul>
+<li>Which company codes are in scope, and do they share a chart of accounts and a controlling area?</li>
+<li>Is the fiscal year the calendar year? Who opens and closes posting periods, and when?</li>
+<li>For each cost (rent, electricity, IT), which cost centre should carry it, and who is responsible for that cost centre?</li>
+<li>Which profit figures does management want: per product line, region or customer group?</li>
+<li>Which postings come automatically from other modules or interfaces, and which are typed by hand?</li>
+<li>Which document types are used, and who may post each one?</li>
+<li>What VAT codes are needed (25% Danish VAT, EU purchases, exports)?</li>
+</ul>
+
+<h3 id="ba-tests">7.2 Test scenarios</h3>
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Post the March rent with FB50</td><td>Document type SA, period 3, debit 470000 on cost centre 3000, credit 110000, balance 0.00</td></tr>
+<tr><td>Post rent without a cost centre</td><td>SAP stops the posting: a cost account needs a cost object (unless the project set up a default cost centre for that account)</td></tr>
+<tr><td>Post into a closed period</td><td>With period 2 closed in OB52, a posting dated 28.02 is refused</td></tr>
+<tr><td>Post directly to 160000</td><td>Refused: a reconciliation account can only be posted through a supplier</td></tr>
+<tr><td>Reverse document 100000017</td><td>New document with the opposite signs; the original stays, marked as reversed</td></tr>
+<tr><td>Compare FI and CO</td><td>Rent on 470000 in FS10N equals the rent shown for cost centre 3000 in the cost centre report</td></tr>
+</tbody></table></div>
+
+<h3 id="ba-codes">7.3 Screens worth knowing</h3>
+<div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
+<tr><td>FS00</td><td>GL account master data</td><td>"Is 470000 a P&amp;L account, and which cost element category does it have?"</td></tr>
+<tr><td>FB50</td><td>Enter a GL account document</td><td>Post the rent payment in a test system</td></tr>
+<tr><td>FB03</td><td>Display a document</td><td>Read document 100000017 field by field</td></tr>
+<tr><td>FBL3N</td><td>GL account line items</td><td>See every posting on 110000 Bank in March</td></tr>
+<tr><td>FS10N</td><td>GL account balance per period</td><td>"How much rent have we posted so far this year?"</td></tr>
+<tr><td>OB52</td><td>Open and close posting periods</td><td>Check why a posting was refused for a closed period</td></tr>
+</tbody></table></div>
+<p class="cap">Codes from general SAP knowledge; they differ by release and many projects use Fiori apps instead (for example "Manage Journal Entries" or "Display Line Items in General Ledger"). Confirm them in your own system.</p>
+
+<div class="tip"><b>A closing tip</b>
+<p>Pick one real document in your test system and explain every field out loud, like the FB03 screen above: who, when, which period, which accounts, which cost centre, why it balances. If you can do that, you can follow any FICO conversation. Every later lesson in this course is just more journal entries with a story behind them.</p></div>
+
+<h2 id="test">Test yourself</h2>
+<p>10 questions on FICO basics. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<div id="quiz" data-page="fico-basics"></div>
+
+<!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
+<div id="suggest"></div>
+-->
+
+<footer>FICO basics, Lesson 1 of SAP FICO for Business Analysts. Names, amounts, account numbers and codes are illustrative examples for learning, not real data or real SAP screenshots. VAT and accounting rules are simplified.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+<script src="/lms.js?v=20261021d" defer></script>
+<script src="/quiz.js?v=20261021d" defer></script>
+<!-- <script src="/suggest.js" defer></script> -->
+</body>
+</html>
