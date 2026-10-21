@@ -79,6 +79,9 @@ td:first-child{font-weight:500}
 .legend .n{margin-top:3px}
 .legend p{margin:0}
 .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}.ba{grid-template-columns:1fr}}
 </style>
@@ -87,6 +90,7 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
+<div class="pages"><a class="on" href="/">FSCD guide</a><a href="/payments">Nordic payments</a></div>
 <h1 id="top">SAP FSCD Learning Guide for Business Analysts</h1>
 <p class="lede">Simple English, one Danish insurance example from start to finish, and pictures of the key screens.</p>
 
@@ -428,6 +432,9 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <li>SAP Community (community.sap.com): practical questions and answers from consultants.</li>
 <li>Your project's own documents: functional specifications and test cases teach the local rules fastest.</li>
 </ul>
+<div class="tip"><b>Next: Nordic payment methods</b>
+<p>See how customers in Denmark, Sweden and Norway pay (Betalingsservice, Autogiro, AvtaleGiro, MobilePay, Swish, Vipps) and how the money flows through FSCD, with diagrams: <a href="/payments">Nordic payments page</a>.</p></div>
+
 <div class="tip"><b>A closing tip</b>
 <p>Keep your own glossary and a one-page diagram of your project's money flow, using a story like Mette's. Writing it in your own words is the quickest way to make it stick.</p></div>
 

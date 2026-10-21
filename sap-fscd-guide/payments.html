@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nordic Payments in FSCD</title>
+<meta name="description" content="Payment methods in Denmark, Sweden and Norway, explained simply for SAP FSCD business analysts in insurance, with examples and diagrams of how the money flows.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<div class="pages"><a href="/">FSCD guide</a><a class="on" href="/payments">Nordic payments</a></div>
+<h1 id="top">Nordic Payment Methods in SAP FSCD</h1>
+<p class="lede">How insurance customers in Denmark, Sweden and Norway pay, how insurers pay them back, and what SAP FSCD does at each step. Simple words, simple pictures.</p>
+
+<div class="tip"><b>Before you start</b>
+<p>Read the <a href="/">main FSCD guide</a> first if words like <em>open item</em>, <em>clearing</em> or <em>payment run</em> are new. This page builds on them. All names, amounts and numbers are made up for learning.</p></div>
+
+<h2 id="meet">Meet the three customers</h2>
+<div class="cast">
+<div><b>🇩🇰 Mette Jensen, Aarhus</b><span>Car insurance at ABC Forsikring. DKK 8,088 a year, paid by <b style="display:inline">Betalingsservice</b>.</span></div>
+<div><b>🇸🇪 Erik Andersson, Uppsala</b><span>Home insurance (hemförsäkring). SEK 300 a month, paid by <b style="display:inline">Autogiro</b>.</span></div>
+<div><b>🇳🇴 Ingrid Hansen, Bergen</b><span>Car insurance. NOK 900 a month, paid by <b style="display:inline">AvtaleGiro</b>.</span></div>
+</div>
+<p>Three countries, three currencies (<strong>DKK, SEK, NOK</strong>; none of them use the euro), but the same idea everywhere: <em>FSCD tells the bank what to collect or pay, and the bank tells FSCD what actually happened.</em></p>
+
+<h2 id="big-picture">1. The big picture: how money moves</h2>
+<p>FSCD never touches real money. It only <strong>sends instructions</strong> (files) and <strong>reads results</strong> (files). The banks and the national payment systems move the money.</p>
+
+<div class="fig" role="img" aria-label="Diagram: money flows from customer through customer's bank, the national payment system and the insurer's bank to SAP FSCD for premiums, and back the other way for claims">
+<svg viewBox="0 0 760 250">
+<defs>
+<marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
+</defs>
+<text class="lab-in" x="380" y="30" text-anchor="middle">Money IN → premiums</text>
+<rect class="bx" x="10" y="70" width="130" height="100" rx="8"/><text class="t" x="75" y="108" text-anchor="middle">Customer</text><text class="s" x="75" y="128" text-anchor="middle">Mette / Erik /</text><text class="s" x="75" y="144" text-anchor="middle">Ingrid</text>
+<rect class="bx" x="162" y="70" width="130" height="100" rx="8"/><text class="t" x="227" y="108" text-anchor="middle">Customer's</text><text class="t" x="227" y="126" text-anchor="middle">bank</text><text class="s" x="227" y="146" text-anchor="middle">Danske, SEB, DNB…</text>
+<rect class="bx" x="314" y="70" width="130" height="100" rx="8"/><text class="t" x="379" y="102" text-anchor="middle">Payment</text><text class="t" x="379" y="120" text-anchor="middle">system</text><text class="s" x="379" y="140" text-anchor="middle">Nets, Bankgirot,</text><text class="s" x="379" y="155" text-anchor="middle">Vipps MobilePay</text>
+<rect class="bx" x="466" y="70" width="130" height="100" rx="8"/><text class="t" x="531" y="108" text-anchor="middle">Insurer's</text><text class="t" x="531" y="126" text-anchor="middle">bank</text><text class="s" x="531" y="146" text-anchor="middle">ABC's account</text>
+<rect class="bx hl" x="618" y="70" width="130" height="100" rx="8"/><text class="t" x="683" y="108" text-anchor="middle">SAP FSCD</text><text class="s" x="683" y="128" text-anchor="middle">records &amp;</text><text class="s" x="683" y="144" text-anchor="middle">clears items</text>
+<path class="gin" d="M140,100 H160" marker-end="url(#ai)"/><path class="gin" d="M292,100 H312" marker-end="url(#ai)"/><path class="gin" d="M444,100 H464" marker-end="url(#ai)"/><path class="gin" d="M596,100 H616" marker-end="url(#ai)"/>
+<path class="gout" d="M160,142 H142" marker-end="url(#ao)"/><path class="gout" d="M312,142 H294" marker-end="url(#ao)"/><path class="gout" d="M464,142 H446" marker-end="url(#ao)"/><path class="gout" d="M616,142 H598" marker-end="url(#ao)"/>
+<text class="lab-out" x="380" y="210" text-anchor="middle">← Money OUT: claims, refunds, commission</text>
+</svg>
+</div>
+<p class="cap">Green = premiums coming in. Orange = claims and refunds going out. FSCD is the record-keeper at the end of the chain.</p>
+
+<p>Every payment method on this page is just a different way to travel along this chain. They differ in three simple things:</p>
+<div class="tbl"><table><thead><tr><th>Question</th><th>Why a BA cares</th></tr></thead><tbody>
+<tr><td>Who starts the payment, insurer or customer?</td><td>If the insurer starts it (direct debit), FSCD's payment run creates a file. If the customer starts it (app, transfer), FSCD must <em>recognise</em> incoming money.</td></tr>
+<tr><td>How is the payment linked to the right customer?</td><td>Through a <strong>reference number</strong> (KID, OCR, FI payment ID) or a mandate. Bad reference = manual clarification work.</td></tr>
+<tr><td>How fast does it arrive, and how does FSCD hear about it?</td><td>Instant (Swish), same day, or on a fixed date. FSCD learns through a result file or the bank statement.</td></tr>
+</tbody></table></div>
+
+<h2 id="types">2. The four families of payment methods</h2>
+<p>All Nordic methods fall into four simple families. Learn the families, and every country's brand names slot into place.</p>
+<div class="tbl"><table><thead><tr><th>Family</th><th>In simple words</th><th>🇩🇰 Denmark</th><th>🇸🇪 Sweden</th><th>🇳🇴 Norway</th></tr></thead><tbody>
+<tr><td>Direct debit</td><td>Customer says "yes" once; the insurer collects automatically every time</td><td>Betalingsservice</td><td>Autogiro</td><td>AvtaleGiro</td></tr>
+<tr><td>Bill with reference number</td><td>Customer gets a bill and pays it in the netbank using a number</td><td>Indbetalingskort (FI-kort, e.g. +71)</td><td>Bankgiro with OCR number</td><td>Giro with KID number</td></tr>
+<tr><td>E-invoice in the netbank</td><td>The bill appears directly in the customer's netbank, ready to approve</td><td>Mostly via Betalingsservice and e-Boks</td><td>E-faktura</td><td>eFaktura</td></tr>
+<tr><td>Mobile payment</td><td>Pay with a phone app, usually instantly</td><td>MobilePay</td><td>Swish</td><td>Vipps</td></tr>
+</tbody></table></div>
+<p>Cards (Dankort, Visa, Mastercard, BankAxept in Norway) are also used, mostly for one-off online payments. Payouts (claims, refunds) are almost always <strong>bank transfers</strong>, plus <strong>Swish payouts</strong> in Sweden.</p>
+
+<h2 id="direct-debit">3. Direct debit: the insurer collects</h2>
+<p>This is the most common way to pay insurance in all three countries. The customer gives permission once (a <strong>mandate</strong>, called <em>tilmelding</em>, <em>medgivande</em> or <em>avtale</em>). After that, FSCD's payment run collects every premium on the due date.</p>
+
+<div class="fig" role="img" aria-label="Sequence diagram of a direct debit: mandate, collection file, advance notice, money debited, result file, and the return path if the debit fails">
+<svg viewBox="0 0 760 360">
+<defs>
+<marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="b3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="bx hl" x="20" y="10" width="150" height="46" rx="8"/><text class="t" x="95" y="38" text-anchor="middle">SAP FSCD</text>
+<rect class="bx" x="195" y="4" width="210" height="58" rx="8"/><text class="t" x="300" y="27" text-anchor="middle">Direct debit system</text><text class="s" x="300" y="46" text-anchor="middle" style="font-size:11px">Betalingsservice · Autogiro · AvtaleGiro</text>
+<rect class="bx" x="430" y="10" width="140" height="46" rx="8"/><text class="t" x="500" y="38" text-anchor="middle">Customer's bank</text>
+<rect class="bx" x="610" y="10" width="130" height="46" rx="8"/><text class="t" x="675" y="38" text-anchor="middle">Customer</text>
+<path class="lin" d="M95,56 V350"/><path class="lin" d="M300,62 V350"/><path class="lin" d="M500,56 V350"/><path class="lin" d="M675,56 V350"/>
+<path class="gfile" d="M675,90 H302" marker-end="url(#b1)"/><circle class="num" cx="660" cy="80" r="9"/><text class="numt" x="660" y="84" text-anchor="middle">1</text><text class="lin-t" x="420" y="82" text-anchor="middle">Signs up once (mandate)</text>
+<path class="gfile" d="M95,135 H298" marker-end="url(#b1)"/><circle class="num" cx="110" cy="125" r="9"/><text class="numt" x="110" y="129" text-anchor="middle">2</text><text class="lin-t" x="208" y="127" text-anchor="middle">Payment run: collection file</text>
+<path class="gfile" d="M300,180 H673" marker-end="url(#b1)"/><circle class="num" cx="315" cy="170" r="9"/><text class="numt" x="315" y="174" text-anchor="middle">3</text><text class="lin-t" x="505" y="172" text-anchor="middle">Advance notice: "DKK 8,088 on 15.04"</text>
+<path class="gin" d="M500,225 H302" marker-end="url(#b2)"/><circle class="num" cx="485" cy="215" r="9"/><text class="numt" x="485" y="219" text-anchor="middle">4</text><text class="lin-t" x="400" y="217" text-anchor="middle">Due date: money taken</text>
+<path class="gin" d="M300,270 H97" marker-end="url(#b2)"/><circle class="num" cx="285" cy="260" r="9"/><text class="numt" x="285" y="264" text-anchor="middle">5</text><text class="lin-t" x="180" y="262" text-anchor="middle">Paid → FSCD clears item ✓</text>
+<path class="gbad" d="M500,320 H97" marker-end="url(#b3)"/><circle class="num" cx="485" cy="310" r="9" style="fill:var(--bad)"/><text class="numt" x="485" y="314" text-anchor="middle">6</text><text class="lab-bad" x="290" y="312" text-anchor="middle">No money? Return file → item re-opened, fee, dunning</text>
+</svg>
+</div>
+<p class="cap">Steps 1 to 5 are the happy path. Step 6 is the "bounce" from the main guide: a return re-opens the item.</p>
+
+<h3 id="dd-dk">🇩🇰 Betalingsservice (Denmark)</h3>
+<div class="term"><p><strong>In simple words:</strong> Denmark's national direct debit, run by Nets (part of Mastercard). Nearly every household uses it for rent, electricity and insurance. The customer sees all upcoming payments in a monthly overview from their bank.</p>
+<p class="ex">Example: Mette signs up once in her netbank using her customer number from ABC. On 15.04 FSCD's payment run includes her <b>DKK 8,088</b>. Nets collects it and tells ABC the result. If her account is empty, a <b>return</b> comes back and FSCD adds the DKK 100 fee.</p></div>
+
+<h3 id="dd-se">🇸🇪 Autogiro (Sweden)</h3>
+<div class="term"><p><strong>In simple words:</strong> Sweden's direct debit, run through Bankgirot. The customer gives a <em>medgivande</em> (consent), often digitally with BankID. Autogiro is ideal for monthly premiums.</p>
+<p class="ex">Example: Erik pays <b>SEK 300</b> on the 28th of every month. FSCD's monthly run sends the collection to Bankgirot. On the 28th the money moves; the next day Bankgirot's report tells FSCD "paid" or "not paid", and FSCD clears or re-opens the item.</p></div>
+
+<h3 id="dd-no">🇳🇴 AvtaleGiro (Norway)</h3>
+<div class="term"><p><strong>In simple words:</strong> Norway's direct debit, run by the banks with Nets. The customer sets a maximum amount they allow per payment, and usually gets a notice before each debit. It's often combined with eFaktura.</p>
+<p class="ex">Example: Ingrid allows up to <b>NOK 2,000</b> per payment. Her <b>NOK 900</b> premium is collected on the 20th. If ABC ever tried to collect NOK 2,500 (say, after a price change), the bank would refuse it. So a BA must check the maximum when premiums go up.</p></div>
+
+<div class="tip"><b>What FSCD stores for direct debit</b>
+<p>The customer's <strong>incoming payment method</strong> on the contract account (for example "Betalingsservice"), the <strong>mandate</strong> details and the <strong>bank account</strong> on the Business Partner. The payment run (FPY1) reads these to decide who goes into which collection file.</p></div>
+
+<h2 id="reference">4. Bills with a reference number: the customer pays</h2>
+<p>Here the <em>customer</em> starts the payment: they get a bill and pay it in their netbank. The magic ingredient is the <strong>reference number</strong> printed on the bill. It tells FSCD exactly whose money it is.</p>
+
+<div class="fig" role="img" aria-label="Diagram: a payment with a reference number is matched automatically by FSCD and the item is cleared; without a valid reference it goes to a manual clarification queue">
+<svg viewBox="0 0 760 270">
+<defs>
+<marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="c2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="bx" x="10" y="30" width="200" height="110" rx="8"/><text class="t" x="110" y="58" text-anchor="middle">Payment arrives</text><text class="s" x="110" y="82" text-anchor="middle">Amount: NOK 900</text><text class="s" x="110" y="100" text-anchor="middle">KID: 0045120260412</text><text class="s" x="110" y="118" text-anchor="middle">from Ingrid's bank</text>
+<rect class="bx hl" x="280" y="30" width="200" height="110" rx="8"/><text class="t" x="380" y="58" text-anchor="middle">FSCD reads the</text><text class="t" x="380" y="76" text-anchor="middle">reference</text><text class="s" x="380" y="100" text-anchor="middle">check digit OK →</text><text class="s" x="380" y="118" text-anchor="middle">contract account found</text>
+<rect class="bx" x="550" y="30" width="200" height="110" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="650" y="70" text-anchor="middle">Open item cleared ✓</text><text class="s" x="650" y="94" text-anchor="middle">automatic, no human</text><text class="s" x="650" y="112" text-anchor="middle">needed</text>
+<rect class="bx" x="280" y="190" width="200" height="66" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="380" y="216" text-anchor="middle">Clarification queue</text><text class="s" x="380" y="238" text-anchor="middle">a person finds the customer</text>
+<path class="gin" d="M210,85 H278" marker-end="url(#c1)"/><path class="gin" d="M480,85 H548" marker-end="url(#c1)"/>
+<path class="gbad" d="M380,140 V188" marker-end="url(#c2)"/><text class="lab-bad" x="392" y="170">missing or wrong reference</text>
+</svg>
+</div>
+<p class="cap">A good reference number turns a payment into an automatic match. A missing one costs manual work: this is the biggest everyday pain in collections.</p>
+
+<div class="tbl"><table><thead><tr><th>Country</th><th>Name of the reference</th><th>How it looks on Mette's, Erik's or Ingrid's bill</th></tr></thead><tbody>
+<tr><td>🇩🇰 Denmark</td><td>FI payment ID on an indbetalingskort, for example type <strong>+71</strong></td><td>+71&lt; 000000004512301 +12345678&lt;</td></tr>
+<tr><td>🇸🇪 Sweden</td><td><strong>OCR number</strong>, paid to the insurer's Bankgiro number</td><td>Bankgiro 123-4567, OCR 45120260412</td></tr>
+<tr><td>🇳🇴 Norway</td><td><strong>KID number</strong> (customer identification)</td><td>Account 1234.56.78901, KID 0045120260412</td></tr>
+</tbody></table></div>
+<p>All three numbers end with a <strong>check digit</strong>, so the bank can reject a mistyped number before the money is even sent. In FSCD the number is usually built from the contract account or document number, so FSCD can turn it straight back into "this is Ingrid's premium".</p>
+
+<div class="term"><h4>Example: Erik pays a bill in Sweden</h4>
+<p class="ex">Erik's Autogiro failed one month, so ABC sends him a bill for <b>SEK 300</b> with Bankgiro number and OCR number. He pays in his netbank. That night Bankgirot sends ABC a file of all incoming payments (the <b>BgMax</b> file). FSCD loads it as a payment lot, reads the OCR number, finds Erik's open item and clears it. If Erik had typed a free-text message instead of the OCR number, his payment would sit in clarification.</p></div>
+
+<h2 id="einvoice">5. E-invoices: the bill lives in the netbank</h2>
+<p>An e-invoice is the same bill, but delivered straight into the customer's netbank (or digital mailbox) instead of on paper. The customer just presses "approve". The reference number travels along automatically, so matching is easy.</p>
+<ul>
+<li><strong>🇸🇪 E-faktura</strong>: very popular in Sweden. Customers also get bills in the digital mailbox <strong>Kivra</strong>.</li>
+<li><strong>🇳🇴 eFaktura</strong>: very popular in Norway; often combined with AvtaleGiro so the bill is shown <em>and</em> paid automatically. Digital mailbox: <strong>Digipost</strong>.</li>
+<li><strong>🇩🇰 Denmark</strong>: Betalingsservice already shows the bill, and letters go to <strong>e-Boks</strong>.</li>
+</ul>
+<p><strong>For a BA:</strong> FSCD (or the print/output system next to it) must produce the invoice data in the right format and send it to the e-invoice provider. Dunning letters often use the same digital channels.</p>
+
+<h2 id="mobile">6. Mobile payments: MobilePay, Swish, Vipps</h2>
+<p>Phone apps linked to the customer's bank account. They are fast and loved by customers, especially for one-off payments: a missed premium, a deductible, a small new policy.</p>
+
+<div class="fig" role="img" aria-label="Diagram: customer pays in the app, the app provider moves the money to the insurer's bank account, and a report or bank statement tells FSCD which customer paid">
+<svg viewBox="0 0 760 210">
+<defs>
+<marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="d2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+</defs>
+<rect class="bx" x="10" y="40" width="160" height="100" rx="8"/><text class="t" x="90" y="76" text-anchor="middle">📱 Customer</text><text class="s" x="90" y="98" text-anchor="middle">pays in the app</text><text class="s" x="90" y="116" text-anchor="middle">with policy no.</text>
+<rect class="bx" x="205" y="40" width="160" height="100" rx="8"/><text class="t" x="285" y="76" text-anchor="middle">App provider</text><text class="s" x="285" y="98" text-anchor="middle">MobilePay / Vipps</text><text class="s" x="285" y="116" text-anchor="middle">Swish (via banks)</text>
+<rect class="bx" x="400" y="40" width="160" height="100" rx="8"/><text class="t" x="480" y="76" text-anchor="middle">Insurer's bank</text><text class="s" x="480" y="98" text-anchor="middle">money lands on</text><text class="s" x="480" y="116" text-anchor="middle">ABC's account</text>
+<rect class="bx hl" x="595" y="40" width="155" height="100" rx="8"/><text class="t" x="672" y="76" text-anchor="middle">SAP FSCD</text><text class="s" x="672" y="98" text-anchor="middle">matches by policy</text><text class="s" x="672" y="116" text-anchor="middle">no. → clears ✓</text>
+<path class="gin" d="M170,75 H203" marker-end="url(#d1)"/><path class="gin" d="M365,75 H398" marker-end="url(#d1)"/>
+<path class="gfile" d="M560,105 H593" marker-end="url(#d2)"/>
+<text class="lab-in" x="285" y="25" text-anchor="middle">money: seconds (Swish) or daily batch</text>
+<text class="lab-file" x="560" y="170" text-anchor="middle">report / bank statement file</text>
+<path class="lin" d="M577,110 V155"/>
+</svg>
+</div>
+<p class="cap">The money arrives fast, but FSCD still learns about it through a file, so the policy number in the payment is what makes it match.</p>
+
+<div class="tbl"><table><thead><tr><th>App</th><th>Country</th><th>Simple insurance example</th></tr></thead><tbody>
+<tr><td>MobilePay</td><td>🇩🇰 Denmark (also Finland)</td><td>Mette's direct debit bounced; she pays the DKK 8,188 with MobilePay from a link in the reminder SMS.</td></tr>
+<tr><td>Swish</td><td>🇸🇪 Sweden</td><td>Erik buys travel insurance for SEK 450 on ABC's website and pays with Swish in seconds.</td></tr>
+<tr><td>Vipps</td><td>🇳🇴 Norway</td><td>Ingrid pays her NOK 3,000 deductible (egenandel) after a claim, using Vipps.</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Good to know</b>
+<p>Vipps (Norway) and MobilePay (Denmark, Finland) merged into one company, <strong>Vipps MobilePay</strong>, but the two apps still exist under their own names. Swish is owned by the big Swedish banks. App payments can also be recurring (subscriptions) in some setups, working like a direct debit.</p></div>
+
+<h2 id="payouts">7. Money out: paying claims and refunds</h2>
+<p>When ABC pays a customer, the direction flips. A claims system (or a cancellation) creates a <em>payable</em> in FSCD, and the outgoing payment run sends a payment file to ABC's bank.</p>
+
+<div class="fig" role="img" aria-label="Diagram: claim approved, payable in FSCD, outgoing payment run, payment file to the insurer's bank, money to the customer's account; a rejection comes back to FSCD">
+<svg viewBox="0 0 760 230">
+<defs>
+<marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
+<marker id="e2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="bx" x="10" y="40" width="130" height="90" rx="8"/><text class="t" x="75" y="74" text-anchor="middle">Claims</text><text class="t" x="75" y="92" text-anchor="middle">system</text><text class="s" x="75" y="112" text-anchor="middle">approves claim</text>
+<rect class="bx hl" x="162" y="40" width="130" height="90" rx="8"/><text class="t" x="227" y="74" text-anchor="middle">FSCD</text><text class="t" x="227" y="92" text-anchor="middle">payable</text><text class="s" x="227" y="112" text-anchor="middle">checks &amp; blocks</text>
+<rect class="bx hl" x="314" y="40" width="130" height="90" rx="8"/><text class="t" x="379" y="74" text-anchor="middle">Payment run</text><text class="s" x="379" y="96" text-anchor="middle">creates the</text><text class="s" x="379" y="112" text-anchor="middle">payment file</text>
+<rect class="bx" x="466" y="40" width="130" height="90" rx="8"/><text class="t" x="531" y="74" text-anchor="middle">Insurer's</text><text class="t" x="531" y="92" text-anchor="middle">bank</text><text class="s" x="531" y="112" text-anchor="middle">sends money</text>
+<rect class="bx" x="618" y="40" width="130" height="90" rx="8"/><text class="t" x="683" y="74" text-anchor="middle">Customer's</text><text class="t" x="683" y="92" text-anchor="middle">account</text><text class="s" x="683" y="112" text-anchor="middle">money arrives ✓</text>
+<path class="gout" d="M140,85 H160" marker-end="url(#e1)"/><path class="gout" d="M292,85 H312" marker-end="url(#e1)"/><path class="gout" d="M444,85 H464" marker-end="url(#e1)"/><path class="gout" d="M596,85 H616" marker-end="url(#e1)"/>
+<path class="gbad" d="M683,130 V185 H227 V132" marker-end="url(#e2)"/><text class="lab-bad" x="455" y="205" text-anchor="middle">Wrong account number? Bank rejects → payable re-opens in FSCD</text>
+</svg>
+</div>
+<p class="cap">Same chain as section 1, travelled in the orange direction.</p>
+
+<div class="tbl"><table><thead><tr><th>Country</th><th>Usual payout method</th><th>Example</th></tr></thead><tbody>
+<tr><td>🇩🇰 Denmark</td><td>Bank transfer to the customer's account (registration number + account number), often instant</td><td>Mette's <b>DKK 25,000</b> car claim is paid to her account at her bank.</td></tr>
+<tr><td>🇸🇪 Sweden</td><td>Bank transfer, or <strong>Swish payout</strong> to the customer's mobile number</td><td>Erik's stolen bike: <b>SEK 3,500</b> paid by Swish payout. It arrives in seconds.</td></tr>
+<tr><td>🇳🇴 Norway</td><td>Bank transfer to the customer's 11-digit account number</td><td>Ingrid's windscreen claim: <b>NOK 6,000</b> paid straight to the glass repair shop.</td></tr>
+</tbody></table></div>
+<p>Many banks now accept payment files in the international <strong>ISO 20022</strong> format (the "pain.001" file for outgoing payments). In SAP these files are created by the <strong>Payment Medium Workbench</strong>, so one FSCD payment run can produce files for all three countries.</p>
+
+<h2 id="fscd-view">8. The FSCD view: one table to remember</h2>
+<div class="tbl"><table><thead><tr><th>Method</th><th>Direction</th><th>Who starts it</th><th>How FSCD sends or learns</th><th>How it is matched</th></tr></thead><tbody>
+<tr><td>Betalingsservice / Autogiro / AvtaleGiro</td><td><span class="in">In</span></td><td>Insurer (FSCD payment run)</td><td>Sends collection file; receives result and return files</td><td>Mandate + customer number</td></tr>
+<tr><td>Bill with FI ID / OCR / KID</td><td><span class="in">In</span></td><td>Customer</td><td>Receives incoming-payment file or bank statement → payment lot</td><td>Reference number</td></tr>
+<tr><td>E-faktura / eFaktura</td><td><span class="in">In</span></td><td>Customer (approves)</td><td>Sends invoice data; payment arrives with reference</td><td>Reference number</td></tr>
+<tr><td>MobilePay / Swish / Vipps</td><td><span class="in">In</span></td><td>Customer</td><td>Receives settlement report or bank statement</td><td>Policy number or payment ID in the message</td></tr>
+<tr><td>Card (Dankort, Visa, BankAxept)</td><td><span class="in">In</span></td><td>Customer, online</td><td>Card provider settles to ABC's bank; report loaded</td><td>Order or payment ID</td></tr>
+<tr><td>Bank transfer / Swish payout</td><td><span class="out">Out</span></td><td>Insurer (FSCD payment run)</td><td>Sends payment file; receives confirmation or rejection</td><td>FSCD document number</td></tr>
+</tbody></table></div>
+
+<h3 id="day">8.1 One day in FSCD, across three countries</h3>
+<ol class="timeline">
+<li><span class="d">Night before:</span> payment run (FPY1) creates a Betalingsservice file (DKK), an Autogiro file (SEK) and an AvtaleGiro file (NOK), plus one payout file for approved claims.</li>
+<li><span class="d">Morning:</span> files from Nets, Bankgirot and the banks arrive. FSCD loads incoming payments as payment lots (FP05) and failed debits as return lots (FP09).</li>
+<li><span class="d">Automatic matching:</span> payments with good KID, OCR or FI numbers clear their open items. Returns re-open items and add fees.</li>
+<li><span class="d">During the day:</span> the operations team works the clarification queue: payments without a usable reference.</li>
+<li><span class="d">Evening:</span> totals per currency go to the general ledger, and dunning picks up anything still unpaid.</li>
+</ol>
+
+<h2 id="ba-checklist">9. BA checklist for a Nordic payment requirement</h2>
+<ol>
+<li>Which <strong>country and currency</strong>? Each has its own schemes, file formats and cut-off times.</li>
+<li>Which <strong>payment family</strong>: direct debit, reference bill, e-invoice, mobile or card?</li>
+<li>How is the <strong>reference number</strong> built, and does it include a check digit?</li>
+<li>Where is the <strong>mandate</strong> stored, and what happens when a customer cancels it in their netbank?</li>
+<li>What are the <strong>dates</strong>: when must the collection file reach the scheme so the money moves on the due date?</li>
+<li>What happens on <strong>failure</strong>: return reasons, fees, retry, dunning, digital-mailbox reminders?</li>
+<li>For Norway: what if the premium is higher than the customer's <strong>AvtaleGiro maximum</strong>?</li>
+<li>For payouts: is the <strong>account number or mobile number</strong> validated before the run?</li>
+<li>How will we <strong>test</strong> it? Ask the bank for a test environment and sample files.</li>
+</ol>
+
+<div class="tip"><b>A closing tip</b>
+<p>Draw the chain from section 1 for your own project and write the real bank, scheme and file names under each box. It becomes the most useful page in your notebook.</p></div>
+
+<footer>Nordic Payment Methods in SAP FSCD. Names, amounts, account and reference numbers are illustrative examples for learning. Scheme rules, owners and file formats change over time; confirm details with your bank and project team. <a href="/">Back to the main FSCD guide</a>.</footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+</script>
+</body>
+</html>
