@@ -1,56 +1,89 @@
 /* Course shell for every page: top bar, course outline sidebar, progress
-   tracking, lesson completion, previous/next navigation, dashboard and
-   certificate. Progress is stored in this browser only (localStorage).
-   Lesson pages:  <body data-lesson="ID">     Dashboard: <body data-page="dashboard">
-   To add a lesson, add it to COURSE below and give its page data-lesson. */
+   tracking, lesson completion, previous/next navigation, course dashboards,
+   the all-courses home page and certificates. Progress is stored in this
+   browser only (localStorage), separately for each course.
+   Lesson pages:  <body data-lesson="ID">
+   Course dashboard: <body data-page="dashboard" data-course="COURSE-ID">
+   Home page (all courses): <body data-page="home">
+   To add a lesson, add it to its course in COURSES below and give its page data-lesson. */
 (function () {
-  var COURSE = {
-    title: 'SAP FSCD for Business Analysts',
-    brand: 'FSCD Academy',
-    modules: [
-      { title: 'FSCD foundations', lessons: [
-        { id: 'basics', url: '/basics', title: 'FSCD basics, with a Danish example', mins: 25,
-          blurb: 'Business partners, contract accounts, posting documents, open items, dunning and the daily money flow.' }
-      ] },
-      { title: 'Payments in the Nordics', lessons: [
-        { id: 'payments', url: '/payments', title: 'Nordic payment methods', mins: 15,
-          blurb: 'Direct debit, reference numbers, e-invoices, MobilePay, Swish and Vipps, and how claims are paid out.' }
-      ] },
-      { title: 'Collections in depth', lessons: [
-        { id: 'dunning', url: '/dunning', title: 'Dunning, returns and collections', mins: 20,
-          blurb: 'Dunning levels and runs, locks, bounced payments, instalment plans, write-offs and the Danish rules behind them.' }
-      ] },
-      { title: 'Finance and period-end', lessons: [
-        { id: 'accounting', url: '/accounting', title: 'From FSCD to the general ledger', mins: 20,
-          blurb: 'Account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end.' }
-      ] },
-      { title: 'Beyond FSCD: SAP BRIM', lessons: [
-        { id: 'brim', url: '/brim', title: 'SAP BRIM for insurance', mins: 20,
-          blurb: 'Subscriptions, usage-based pricing, convergent invoicing and partner settlement, and how BRIM works next to FSCD.' }
-      ] }
-    ]
-  };
-  var KEY = 'fscd-academy-progress-v1';
+  var SITE = 'SAP Academy';
+  var COURSES = [
+    {
+      id: 'fscd', title: 'SAP FSCD for Business Analysts', brand: 'FSCD Academy', logo: 'FS',
+      home: '/fscd', key: 'fscd-academy-progress-v1',
+      lede: 'Learn SAP FSCD the simple way: plain English, real insurance stories from Denmark, Sweden and Norway, pictures of the key screens, and a short test after every lesson.',
+      blurb: 'Insurance billing and payments: premiums, Nordic payment methods, dunning, the general ledger and SAP BRIM, told with a Danish insurer.',
+      modules: [
+        { title: 'FSCD foundations', lessons: [
+          { id: 'basics', url: '/basics', title: 'FSCD basics, with a Danish example', mins: 25,
+            blurb: 'Business partners, contract accounts, posting documents, open items, dunning and the daily money flow.' }
+        ] },
+        { title: 'Payments in the Nordics', lessons: [
+          { id: 'payments', url: '/payments', title: 'Nordic payment methods', mins: 15,
+            blurb: 'Direct debit, reference numbers, e-invoices, MobilePay, Swish and Vipps, and how claims are paid out.' }
+        ] },
+        { title: 'Collections in depth', lessons: [
+          { id: 'dunning', url: '/dunning', title: 'Dunning, returns and collections', mins: 20,
+            blurb: 'Dunning levels and runs, locks, bounced payments, instalment plans, write-offs and the Danish rules behind them.' }
+        ] },
+        { title: 'Finance and period-end', lessons: [
+          { id: 'accounting', url: '/accounting', title: 'From FSCD to the general ledger', mins: 20,
+            blurb: 'Account determination, journal entries, reconciliation keys, the GL transfer, reconciliation and month-end.' }
+        ] },
+        { title: 'Beyond FSCD: SAP BRIM', lessons: [
+          { id: 'brim', url: '/brim', title: 'SAP BRIM for insurance', mins: 20,
+            blurb: 'Subscriptions, usage-based pricing, convergent invoicing and partner settlement, and how BRIM works next to FSCD.' }
+        ] }
+      ]
+    },
+    {
+      id: 'fico', title: 'SAP FICO for Business Analysts', brand: 'FICO Academy', logo: 'FI',
+      home: '/fico', key: 'fico-academy-progress-v1',
+      lede: 'Learn SAP FICO the simple way: plain English, one Danish company followed through the year, diagrams of every flow, and a short test after every lesson.',
+      blurb: 'Financial accounting and controlling: the general ledger, buying and paying, selling and collecting, costs and profitability, assets and month-end.',
+      modules: [
+        { title: 'FICO foundations', lessons: [
+          { id: 'fico-basics', url: '/fico/basics', title: 'FICO basics, with a Danish example', mins: 25,
+            blurb: 'What FI and CO are, how a company is set up in SAP, GL accounts, journal entries and the Universal Journal.' }
+        ] },
+        { title: 'Procure to pay', lessons: [
+          { id: 'fico-ap', url: '/fico/ap', title: 'Accounts payable: from purchase to payment', mins: 20,
+            blurb: 'Suppliers, purchase orders, goods receipt, invoice matching, GR/IR and the payment run.' }
+        ] },
+        { title: 'Order to cash', lessons: [
+          { id: 'fico-ar', url: '/fico/ar', title: 'Accounts receivable: from sale to cash', mins: 20,
+            blurb: 'Customers, billing, revenue and VAT postings, incoming payments, bank statements and dunning.' }
+        ] },
+        { title: 'Controlling', lessons: [
+          { id: 'fico-controlling', url: '/fico/controlling', title: 'Controlling: costs, cost centres and profitability', mins: 20,
+            blurb: 'Cost elements, cost centres, internal orders, allocations, profit centres and margin analysis.' }
+        ] },
+        { title: 'Assets and closing', lessons: [
+          { id: 'fico-close', url: '/fico/close', title: 'Fixed assets and month-end close', mins: 20,
+            blurb: 'Asset master data, depreciation, accruals, currency valuation, VAT, period close and financial statements.' }
+        ] }
+      ]
+    }
+  ];
   var PASS = 7;
 
-  var lessons = [];
-  COURSE.modules.forEach(function (m, mi) {
-    m.lessons.forEach(function (l) { l.module = mi; l.index = lessons.length; lessons.push(l); });
+  COURSES.forEach(function (c) {
+    c.lessons = [];
+    c.modules.forEach(function (m, mi) {
+      m.lessons.forEach(function (l) { l.module = mi; l.index = c.lessons.length; c.lessons.push(l); });
+    });
+    c.mins = c.lessons.reduce(function (s, l) { return s + l.mins; }, 0);
   });
 
-  function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.lessons) return s; } catch (e) {}
+  function load(key) {
+    try { var s = JSON.parse(localStorage.getItem(key)); if (s && s.lessons) return s; } catch (e) {}
     return { lessons: {} };
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  var state = load();
-  function rec(id) { return state.lessons[id] || (state.lessons[id] = {}); }
-  function doneCount() { return lessons.filter(function (l) { return rec(l.id).done; }).length; }
-  function pct() { return Math.round(doneCount() / lessons.length * 100); }
-  function nextUp() {
-    var last = lessons.filter(function (l) { return l.id === state.last; })[0];
-    if (last && !rec(last.id).done) return last;
-    return lessons.filter(function (l) { return !rec(l.id).done; })[0] || null;
+  function progress(c) {
+    var st = load(c.key);
+    var done = c.lessons.filter(function (l) { return st.lessons[l.id] && st.lessons[l.id].done; }).length;
+    return { state: st, done: done, pct: Math.round(done / c.lessons.length * 100) };
   }
 
   function el(tag, cls, text) {
@@ -63,10 +96,28 @@
 
   var body = document.body;
   var lessonId = body.getAttribute('data-lesson');
-  var lesson = lessons.filter(function (l) { return l.id === lessonId; })[0];
-  var isDash = body.getAttribute('data-page') === 'dashboard';
+  var pageType = body.getAttribute('data-page');
+  var isHome = pageType === 'home';
+  var isDash = pageType === 'dashboard';
+  var course = null, lesson = null;
+  COURSES.forEach(function (c) {
+    c.lessons.forEach(function (l) { if (l.id === lessonId) { course = c; lesson = l; } });
+    if (isDash && c.id === body.getAttribute('data-course')) course = c;
+  });
   var main = document.querySelector('main');
   if (main && !main.id) main.id = 'content';
+
+  var lessons = course ? course.lessons : [];
+  var state = course ? load(course.key) : null;
+  function save() { try { localStorage.setItem(course.key, JSON.stringify(state)); } catch (e) {} }
+  function rec(id) { return state.lessons[id] || (state.lessons[id] = {}); }
+  function doneCount() { return lessons.filter(function (l) { return rec(l.id).done; }).length; }
+  function pct() { return Math.round(doneCount() / lessons.length * 100); }
+  function nextUp() {
+    var last = lessons.filter(function (l) { return l.id === state.last; })[0];
+    if (last && !rec(last.id).done) return last;
+    return lessons.filter(function (l) { return !rec(l.id).done; })[0] || null;
+  }
 
   /* ---------- Top bar (all pages) ---------- */
   var skip = link('#content', 'lms-skip', 'Skip to content');
@@ -79,23 +130,27 @@
     menuBtn.setAttribute('aria-expanded', 'false');
     bar.appendChild(menuBtn);
   }
-  var brand = link('/', 'lms-brand');
-  brand.appendChild(el('span', 'lms-logo', 'FS'));
-  brand.appendChild(el('span', 'lms-brand-t', COURSE.brand));
+  var brand = link(course ? course.home : '/', 'lms-brand');
+  brand.appendChild(el('span', 'lms-logo', course ? course.logo : 'SA'));
+  brand.appendChild(el('span', 'lms-brand-t', course ? course.brand : SITE));
   bar.appendChild(brand);
   var prog = el('div', 'lms-prog');
   var progText = el('span', 'lms-prog-t');
-  var track = el('span', 'lms-track');
   var fill = el('span');
-  track.appendChild(fill);
-  prog.appendChild(progText);
-  prog.appendChild(track);
+  if (course) {
+    var track = el('span', 'lms-track');
+    track.appendChild(fill);
+    prog.appendChild(progText);
+    prog.appendChild(track);
+  }
   bar.appendChild(prog);
-  if (!isDash) bar.appendChild(link('/', 'lms-dash', 'Dashboard'));
+  if (lesson) bar.appendChild(link(course.home, 'lms-dash', 'Dashboard'));
+  if (isDash) bar.appendChild(link('/', 'lms-dash', 'All courses'));
   body.insertBefore(bar, body.firstChild);
   body.insertBefore(skip, body.firstChild);
 
   function paintProgress() {
+    if (!course) return;
     progText.textContent = doneCount() + ' of ' + lessons.length + ' lessons · ' + pct() + '%';
     fill.style.width = pct() + '%';
     prog.setAttribute('title', 'Course progress: ' + pct() + '%');
@@ -103,7 +158,8 @@
   paintProgress();
 
   if (lesson) lessonPage();
-  if (isDash) dashboard();
+  if (isDash && course) dashboard();
+  if (isHome) home();
 
   /* ---------- Lesson page ---------- */
   function lessonPage() {
@@ -131,7 +187,7 @@
       nav.setAttribute('aria-label', 'Course content');
       nav.appendChild(el('b', null, 'Course content'));
       var ol = el('ol', 'lms-outline');
-      COURSE.modules.forEach(function (m, mi) {
+      course.modules.forEach(function (m, mi) {
         var li = el('li', 'lms-mod');
         li.appendChild(el('span', 'lms-mod-t', 'Module ' + (mi + 1) + ' · ' + m.title));
         var lol = el('ol');
@@ -161,6 +217,7 @@
         ol.appendChild(li);
       });
       nav.appendChild(ol);
+      nav.appendChild(link('/', 'lms-allc', '← All courses'));
       nav.addEventListener('click', function (ev) { if (ev.target.closest('a')) toggleMenu(false); });
     }
 
@@ -187,9 +244,9 @@
     var h1 = main.querySelector('h1');
     var crumbs = el('nav', 'lms-crumbs');
     crumbs.setAttribute('aria-label', 'Breadcrumb');
-    crumbs.appendChild(link('/', null, 'Dashboard'));
+    crumbs.appendChild(link(course.home, null, course.brand));
     crumbs.appendChild(el('span', null, '›'));
-    crumbs.appendChild(el('span', null, 'Module ' + (lesson.module + 1) + ': ' + COURSE.modules[lesson.module].title));
+    crumbs.appendChild(el('span', null, 'Module ' + (lesson.module + 1) + ': ' + course.modules[lesson.module].title));
     crumbs.appendChild(el('span', null, '›'));
     crumbs.appendChild(el('span', null, 'Lesson ' + (lesson.index + 1) + ' of ' + lessons.length));
     main.insertBefore(crumbs, h1);
@@ -223,7 +280,7 @@
     var next = lessons[lesson.index + 1];
     pn.appendChild(prev ? card(prev.url, '← Previous lesson', prev.title, 'prev') : el('span'));
     pn.appendChild(next ? card(next.url, 'Next lesson →', next.title, 'next')
-                        : card('/', 'Finish →', 'Back to your dashboard', 'next'));
+                        : card(course.home, 'Finish →', 'Back to your dashboard', 'next'));
     main.insertBefore(pn, footer);
     function card(href, small, title, cls) {
       var a = link(href, 'lms-pn-' + cls);
@@ -267,13 +324,57 @@
     });
   }
 
-  /* ---------- Dashboard ---------- */
-  function dashboard() {
-    // Old links to sections of the guide used to live on the home page
+  /* ---------- Home page: all courses ---------- */
+  function home() {
+    // Old links to sections of the FSCD guide used to live on the home page
     if (location.hash && !document.getElementById(location.hash.slice(1))) {
       location.replace('/basics' + location.hash);
       return;
     }
+    var root = document.getElementById('lms-home');
+    if (!root) return;
+    root.innerHTML = '';
+    var hero = el('section', 'lms-hero lms-hero-home');
+    var ht = el('div');
+    ht.appendChild(el('p', 'lms-kicker', 'Free self-paced courses · ' + COURSES.length + ' courses'));
+    ht.appendChild(el('h1', null, 'Learn SAP the simple way'));
+    ht.appendChild(el('p', 'lede', 'Plain-English courses for business analysts, testers and new team members. Every course follows one Danish company or customer from start to finish, with diagrams, screen walk-throughs and a short test after every lesson.'));
+    hero.appendChild(ht);
+    root.appendChild(hero);
+
+    root.appendChild(el('h2', null, 'Choose a course'));
+    var grid = el('div', 'lms-courses');
+    COURSES.forEach(function (c, ci) {
+      var p = progress(c);
+      var card = el('section', 'lms-course');
+      var head = el('div', 'lms-course-h');
+      head.appendChild(el('span', 'lms-logo', c.logo));
+      var ttl = el('div');
+      ttl.appendChild(el('p', 'lms-modnum', 'Course ' + (ci + 1) + ' · ' + c.lessons.length + ' lessons · ' + c.mins + ' min'));
+      ttl.appendChild(link(c.home, 'lms-course-t', c.title));
+      head.appendChild(ttl);
+      card.appendChild(head);
+      card.appendChild(el('p', 'lms-course-b', c.blurb));
+      var mods = el('ol', 'lms-course-m');
+      c.modules.forEach(function (m) { mods.appendChild(el('li', null, m.title)); });
+      card.appendChild(mods);
+      var pr = el('div', 'lms-course-p');
+      var tr = el('span', 'lms-track');
+      var fl = el('span');
+      fl.style.width = p.pct + '%';
+      tr.appendChild(fl);
+      pr.appendChild(tr);
+      pr.appendChild(el('span', null, p.done + ' of ' + c.lessons.length + ' lessons · ' + p.pct + '%'));
+      card.appendChild(pr);
+      var started = c.lessons.some(function (l) { return p.state.lessons[l.id] && p.state.lessons[l.id].visited; });
+      card.appendChild(link(c.home, 'lms-btn', p.done === c.lessons.length ? 'Review the course' : started ? 'Continue →' : 'Start the course →'));
+      grid.appendChild(card);
+    });
+    root.appendChild(grid);
+  }
+
+  /* ---------- Course dashboard ---------- */
+  function dashboard() {
     var root = document.getElementById('lms-dashboard');
     if (!root) return;
 
@@ -285,10 +386,9 @@
 
       var hero = el('section', 'lms-hero');
       var ht = el('div');
-      ht.appendChild(el('p', 'lms-kicker', 'Self-paced course · ' + lessons.length + ' lessons · ' +
-        lessons.reduce(function (s, l) { return s + l.mins; }, 0) + ' min'));
-      ht.appendChild(el('h1', null, COURSE.title));
-      ht.appendChild(el('p', 'lede', 'Learn SAP FSCD the simple way: plain English, real insurance stories from Denmark, Sweden and Norway, pictures of the key screens, and a short test after every lesson.'));
+      ht.appendChild(el('p', 'lms-kicker', 'Self-paced course · ' + lessons.length + ' lessons · ' + course.mins + ' min'));
+      ht.appendChild(el('h1', null, course.title));
+      ht.appendChild(el('p', 'lede', course.lede));
       var go = link(up ? up.url : lessons[0].url, 'lms-btn big',
         done === 0 ? 'Start the course →' : up ? 'Continue: ' + up.title + ' →' : 'Review the course');
       ht.appendChild(go);
@@ -302,7 +402,7 @@
       root.appendChild(hero);
 
       root.appendChild(el('h2', null, 'Course content'));
-      COURSE.modules.forEach(function (m, mi) {
+      course.modules.forEach(function (m, mi) {
         var mod = el('section', 'lms-modcard');
         var mh = el('div', 'lms-modhead');
         mh.appendChild(el('span', 'lms-modnum', 'Module ' + (mi + 1)));
@@ -362,7 +462,7 @@
       var reset = el('button', 'lms-linkbtn', 'Reset my progress');
       reset.type = 'button';
       reset.addEventListener('click', function () {
-        if (confirm('Reset all lesson progress and test scores in this browser?')) {
+        if (confirm('Reset all lesson progress and test scores for this course in this browser?')) {
           state = { lessons: {} };
           save();
           render();
@@ -381,9 +481,9 @@
       paper.appendChild(el('p', null, 'This certifies that'));
       paper.appendChild(el('p', 'lms-cert-name', state.name));
       paper.appendChild(el('p', null, 'has completed the self-paced course'));
-      paper.appendChild(el('p', 'lms-cert-course', COURSE.title));
+      paper.appendChild(el('p', 'lms-cert-course', course.title));
       paper.appendChild(el('p', 'lms-cert-date', when.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) +
-        ' · ' + COURSE.brand));
+        ' · ' + course.brand));
       var p = el('button', 'lms-btn alt lms-noprint', 'Print or save as PDF');
       p.type = 'button';
       p.addEventListener('click', function () { body.classList.add('lms-printing'); print(); body.classList.remove('lms-printing'); });

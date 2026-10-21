@@ -3,8 +3,11 @@
 ## sap-fscd-guide (https://sap-fscd-guide.vercel.app)
 Static pages deployed to the Vercel project `sap-fscd-guide`.
 
-The site is a small course (LMS). `lms.js` holds the course outline (`COURSE`): add every new lesson there.
-`/` is the dashboard (`index.html`, `<body data-page="dashboard">`); lessons are separate pages (`/basics`, `/payments`, ...).
+The site is a small LMS ("SAP Academy") with several courses. `lms.js` holds every course outline (`COURSES`): add every new lesson to its course there.
+- `/` is the home page listing all courses (`index.html`, `<body data-page="home">`).
+- Each course has a dashboard: `/fscd` (`fscd.html`) and `/fico` (`fico.html`), with `<body data-page="dashboard" data-course="ID">`.
+- FSCD lessons are top-level pages (`/basics`, `/payments`, ...); FICO lessons live in `fico/` (`/fico/basics`, `/fico/ap`, ...) with lesson IDs and quiz names prefixed `fico-`.
+- Progress is saved per course in localStorage (`fscd-academy-progress-v1`, `fico-academy-progress-v1`); never rename these keys.
 
 Every lesson page must have:
 - `<body data-lesson="ID">` matching its entry in `COURSE`, plus `<link rel="stylesheet" href="/lms.css">` after theme.css and `<script src="/lms.js" defer></script>` before quiz.js.
