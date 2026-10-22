@@ -1,6 +1,6 @@
 /* Course shell for every page: top bar, course outline sidebar, progress
    tracking, lesson completion, previous/next navigation, course dashboards,
-   the all-courses home page and certificates. Progress is stored in this
+   the all-courses home page and completion notes. Progress is stored in this
    browser only (localStorage), separately for each course.
    Lesson pages:  <body data-lesson="ID">
    Course dashboard: <body data-page="dashboard" data-course="COURSE-ID">
@@ -8,12 +8,11 @@
    To add a lesson, add it to its course in COURSES below and give its page data-lesson. */
 (function () {
   var SITE = 'SAP Learning Notes';
-  var MAIL = 'mailto:s.anbuselvan@gmail.com?subject=' + encodeURIComponent('SAP learning notes: correction or suggestion');
   var COURSES = [
     {
       id: 'fscd', title: 'SAP FSCD for Business Analysts', brand: 'FSCD Notes', logo: 'FS',
       home: '/fscd', key: 'fscd-academy-progress-v1',
-      lede: 'My study notes on SAP FSCD, in plain English, with insurance examples from Denmark, Sweden and Norway, simple pictures and a short self-test after each lesson. I am still learning, so please read them as a study aid.',
+      lede: 'Study notes on SAP FSCD for people joining the SAP FI team: plain English, insurance examples from Denmark, Sweden and Norway, simple pictures and a short self-test after each lesson.',
       blurb: 'Insurance billing and payments: premiums, Nordic payment methods, dunning, the general ledger and SAP BRIM, told with a Danish insurer.',
       modules: [
         { title: 'FSCD foundations', lessons: [
@@ -41,7 +40,7 @@
     {
       id: 'fico', title: 'SAP FICO for Business Analysts', brand: 'FICO Notes', logo: 'FI',
       home: '/fico', key: 'fico-academy-progress-v1',
-      lede: 'My study notes on SAP FICO, in plain English, following one made-up Danish insurer through the year, with simple diagrams and a short self-test after each lesson. I am still learning, so please read them as a study aid.',
+      lede: 'Study notes on SAP FICO for people joining the SAP FI team: plain English, one made-up Danish insurer followed through the year, simple diagrams and a short self-test after each lesson.',
       blurb: 'Financial accounting and controlling at a Danish insurer: the general ledger, suppliers, premiums, reserves, costs by line of business, the combined ratio and month-end.',
       modules: [
         { title: 'FICO foundations', lessons: [
@@ -182,9 +181,7 @@
   /* ---------- Modest note in every footer ---------- */
   var foot = document.querySelector('footer');
   if (foot) {
-    var note = el('p', 'lms-note', 'These are a beginner\'s study notes, not official SAP guidance. Found a mistake? ');
-    note.appendChild(link(MAIL, null, 'Please tell me'));
-    note.appendChild(document.createTextNode('.'));
+    var note = el('p', 'lms-note', 'These are study notes to help new joiners get started, not official SAP guidance. Please confirm important points with your team.');
     foot.insertBefore(note, foot.querySelector('.copy'));
   }
 
@@ -367,9 +364,9 @@
     root.innerHTML = '';
     var hero = el('section', 'lms-hero lms-hero-home');
     var ht = el('div');
-    ht.appendChild(el('p', 'lms-kicker', 'Study notes · ' + COURSES.length + ' topics'));
-    ht.appendChild(el('h1', null, 'My SAP learning notes'));
-    ht.appendChild(el('p', 'lede', 'I am learning SAP and writing down what I understand, in plain English, using a made-up Danish insurance company. I share it in case it helps other beginners too.'));
+    ht.appendChild(el('p', 'lms-kicker', 'For new joiners · SAP FI team'));
+    ht.appendChild(el('h1', null, 'SAP learning notes for the FI team'));
+    ht.appendChild(el('p', 'lede', 'Plain-English notes to help anyone who joins the SAP FI team get started, using a made-up Danish insurance company, simple diagrams and a short self-test after each lesson.'));
     hero.appendChild(ht);
     root.appendChild(hero);
 
@@ -377,16 +374,12 @@
     about.appendChild(el('h2', null, 'About these notes'));
     var ul = el('ul');
     [
-      'Written by a learner. I am new to SAP, so please treat these notes as a study aid, not as official guidance.',
+      'Written as a starting point for new joiners. Please treat these notes as a study aid, not as official guidance.',
       'Made with the help of AI tools and general SAP knowledge. They have not been formally reviewed yet. Names, account numbers and amounts are made up.',
-      'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP\'s own documentation.',
-      'Many of you know this area far better than I do. If something is wrong or unclear, please tell me and I will gladly correct it.'
+      'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP\'s own documentation.'
     ].forEach(function (t) { ul.appendChild(el('li', null, t)); });
     about.appendChild(ul);
-    var ab = el('p', 'lms-about-f');
-    ab.appendChild(link(MAIL, 'lms-btn', 'Send a correction or suggestion'));
-    ab.appendChild(el('span', null, 'Last updated: October 2026'));
-    about.appendChild(ab);
+    about.appendChild(el('p', 'lms-about-f', 'Last updated: October 2026'));
     root.appendChild(about);
 
     root.appendChild(el('h2', null, 'Choose a topic'));
@@ -474,20 +467,20 @@
         root.appendChild(mod);
       });
 
-      root.appendChild(el('h2', null, 'Your certificate'));
+      root.appendChild(el('h2', null, 'Your completion note'));
       var cert = el('section', 'lms-certbox');
       if (done < lessons.length) {
-        cert.appendChild(el('p', 'lms-lock', '🔒 Complete all ' + lessons.length + ' lessons to unlock your certificate of completion. ' +
+        cert.appendChild(el('p', 'lms-lock', '🔒 Complete all ' + lessons.length + ' lessons to unlock your completion note. ' +
           (lessons.length - done) + ' to go!'));
       } else {
-        cert.appendChild(el('p', null, '🎉 Congratulations! You have completed the course. Type your name to create your certificate.'));
+        cert.appendChild(el('p', null, '🎉 Congratulations! You have completed the course. Type your name to create your completion note.'));
         var f = el('form', 'lms-certform');
         var inp = el('input');
         inp.placeholder = 'Your full name';
         inp.value = state.name || '';
         inp.maxLength = 80;
         inp.setAttribute('aria-label', 'Your full name');
-        var b = el('button', 'lms-btn', 'Show certificate');
+        var b = el('button', 'lms-btn', 'Show completion note');
         b.type = 'submit';
         f.appendChild(inp);
         f.appendChild(b);
@@ -524,8 +517,8 @@
       if (!state.name) return;
       var lastDone = lessons.map(function (l) { return rec(l.id).doneAt || ''; }).sort().pop();
       var when = lastDone ? new Date(lastDone) : new Date();
-      paper.appendChild(el('p', 'lms-cert-k', 'Certificate of completion'));
-      paper.appendChild(el('p', null, 'This certifies that'));
+      paper.appendChild(el('p', 'lms-cert-k', 'Completion note'));
+      paper.appendChild(el('p', null, 'This note records that'));
       paper.appendChild(el('p', 'lms-cert-name', state.name));
       paper.appendChild(el('p', null, 'has completed the self-paced course'));
       paper.appendChild(el('p', 'lms-cert-course', course.title));
