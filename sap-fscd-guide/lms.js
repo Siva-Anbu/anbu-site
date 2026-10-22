@@ -61,7 +61,7 @@
         ] },
         { title: 'Assets, reserves and closing', lessons: [
           { id: 'fico-close', url: '/fico/close', title: 'Fixed assets, insurance reserves and month-end close', mins: 20,
-            blurb: 'Depreciation, accruals, currency valuation, premium and claims reserves (RBNS, IBNR), insurance tax, the close and the insurer\'s financial statements.' }
+            blurb: 'Depreciation, accruals, currency valuation, premium and claims reserves (RBNS, IBNR), insurance tax, the close and the insurer’s financial statements.' }
         ] }
       ]
     }
@@ -149,7 +149,7 @@
     var homeBtn = link('/', 'lms-home');
     homeBtn.setAttribute('aria-label', 'Home: all courses');
     homeBtn.setAttribute('title', 'Home: all courses');
-    homeBtn.appendChild(el('span', 'lms-home-i', '\u2302'));
+    homeBtn.appendChild(el('span', 'lms-home-i', '⌂'));
     homeBtn.appendChild(el('span', 'lms-home-t', 'Home'));
     bar.appendChild(homeBtn);
   }
@@ -165,7 +165,7 @@
   paintProgress();
 
   /* ---------- Back to top (all pages): appears once you have scrolled down ---------- */
-  var topBtn = el('button', 'lms-top', '\u2191');
+  var topBtn = el('button', 'lms-top', '↑');
   topBtn.type = 'button';
   topBtn.setAttribute('aria-label', 'Back to top');
   topBtn.setAttribute('title', 'Back to top');
@@ -376,7 +376,7 @@
     [
       'Written as a starting point for new joiners. Please treat these notes as a study aid, not as official guidance.',
       'Made with the help of AI tools and general SAP knowledge. They have not been formally reviewed yet. Names, account numbers and amounts are made up.',
-      'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP\'s own documentation.'
+      'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP’s own documentation.'
     ].forEach(function (t) { ul.appendChild(el('li', null, t)); });
     about.appendChild(ul);
     about.appendChild(el('p', 'lms-about-f', 'Last updated: October 2026'));
