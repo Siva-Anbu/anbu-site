@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Accounts Receivable: From Sale to Cash | FICO Academy</title>
-<meta name="description" content="How SAP FI-AR handles a sale from order to cash: customer business partner, billing and its FI posting, bank statement matching with FI-kort, payment differences, dunning, ageing and DSO, explained simply for business analysts.">
+<title>Premiums and Receivables: From Policy to Cash | FICO Academy</title>
+<meta name="description" content="How an insurer goes from policy to cash in SAP: FS-CD billing posted to the general ledger, insurance tax, bank statement matching, written versus earned premium and the unearned premium reserve, explained simply for business analysts.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
 @media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
@@ -75,8 +75,8 @@ td:first-child{font-weight:500}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
-<link rel="stylesheet" href="/theme.css?v=20261021d">
-<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="stylesheet" href="/theme.css?v=20261021e">
+<link rel="stylesheet" href="/lms.css?v=20261021e">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0f766e">
 </head>
@@ -84,106 +84,100 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
-<h1 id="top">Accounts receivable: from sale to cash</h1>
-<p class="lede">Nordlys Møbler sells 10 oak tables to Hygge Hjem A/S. Follow the money from the sales order to the bank statement, and learn what SAP posts at each step, what happens when a customer pays too little or not at all, and how to check it yourself.</p>
+<h1 id="top">Premiums and receivables: from policy to cash</h1>
+<p class="lede">Nordica Forsikring sells a commercial property policy to Hygge Hjem A/S. Follow the premium from the policy system to the bank statement, see what FS-CD and the general ledger each post, and learn how written premium turns into earned premium month by month.</p>
 
 <div class="tip"><b>Before you start</b>
-<p>This is Lesson 3 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a> (company code, GL accounts, debit and credit, the Universal Journal) and mirrors <a href="/fico/ap">Lesson 2: Accounts payable</a>, where Nordlys Møbler was the one paying. About a 20-minute read. All names, amounts and numbers are made up for learning.</p></div>
+<p>This is Lesson 3 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a> (company code, GL accounts, debit and credit) and mirrors <a href="/fico/ap">Lesson 2: Accounts payable</a>, where Nordica was the one paying. The premium collection itself is explained in the FSCD course (<a href="/basics">basics</a>, <a href="/payments">payments</a>, <a href="/dunning">dunning</a>, <a href="/accounting">accounting</a>). Here we look at it from the finance side. About a 20-minute read. All names, amounts and numbers are made up for learning.</p></div>
 
-<h2 id="meet">Meet the people and the customer</h2>
-<p>You are <strong>Sofie Holm</strong>, a business analyst in the finance team of Nordlys Møbler A/S in Aarhus (company code <strong>DK01</strong>, currency DKK). In Lesson 2 you followed money going <em>out</em> to a supplier. Now you follow money coming <em>in</em> from a customer. <strong>Accounts receivable</strong> (AR, in SAP called FI-AR) is the part of finance that tracks what customers owe the company and collects it.</p>
+<h2 id="meet">Meet the people and the policyholder</h2>
+<p>You are <strong>Sofie Holm</strong>, a business analyst in the finance team of <strong>Nordica Forsikring A/S</strong> in Copenhagen, a Danish non-life insurer (company code <strong>NF01</strong>, currency DKK). An insurer does not sell goods, so there are no sales orders or deliveries. It sells <em>cover</em>, and customers pay a <strong>premium</strong> for it. <strong>Receivables</strong> are the premiums that have been billed but not yet paid.</p>
 <div class="cast">
-<div><b>Hygge Hjem A/S</b><span>Furniture shop chain in Copenhagen. Business Partner <strong>100250</strong>. Our customer.</span></div>
-<div><b>Sales team</b><span>Takes the order and agrees the price. Works in SD (Sales and Distribution).</span></div>
-<div><b>Peter Lund</b><span>Finance manager. Watches overdue customers and the cash coming in.</span></div>
+<div><b>Hygge Hjem A/S</b><span>Furniture shop chain in Copenhagen. Business Partner <strong>100250</strong>. Corporate policyholder.</span></div>
+<div><b>Policy ERH-2026-0042</b><span>Commercial property insurance, cover 01.03.2026 to 28.02.2027, annual premium DKK 120,000.00.</span></div>
+<div><b>Peter Lund</b><span>Finance manager. Watches cash coming in and overdue premiums.</span></div>
+<div><b>Line Madsen</b><span>Actuary (aktuar). Estimates the reserves finance books at month-end.</span></div>
 <div><b>Sofie Holm (you)</b><span>Business analyst. Turns finance rules into requirements and tests.</span></div>
 </div>
 <ol class="timeline">
-<li><span class="d">10.03:</span> Hygge Hjem orders 10 oak tables at DKK 12,000.00 each: DKK 120,000.00 net.</li>
-<li><span class="d">13.03:</span> the tables leave the warehouse (delivery and goods issue).</li>
-<li><span class="d">15.03:</span> Nordlys Møbler sends the invoice: 120,000.00 + 25% VAT 30,000.00 = <strong>DKK 150,000.00</strong>, payment terms 14 days net, due <strong>29.03</strong>.</li>
-<li><span class="d">27.03:</span> Hygge Hjem pays by bank transfer with an FI-kort (+71) reference. The bank statement clears the invoice automatically.</li>
+<li><span class="d">01.03:</span> the policy starts. FS-CD bills the annual premium: 120,000.00 + 1.1% insurance tax 1,320.00 = <strong>DKK 121,320.00</strong>, due <strong>15.03</strong>.</li>
+<li><span class="d">13.03:</span> Hygge Hjem pays by bank transfer with an FI-kort (+71) reference, two days early. The bank statement clears the premium.</li>
+<li><span class="d">31.03:</span> month-end. One month of 12 is earned: DKK 10,000.00. The other DKK 110,000.00 is held back as unearned premium.</li>
 </ol>
 
-<h2 id="o2c">1. Order to cash in one picture</h2>
-<p><strong>Order to cash</strong> (O2C) is the whole journey from a customer's order to the money in the bank. Most of the steps happen in <strong>SD</strong>, the sales module. Only some of them create a posting in <strong>FI</strong>, the finance module. A good BA knows exactly which ones.</p>
+<h2 id="p2c">1. Premium to cash in one picture</h2>
+<p>At an insurer the journey from policy to cash is shared between three systems. A BA must know who owns what, otherwise every question ends in "ask someone else".</p>
 
-<div class="fig" role="img" aria-label="Order to cash flow: sales order VA01, delivery and goods issue VL01N, billing VF01, accounting document, incoming payment, clearing. Goods issue, billing and payment post to finance.">
+<div class="fig" role="img" aria-label="Premium to cash: the policy system sells the policy and calculates the premium, FS-CD bills and collects per policyholder, daily totals go to the FI general ledger, the bank receives the money, and month-end posts reserves.">
 <svg viewBox="0 0 760 250">
 <defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<text class="lab-file" x="190" y="22" text-anchor="middle">Logistics (SD and stock)</text>
-<text class="lab-in" x="565" y="22" text-anchor="middle">Finance (FI-AR)</text>
-<rect class="bx" x="10" y="40" width="110" height="90" rx="8"/><text class="t" x="65" y="68" text-anchor="middle">Sales order</text><text class="s" x="65" y="88" text-anchor="middle">VA01 · 10.03</text><text class="s" x="65" y="106" text-anchor="middle">no posting</text>
-<rect class="bx" x="135" y="40" width="120" height="90" rx="8"/><text class="t" x="195" y="68" text-anchor="middle">Delivery</text><text class="s" x="195" y="88" text-anchor="middle">VL01N · 13.03</text><text class="s" x="195" y="106" text-anchor="middle">goods issue</text>
-<rect class="bx hl" x="270" y="40" width="110" height="90" rx="8"/><text class="t" x="325" y="68" text-anchor="middle">Billing</text><text class="s" x="325" y="88" text-anchor="middle">VF01 · 15.03</text><text class="s" x="325" y="106" text-anchor="middle">the invoice</text>
-<rect class="bx hl" x="395" y="40" width="115" height="90" rx="8"/><text class="t" x="452" y="62" text-anchor="middle">Accounting</text><text class="t" x="452" y="80" text-anchor="middle">document</text><text class="s" x="452" y="104" text-anchor="middle">open item</text>
-<rect class="bx" x="525" y="40" width="110" height="90" rx="8"/><text class="t" x="580" y="68" text-anchor="middle">Payment</text><text class="s" x="580" y="88" text-anchor="middle">bank · 27.03</text><text class="s" x="580" y="106" text-anchor="middle">FF_5</text>
-<rect class="bx hl" x="650" y="40" width="100" height="90" rx="8"/><text class="t" x="700" y="68" text-anchor="middle">Clearing</text><text class="s" x="700" y="88" text-anchor="middle">item closed</text><text class="s" x="700" y="106" text-anchor="middle">balance 0</text>
-<path class="gfile" d="M120,85 H133" marker-end="url(#ar1)"/><path class="gfile" d="M255,85 H268" marker-end="url(#ar1)"/><path class="gfile" d="M380,85 H393" marker-end="url(#ar1)"/><path class="gfile" d="M510,85 H523" marker-end="url(#ar1)"/><path class="gfile" d="M635,85 H648" marker-end="url(#ar1)"/>
-<rect class="bx" x="135" y="160" width="120" height="58" rx="8"/><text class="s" x="195" y="182" text-anchor="middle">FI: cost of goods</text><text class="s" x="195" y="199" text-anchor="middle">sold / inventory</text>
-<rect class="bx" x="270" y="160" width="240" height="58" rx="8"/><text class="s" x="390" y="182" text-anchor="middle">FI: receivable 150,000 /</text><text class="s" x="390" y="199" text-anchor="middle">revenue 120,000 + VAT 30,000</text>
-<rect class="bx" x="525" y="160" width="225" height="58" rx="8"/><text class="s" x="637" y="182" text-anchor="middle">FI: bank 150,000 /</text><text class="s" x="637" y="199" text-anchor="middle">receivable 150,000 (cleared)</text>
-<path class="lin" d="M195,130 V158"/><path class="lin" d="M325,130 V158"/><path class="lin" d="M580,130 V158"/>
-<text class="lin-t" x="380" y="242" text-anchor="middle">Dashed lines: the steps that create a posting in finance</text>
+<text class="lab-file" x="95" y="22" text-anchor="middle">Policy system</text>
+<text class="lab-in" x="285" y="22" text-anchor="middle">FS-CD (sub-ledger)</text>
+<text class="lab-out" x="500" y="22" text-anchor="middle">FI general ledger</text>
+<rect class="bx" x="10" y="40" width="170" height="100" rx="8"/><text class="t" x="95" y="68" text-anchor="middle">Sell the policy</text><text class="s" x="95" y="90" text-anchor="middle">calculates the premium</text><text class="s" x="95" y="108" text-anchor="middle">120,000 + tax 1,320</text>
+<rect class="bx hl" x="205" y="40" width="170" height="100" rx="8"/><text class="t" x="290" y="68" text-anchor="middle">Bill and collect</text><text class="s" x="290" y="90" text-anchor="middle">per policyholder</text><text class="s" x="290" y="108" text-anchor="middle">open item 121,320</text>
+<rect class="bx hl" x="400" y="40" width="170" height="100" rx="8"/><text class="t" x="485" y="68" text-anchor="middle">Daily totals</text><text class="s" x="485" y="90" text-anchor="middle">one summary posting</text><text class="s" x="485" y="108" text-anchor="middle">to 140000, 300000</text>
+<rect class="bx" x="595" y="40" width="155" height="100" rx="8"/><text class="t" x="672" y="68" text-anchor="middle">Bank</text><text class="s" x="672" y="90" text-anchor="middle">Danske Bank</text><text class="s" x="672" y="108" text-anchor="middle">+121,320 on 13.03</text>
+<path class="gfile" d="M180,90 H203" marker-end="url(#ar1)"/><path class="gfile" d="M375,90 H398" marker-end="url(#ar1)"/><path class="gfile" d="M570,90 H593" marker-end="url(#ar1)"/>
+<rect class="bx" x="205" y="170" width="365" height="56" rx="8"/><text class="t" x="387" y="194" text-anchor="middle">Month-end (FI, with the actuary)</text><text class="s" x="387" y="212" text-anchor="middle">unearned premium reserve and claims reserves</text>
+<path class="lin" d="M485,140 V168"/>
+<text class="lin-t" x="680" y="205" text-anchor="middle">FS-CD owns the detail,</text><text class="lin-t" x="680" y="223" text-anchor="middle">FI owns the totals</text>
 </svg>
 </div>
-<p class="cap">The sales order only promises. Goods issue moves stock value, billing creates the receivable, and the payment clears it.</p>
+<p class="cap">The policy system sells and prices. FS-CD keeps one account per policyholder. FI only sees the totals.</p>
 
-<div class="tbl"><table><thead><tr><th>Step</th><th>Posts to FI?</th><th>What changes in the books</th></tr></thead><tbody>
-<tr><td>Sales order (VA01)</td><td>No</td><td>Nothing. It is a promise to deliver. It may reserve stock and check the credit limit.</td></tr>
-<tr><td>Goods issue (VL01N, then post goods issue)</td><td>Yes</td><td>Debit cost of goods sold, credit finished goods inventory, at the tables' production cost. The tables are gone, so their value leaves stock.</td></tr>
-<tr><td>Billing (VF01)</td><td>Yes</td><td>Receivable from Hygge Hjem, sales revenue and output VAT (section 3).</td></tr>
-<tr><td>Incoming payment</td><td>Yes</td><td>Money in the bank, receivable cleared (section 4).</td></tr>
+<div class="tbl"><table><thead><tr><th>System</th><th>Owns</th><th>Example</th></tr></thead><tbody>
+<tr><td>Policy system</td><td>Policy, cover period, premium amount</td><td>ERH-2026-0042, 120,000 for 12 months</td></tr>
+<tr><td>FS-CD</td><td>Billing, collection, dunning, one balance per policyholder</td><td>Open item of 121,320 for Hygge Hjem</td></tr>
+<tr><td>FI general ledger</td><td>Totals, tax, reserves, the financial statements</td><td>140000 receivables, 300000 premium, 250000 UPR</td></tr>
 </tbody></table></div>
-<p>In S/4HANA all these postings land in the same table, the <strong>Universal Journal (ACDOCA)</strong>, so finance and controlling see the same numbers. The sales order, delivery and invoice are linked in a <strong>document flow</strong>, which you can open from VA03 or VF03 to see every step and its status.</p>
+<p>In S/4HANA the FI postings land in the <strong>Universal Journal (ACDOCA)</strong>, so finance and controlling share the same numbers. Details of FS-CD are in the FSCD course; this lesson stays at the FI side.</p>
 
-<h2 id="customer">2. The customer as a Business Partner</h2>
-<p>In S/4HANA a customer is a <strong>Business Partner (BP)</strong>, maintained with transaction BP. One BP can play several <strong>roles</strong>: the role "FI customer" holds the finance data, the role "customer" holds the sales data. Hygge Hjem is BP <strong>100250</strong> with both roles. Here is what finance cares about:</p>
-<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> the GL account that collects the total of all customer balances. You never post to it directly; every customer posting updates it automatically.</p><p class="ex">Example: Hygge Hjem's reconciliation account is <b>140000 Trade receivables</b>. When the invoice posts to the customer, 140000 goes up by the same DKK 150,000.00. The balance sheet shows 140000; AR shows who owes what.</p></div>
-<div class="term"><h4>Payment terms</h4><p><strong>In simple words:</strong> a key that tells SAP when the invoice is due, and whether there is a discount for paying early.</p><p class="ex">Example: <b>14 days net</b>. Invoice dated 15.03 + 14 days = due <b>29.03</b>.</p></div>
-<div class="term"><h4>Credit limit</h4><p><strong>In simple words:</strong> the most the customer may owe at any one time. If a new order would push them over it, the order is blocked until someone approves it.</p><p class="ex">Example: Hygge Hjem has a limit of <b>DKK 500,000.00</b>. With nothing else open, the DKK 150,000.00 order passes. In S/4HANA this lives in <b>SAP Credit Management</b> (screen UKM_BP), which can also give each customer a risk class and a score.</p></div>
-<div class="term"><h4>Dunning procedure</h4><p><strong>In simple words:</strong> the rulebook for payment reminders: how many levels, how many days apart, and any fees (section 6).</p></div>
-<div class="term"><h4>VAT and CVR number</h4><p><strong>In simple words:</strong> the CVR number is the Danish company registration number. It is stored on the BP and printed on invoices, and it matters for VAT reporting.</p><p class="ex">Example: Hygge Hjem is a Danish company, so the invoice carries 25% Danish VAT (moms). A customer in Germany would usually get an invoice without Danish VAT (reverse charge), which needs a different tax code.</p></div>
+<h2 id="customer">2. The policyholder as Business Partner and the contract account</h2>
+<p>In S/4HANA a customer is a <strong>Business Partner (BP)</strong>, maintained with transaction BP. Hygge Hjem is BP <strong>100250</strong>. In FS-CD the BP has a <strong>contract account</strong>, the "wallet" where all its premiums, payments and fees live.</p>
+<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> the GL account that holds the total of all FS-CD balances. Nobody posts to it by hand.</p><p class="ex">Example: <b>140000 Premium receivables from policyholders</b>. If Nordica has 8,000 policyholders with open premiums, the GL shows one number and FS-CD shows who owes what. FPL9 shows one policyholder's balance.</p></div>
+<div class="term"><h4>VAT and insurance tax</h4><p><strong>In simple words:</strong> insurance is VAT-exempt in Denmark, so there is no VAT on premiums. Instead the premium carries <b>insurance tax</b> (skadesforsikringsafgift), which Nordica collects for the state.</p><p class="ex">Example: this course uses a simplified <b>1.1%</b>: 1.1% of 120,000.00 = 1,320.00. Nordica pays it on to <b>Skattestyrelsen</b>. Motor liability has its own separate tax. Confirm current rates with your tax team.</p></div>
+<div class="term"><h4>Payment terms and dunning procedure</h4><p><strong>In simple words:</strong> terms say when the premium is due. The dunning procedure says which reminders follow if it is not paid (section 6).</p><p class="ex">Example: billed 01.03, due 15.03.</p></div>
 
-<h2 id="billing">3. Billing and the FI posting (15.03)</h2>
-<p>On 15.03 the billing clerk creates the invoice in SD with VF01. When the billing document is saved and released to accounting, SAP creates the <strong>accounting document</strong> on its own. Nobody types a journal entry.</p>
+<h2 id="billing">3. Billing and the GL posting (01.03)</h2>
+<p>On 01.03 FS-CD runs billing for the policy. It creates a posting document in the sub-ledger. Nothing is typed into FI: the nightly transfer to the general ledger (FPG1 in many projects) sends the <strong>daily totals</strong>.</p>
 <div class="tbl"><table><thead><tr><th>Line</th><th>Debit / Credit</th><th>Account</th><th style="text-align:right">DKK</th></tr></thead><tbody>
-<tr><td>1</td><td>Debit</td><td>Customer 100250 Hygge Hjem (reconciliation account 140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
-<tr><td>2</td><td>Credit</td><td>800000 Sales revenue: domestic</td><td class="num" style="text-align:right">120,000.00</td></tr>
-<tr><td>3</td><td>Credit</td><td>175000 Output VAT (salgsmoms), tax code for 25% output VAT</td><td class="num" style="text-align:right">30,000.00</td></tr>
+<tr><td>1</td><td>Debit</td><td>140000 Premium receivables (policyholder 100250 in FS-CD)</td><td style="text-align:right">121,320.00</td></tr>
+<tr><td>2</td><td>Credit</td><td>300000 Gross written premium</td><td style="text-align:right">120,000.00</td></tr>
+<tr><td>3</td><td>Credit</td><td>290100 Insurance tax payable</td><td style="text-align:right">1,320.00</td></tr>
 </tbody></table></div>
-<p class="cap">Accounting document dated 15.03.2026, document type RV (billing transfer) in many systems. Debits 150,000.00 = credits 120,000.00 + 30,000.00.</p>
-<p>How does SAP know to use 800000 and 175000? Through <strong>account determination</strong>. The SD invoice is built from <strong>condition types</strong>: small price building blocks such as "base price" and "output tax". Consultants set up rules that map each condition type to a GL account. The customer line goes to the reconciliation account from the BP.</p>
+<p class="cap">Debit 121,320.00 = credits 120,000.00 + 1,320.00. In the real GL, thousands of such policies are summed into one line per account and day.</p>
+<p>How does the GL know where to post? Each FS-CD posting has a <strong>main transaction</strong> (what it is, for example "premium") and a <strong>sub transaction</strong> (more detail, for example "commercial property"). Account determination maps the pair to GL accounts. Consultants set it up; the BA confirms the business rule.</p>
 
-<div class="fig" role="img" aria-label="Account determination: the base price condition of 120,000 goes to account 800000 sales revenue, the output tax condition of 30,000 goes to 175000 output VAT, and the customer total of 150,000 goes to 140000 via the reconciliation account on the business partner">
+<div class="fig" role="img" aria-label="FS-CD to GL account determination: the premium main transaction maps to 300000, the insurance tax item maps to 290100, and the policyholder's total maps to 140000 through the contract account's reconciliation account.">
 <svg viewBox="0 0 760 240">
 <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<text class="lab-file" x="120" y="22" text-anchor="middle">SD invoice (conditions)</text>
+<text class="lab-file" x="120" y="22" text-anchor="middle">FS-CD document item</text>
 <text class="lab-file" x="380" y="22" text-anchor="middle">Rule</text>
-<text class="lab-in" x="640" y="22" text-anchor="middle">FI accounts</text>
-<rect class="bx" x="20" y="38" width="200" height="50" rx="8"/><text class="t" x="120" y="60" text-anchor="middle">Base price</text><text class="s" x="120" y="78" text-anchor="middle">10 × 12,000 = 120,000</text>
-<rect class="bx" x="20" y="104" width="200" height="50" rx="8"/><text class="t" x="120" y="126" text-anchor="middle">Output tax 25%</text><text class="s" x="120" y="144" text-anchor="middle">30,000</text>
-<rect class="bx" x="20" y="170" width="200" height="50" rx="8"/><text class="t" x="120" y="192" text-anchor="middle">Invoice total</text><text class="s" x="120" y="210" text-anchor="middle">150,000 owed by 100250</text>
-<rect class="bx" x="290" y="38" width="180" height="50" rx="8"/><text class="s" x="380" y="60" text-anchor="middle">revenue account</text><text class="s" x="380" y="77" text-anchor="middle">determination</text>
-<rect class="bx" x="290" y="104" width="180" height="50" rx="8"/><text class="s" x="380" y="126" text-anchor="middle">tax code →</text><text class="s" x="380" y="143" text-anchor="middle">tax account</text>
-<rect class="bx" x="290" y="170" width="180" height="50" rx="8"/><text class="s" x="380" y="192" text-anchor="middle">BP 100250 →</text><text class="s" x="380" y="209" text-anchor="middle">reconciliation account</text>
-<rect class="bx hl" x="540" y="38" width="200" height="50" rx="8"/><text class="t" x="640" y="60" text-anchor="middle">800000 Revenue</text><text class="s" x="640" y="78" text-anchor="middle">credit 120,000</text>
-<rect class="bx hl" x="540" y="104" width="200" height="50" rx="8"/><text class="t" x="640" y="126" text-anchor="middle">175000 Output VAT</text><text class="s" x="640" y="144" text-anchor="middle">credit 30,000</text>
-<rect class="bx hl" x="540" y="170" width="200" height="50" rx="8"/><text class="t" x="640" y="192" text-anchor="middle">140000 Receivables</text><text class="s" x="640" y="210" text-anchor="middle">debit 150,000</text>
+<text class="lab-in" x="640" y="22" text-anchor="middle">GL accounts</text>
+<rect class="bx" x="20" y="38" width="200" height="50" rx="8"/><text class="t" x="120" y="60" text-anchor="middle">Premium</text><text class="s" x="120" y="78" text-anchor="middle">main + sub transaction</text>
+<rect class="bx" x="20" y="104" width="200" height="50" rx="8"/><text class="t" x="120" y="126" text-anchor="middle">Insurance tax 1.1%</text><text class="s" x="120" y="144" text-anchor="middle">1,320</text>
+<rect class="bx" x="20" y="170" width="200" height="50" rx="8"/><text class="t" x="120" y="192" text-anchor="middle">Policyholder total</text><text class="s" x="120" y="210" text-anchor="middle">121,320 owed by 100250</text>
+<rect class="bx" x="290" y="38" width="180" height="50" rx="8"/><text class="s" x="380" y="60" text-anchor="middle">main / sub transaction</text><text class="s" x="380" y="77" text-anchor="middle">→ revenue account</text>
+<rect class="bx" x="290" y="104" width="180" height="50" rx="8"/><text class="s" x="380" y="126" text-anchor="middle">tax transaction</text><text class="s" x="380" y="143" text-anchor="middle">→ tax account</text>
+<rect class="bx" x="290" y="170" width="180" height="50" rx="8"/><text class="s" x="380" y="192" text-anchor="middle">contract account →</text><text class="s" x="380" y="209" text-anchor="middle">reconciliation account</text>
+<rect class="bx hl" x="540" y="38" width="200" height="50" rx="8"/><text class="t" x="640" y="60" text-anchor="middle">300000 Gross premium</text><text class="s" x="640" y="78" text-anchor="middle">credit 120,000</text>
+<rect class="bx hl" x="540" y="104" width="200" height="50" rx="8"/><text class="t" x="640" y="126" text-anchor="middle">290100 Insurance tax</text><text class="s" x="640" y="144" text-anchor="middle">credit 1,320</text>
+<rect class="bx hl" x="540" y="170" width="200" height="50" rx="8"/><text class="t" x="640" y="192" text-anchor="middle">140000 Receivables</text><text class="s" x="640" y="210" text-anchor="middle">debit 121,320</text>
 <path class="gfile" d="M220,63 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,63 H538" marker-end="url(#ar2)"/>
 <path class="gfile" d="M220,129 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,129 H538" marker-end="url(#ar2)"/>
 <path class="gfile" d="M220,195 H288" marker-end="url(#ar2)"/><path class="gfile" d="M470,195 H538" marker-end="url(#ar2)"/>
 </svg>
 </div>
-<p class="cap">Revenue account determination can depend on sales organisation, customer group and material group. A BA confirms the business rule; a consultant builds it.</p>
-<div class="tip"><b>BA tip: "the invoice did not reach accounting"</b>
-<p>If a billing document exists but no accounting document, it is often blocked for transfer, usually because an account could not be determined. The billing clerk sees an error such as "account determination error". Ask for the condition type and the missing rule, not just "it failed".</p></div>
+<p class="cap">Different lines of business (motor, home) can post to different premium accounts or profit centres. That is a business rule, not a technical detail.</p>
+<div class="tip"><b>BA tip: "FS-CD says billed, the GL does not"</b>
+<p>If an FS-CD document exists but the GL total is missing it, the transfer job may not have run or the account determination may be incomplete. Ask for the main and sub transaction and the posting date, not just "it failed".</p></div>
 
-<h2 id="payment">4. Incoming payment (27.03)</h2>
-<p>Danish businesses often pay with an <strong>FI-kort</strong> (in English: a payment slip). Type <strong>+71</strong> carries a 15-digit <strong>payment ID</strong> that Nordlys Møbler prints on its invoice. Hygge Hjem types it into their bank when they pay, and the bank passes it back to Nordlys Møbler on the bank statement. That is what makes automatic matching possible.</p>
-<p>Each morning, Danske Bank sends the <strong>electronic bank statement</strong> for the day before, as a <strong>camt.053</strong> file (the modern XML format) or an older <strong>MT940</strong> file. Finance loads it with <strong>FF_5</strong>, often as a scheduled job. For every line, SAP reads the reference, looks for the matching open item and, if it finds one, posts and clears in one go.</p>
+<h2 id="payment">4. Payment (13.03)</h2>
+<p>Danish customers often pay with an <strong>FI-kort</strong> (payment slip). The <strong>+71</strong> type carries a payment ID that Nordica prints on the premium notice. Hygge Hjem types it into the bank, and the bank returns it on the statement. That lets FS-CD find the open item automatically.</p>
+<p>Each morning Danske Bank sends the <strong>bank statement</strong> as a <strong>camt.053</strong> file (XML) or an older <strong>MT940</strong> file. The statement is loaded as a <strong>payment lot</strong> (FP05 in many projects). For every line FS-CD reads the reference, looks for the open item and, if found, posts and clears it.</p>
 
-<div class="fig" role="img" aria-label="Bank statement matching: Danske Bank sends a camt.053 file, FF_5 imports it and searches for the +71 payment ID. If found, the invoice is cleared automatically. If not found, the line goes to FEBAN for manual post-processing, where a clerk finds the invoice and clears it.">
+<div class="fig" role="img" aria-label="Payment matching: Danske Bank sends a camt.053 file, it is loaded as a payment lot, and FS-CD searches for the +71 payment ID. If found, the premium is cleared automatically. If not found, the payment goes to clarification where a clerk finds the policyholder.">
 <svg viewBox="0 0 760 260">
 <defs>
 <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -191,10 +185,10 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
 </defs>
 <rect class="bx" x="10" y="90" width="140" height="80" rx="8"/><text class="t" x="80" y="120" text-anchor="middle">Danske Bank</text><text class="s" x="80" y="140" text-anchor="middle">camt.053 / MT940</text>
-<rect class="bx hl" x="190" y="90" width="150" height="80" rx="8"/><text class="t" x="265" y="120" text-anchor="middle">FF_5 import</text><text class="s" x="265" y="140" text-anchor="middle">read each line</text>
-<rect class="bx" x="380" y="90" width="140" height="80" rx="8"/><text class="t" x="450" y="118" text-anchor="middle">Find invoice</text><text class="s" x="450" y="138" text-anchor="middle">by +71 payment ID</text><text class="s" x="450" y="154" text-anchor="middle">and amount</text>
+<rect class="bx hl" x="190" y="90" width="150" height="80" rx="8"/><text class="t" x="265" y="120" text-anchor="middle">Payment lot</text><text class="s" x="265" y="140" text-anchor="middle">read each line</text>
+<rect class="bx" x="380" y="90" width="140" height="80" rx="8"/><text class="t" x="450" y="118" text-anchor="middle">Find open item</text><text class="s" x="450" y="138" text-anchor="middle">by +71 payment ID</text><text class="s" x="450" y="154" text-anchor="middle">and amount</text>
 <rect class="bx hl" x="575" y="20" width="175" height="80" rx="8" style="stroke:var(--ok)"/><text class="t" x="662" y="48" text-anchor="middle">Found: auto-clear</text><text class="s" x="662" y="68" text-anchor="middle">posted and cleared</text><text class="s" x="662" y="84" text-anchor="middle">no one touches it</text>
-<rect class="bx" x="575" y="160" width="175" height="80" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="662" y="188" text-anchor="middle">Not found</text><text class="s" x="662" y="208" text-anchor="middle">FEBAN: clerk finds</text><text class="s" x="662" y="224" text-anchor="middle">the item, then clears</text>
+<rect class="bx" x="575" y="160" width="175" height="80" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="662" y="188" text-anchor="middle">Not found</text><text class="s" x="662" y="208" text-anchor="middle">clarification: clerk</text><text class="s" x="662" y="224" text-anchor="middle">finds the policyholder</text>
 <path class="gfile" d="M150,130 H188" marker-end="url(#ar3)"/><path class="gfile" d="M340,130 H378" marker-end="url(#ar3)"/>
 <path class="gin" d="M520,120 C548,120 548,60 573,60" marker-end="url(#ar4)"/>
 <path class="gbad" d="M520,140 C548,140 548,200 573,200" marker-end="url(#ar5)"/>
@@ -202,171 +196,160 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="lab-bad" x="450" y="205" text-anchor="middle">no or wrong reference</text>
 </svg>
 </div>
-<p class="cap">The rules that read references from the statement are called search strings and interpretation algorithms. Their quality decides how much manual work finance has.</p>
+<p class="cap">Payments that cannot be matched wait on a clarification list. Until then the money is in the bank but the policyholder still looks unpaid.</p>
 
-<p>Hygge Hjem's DKK 150,000.00 arrives on 27.03 with the right payment ID. SAP posts two small entries through a <strong>clearing account</strong>, a "waiting room" account that should always end at zero:</p>
+<p>Hygge Hjem's DKK 121,320.00 arrives on 13.03 with the right payment ID. FS-CD clears the open item. In the GL the totals appear through a <strong>clearing account</strong>, a "waiting room" account that should end at zero:</p>
 <div class="tbl"><table><thead><tr><th>Date · step</th><th>Debit</th><th>Credit</th><th style="text-align:right">DKK</th></tr></thead><tbody>
-<tr><td>27.03 · bank side</td><td>110000 Bank: Danske Bank</td><td>113100 Bank incoming clearing</td><td class="num" style="text-align:right">150,000.00</td></tr>
-<tr><td>27.03 · customer side</td><td>113100 Bank incoming clearing</td><td>Customer 100250 (140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
+<tr><td>13.03 · bank side</td><td>110000 Bank: Danske Bank</td><td>113100 Bank incoming clearing</td><td style="text-align:right">121,320.00</td></tr>
+<tr><td>13.03 · policyholder side</td><td>113100 Bank incoming clearing</td><td>140000 Premium receivables (100250)</td><td style="text-align:right">121,320.00</td></tr>
 </tbody></table></div>
-<p class="cap">The second posting also <strong>clears</strong> the invoice: the open item and the payment get the same clearing document and date, and the item moves from "open" to "cleared".</p>
-<p>If there were no reference, the first line would still post (the money is in the bank), but the customer side would wait in <strong>FEBAN</strong>. 113100 would show a balance until someone matches it. That makes 113100 a handy health check: a balance that grows means unmatched payments.</p>
-<div class="term"><h4>Manual incoming payment: F-28</h4><p><strong>In simple words:</strong> a screen to post a customer payment by hand, choose which open items it pays, and clear them.</p><p class="ex">Example: if Hygge Hjem had brought a cheque or the bank file had failed, a clerk would use <b>F-28</b>: bank account 110000, amount 150,000.00, customer 100250, then select the open invoice. Many projects use the Fiori app "Post incoming payments" instead.</p></div>
+<p class="cap">The open premium and the payment get the same clearing document and date. Payment two days before the due date means no reminder is ever created.</p>
+<p>If a statement line has no usable reference, the bank side still posts, but the policyholder side waits for clarification, so 113100 keeps a balance. A growing 113100 is a handy health check: it means unmatched payments.</p>
 
-<h2 id="differences">5. When the amount doesn't match</h2>
-<p>Real customers do not always pay the exact amount. SAP has a standard answer for each case. Here they are, using the same DKK 150,000.00 invoice.</p>
-<h3 id="partial">5.1 Partial payment or residual item</h3>
-<p>Suppose Hygge Hjem pays only DKK 100,000.00. The clerk can post it in two ways:</p>
+<h2 id="earned">5. Written premium, earned premium and the UPR</h2>
+<p>Here is the idea that surprises most new BAs. Hygge Hjem paid for <strong>12 months</strong> of cover on 13.03, but Nordica has only provided <strong>one month</strong> of it by 31.03. Accounting says income belongs to the period in which the cover is given. So we split the premium:</p>
+<div class="term"><h4>Written premium and earned premium</h4><p><strong>In simple words:</strong> <b>Written premium</b> (GWP) is what was billed for the whole policy. <b>Earned premium</b> is the part of it for cover already given.</p><p class="ex">Example: policy ERH-2026-0042 is written at 120,000 on 01.03. After one month, 120,000 ÷ 12 = <b>10,000</b> is earned.</p></div>
+<div class="term"><h4>Unearned premium reserve (UPR, præmiehensættelser)</h4><p><strong>In simple words:</strong> a liability for cover Nordica still owes. If the policy were cancelled tomorrow, part of the premium would go back.</p><p class="ex">Example: at 31.03, <b>110,000</b> relates to 11 months not yet given, so it sits in 250000 UPR.</p></div>
 
-<div class="fig" role="img" aria-label="Partial payment versus residual item. Partial payment: invoice 150,000 stays open and a payment of 100,000 is added, both open and linked. Residual item: invoice 150,000 is cleared by the payment and a new open item of 50,000 is created.">
+<div class="fig" role="img" aria-label="Earning of a 120,000 premium over 12 months from March 2026 to February 2027. Each month earns 10,000. At 31.03 one month is earned and 110,000 is unearned.">
 <svg viewBox="0 0 760 230">
-<defs><marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<text class="lab-file" x="185" y="22" text-anchor="middle">Partial payment</text>
-<text class="lab-file" x="575" y="22" text-anchor="middle">Residual item</text>
-<rect class="bx" x="20" y="40" width="330" height="54" rx="8"/><text class="t" x="185" y="63" text-anchor="middle">Invoice 150,000 · open</text><text class="s" x="185" y="82" text-anchor="middle">original item stays, due date 29.03 kept</text>
-<rect class="bx" x="20" y="108" width="330" height="54" rx="8"/><text class="t" x="185" y="131" text-anchor="middle">Payment −100,000 · open</text><text class="s" x="185" y="150" text-anchor="middle">linked to the invoice</text>
-<text class="lin-t" x="185" y="192" text-anchor="middle">Balance 50,000; both items stay open</text>
-<text class="s" x="185" y="212" text-anchor="middle">Good for keeping the invoice history visible</text>
-<rect class="bx" x="410" y="40" width="330" height="54" rx="8"/><text class="t" x="575" y="63" text-anchor="middle">Invoice 150,000 · cleared</text><text class="s" x="575" y="82" text-anchor="middle">closed by the payment</text>
-<rect class="bx hl" x="410" y="108" width="330" height="54" rx="8"/><text class="t" x="575" y="131" text-anchor="middle">New item 50,000 · open</text><text class="s" x="575" y="150" text-anchor="middle">new due date can be set</text>
-<path class="gfile" d="M575,94 V106" marker-end="url(#ar6)"/>
-<text class="lin-t" x="575" y="192" text-anchor="middle">Balance 50,000; one small item open</text>
-<text class="s" x="575" y="212" text-anchor="middle">Good for a tidy open-item list</text>
-<path class="lin" d="M380,40 V215"/>
+<text class="lab-file" x="380" y="22" text-anchor="middle">Policy ERH-2026-0042: 10,000 earned each month</text>
+<rect x="20" y="40" width="54" height="70" rx="4" class="bx" style="fill:var(--ok);stroke:var(--ok)"/><text class="s" x="47" y="130" text-anchor="middle">Mar</text><text class="s" x="47" y="80" text-anchor="middle" style="fill:#fff;font-weight:700">10,000</text>
+<rect x="80" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="107" y="130" text-anchor="middle">Apr</text><text class="s" x="107" y="80" text-anchor="middle">10,000</text>
+<rect x="140" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="167" y="130" text-anchor="middle">May</text><text class="s" x="167" y="80" text-anchor="middle">10,000</text>
+<rect x="200" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="227" y="130" text-anchor="middle">Jun</text><text class="s" x="227" y="80" text-anchor="middle">10,000</text>
+<rect x="260" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="287" y="130" text-anchor="middle">Jul</text><text class="s" x="287" y="80" text-anchor="middle">10,000</text>
+<rect x="320" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="347" y="130" text-anchor="middle">Aug</text><text class="s" x="347" y="80" text-anchor="middle">10,000</text>
+<rect x="380" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="407" y="130" text-anchor="middle">Sep</text><text class="s" x="407" y="80" text-anchor="middle">10,000</text>
+<rect x="440" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="467" y="130" text-anchor="middle">Oct</text><text class="s" x="467" y="80" text-anchor="middle">10,000</text>
+<rect x="500" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="527" y="130" text-anchor="middle">Nov</text><text class="s" x="527" y="80" text-anchor="middle">10,000</text>
+<rect x="560" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="587" y="130" text-anchor="middle">Dec</text><text class="s" x="587" y="80" text-anchor="middle">10,000</text>
+<rect x="620" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="647" y="130" text-anchor="middle">Jan</text><text class="s" x="647" y="80" text-anchor="middle">10,000</text>
+<rect x="680" y="40" width="54" height="70" rx="4" class="bx"/><text class="s" x="707" y="130" text-anchor="middle">Feb</text><text class="s" x="707" y="80" text-anchor="middle">10,000</text>
+<text class="s" x="380" y="152" text-anchor="middle">2026 to 2027 · 12 × 10,000 = 120,000 earned over the policy year</text>
+<text class="lab-in" x="20" y="190" text-anchor="start">Earned by 31.03: 10,000 (green)</text>
+<text class="lab-out" x="740" y="190" text-anchor="end">Unearned at 31.03: 110,000 (11 grey months)</text>
 </svg>
 </div>
-<p class="cap">Either way the customer still owes DKK 50,000.00. The choice changes what the open-item list and dunning letters show.</p>
+<p class="cap">Simple pro-rata (one twelfth a month). Real systems may earn by day. Your actuarial team owns the method.</p>
 
-<h3 id="small">5.2 Short payments, overpayments and tolerances</h3>
-<div class="tbl"><table><thead><tr><th>Case</th><th>Example</th><th>What SAP usually does</th></tr></thead><tbody>
-<tr><td>Tiny short payment</td><td>Pays 149,950.00 (bank fee deducted)</td><td>Inside the <strong>payment difference tolerance</strong>, so the 50.00 is written off automatically to an expense account and the invoice is cleared.</td></tr>
-<tr><td>Bigger short payment</td><td>Pays 147,000.00 without explanation</td><td>Outside tolerance. The clerk posts a residual item of 3,000.00 with a <strong>reason code</strong> such as "price dispute", so someone follows up.</td></tr>
-<tr><td>Overpayment</td><td>Pays 151,000.00</td><td>Invoice cleared, 1,000.00 stays as a credit on the customer's account. It can be paid back or used against the next invoice.</td></tr>
+<p>At month-end, finance books the change in UPR so that only earned premium reaches the result:</p>
+<div class="tbl"><table><thead><tr><th>Date · step</th><th>Debit</th><th>Credit</th><th style="text-align:right">DKK</th></tr></thead><tbody>
+<tr><td>31.03 · reserve the unearned part</td><td>300500 Change in unearned premium reserve</td><td>250000 Unearned premium reserve (UPR)</td><td style="text-align:right">110,000.00</td></tr>
 </tbody></table></div>
-<p class="cap">Tolerance amounts are set per company code and can be limited per user, so a clerk cannot write off large amounts.</p>
-
-<h3 id="discount">5.3 Cash discount</h3>
-<p>Imagine the terms had been <strong>"2% within 8 days, otherwise 14 days net"</strong>. The discount is 2% of the gross amount: 2% × 150,000.00 = <strong>3,000.00</strong>. If Hygge Hjem paid by 23.03, they could pay <strong>DKK 147,000.00</strong> and the invoice would still be fully cleared. Because the price really went down, the VAT goes down too, so in Denmark the discount is usually split between net and VAT:</p>
-<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th style="text-align:right">DKK</th></tr></thead><tbody>
-<tr><td>Debit</td><td>113100 Bank incoming clearing (the money received)</td><td class="num" style="text-align:right">147,000.00</td></tr>
-<tr><td>Debit</td><td>Cash discount granted (expense account set by your project)</td><td class="num" style="text-align:right">2,400.00</td></tr>
-<tr><td>Debit</td><td>175000 Output VAT (VAT on the discount: 3,000 × 20%)</td><td class="num" style="text-align:right">600.00</td></tr>
-<tr><td>Credit</td><td>Customer 100250 (140000 Trade receivables)</td><td class="num" style="text-align:right">150,000.00</td></tr>
+<p class="cap">Premium result for this policy: 120,000 written − 110,000 change in UPR = 10,000 earned.</p>
+<p>For the whole company in March 2026 the same logic gives:</p>
+<div class="tbl"><table><thead><tr><th>Item</th><th style="text-align:right">Motor</th><th style="text-align:right">Home</th><th style="text-align:right">Total</th></tr></thead><tbody>
+<tr><td>Gross written premium</td><td style="text-align:right">1,500,000</td><td style="text-align:right">900,000</td><td style="text-align:right">2,400,000</td></tr>
+<tr><td>Change in UPR</td><td style="text-align:right">−500,000</td><td style="text-align:right">−300,000</td><td style="text-align:right">−800,000</td></tr>
+<tr><td><strong>Earned premium</strong></td><td style="text-align:right"><strong>1,000,000</strong></td><td style="text-align:right"><strong>600,000</strong></td><td style="text-align:right"><strong>1,600,000</strong></td></tr>
 </tbody></table></div>
-<p class="cap">147,000 + 2,400 + 600 = 150,000. The VAT share of a gross amount at 25% VAT is 20% (25/125). Whether VAT is adjusted depends on the tax code setup; confirm with your tax team.</p>
-<p>In our story the terms are 14 days net, so there is no discount and Hygge Hjem pays the full 150,000.00.</p>
+<p class="cap">The Hygge Hjem policy is part of the Home line. Reporting such as IFRS 17 and reports to Finanstilsynet is owned by your actuarial and finance team.</p>
 
-<h3 id="credit-memo">5.4 Credit memos</h3>
-<p>A <strong>credit memo</strong> is a "negative invoice". Suppose one table arrived scratched and Nordlys Møbler agrees to take DKK 12,000.00 net off. Sales creates a credit memo (from a credit memo request in SD), and FI posts the reverse of the invoice: debit revenue 12,000.00 (or a sales deductions account), debit output VAT 3,000.00, credit the customer 15,000.00. Hygge Hjem would then owe 150,000 − 15,000 = <strong>DKK 135,000.00</strong>.</p>
+<h2 id="unpaid">6. When premiums are not paid</h2>
+<p>If Hygge Hjem had not paid by 15.03, <strong>dunning</strong> in FS-CD would start. This is the same process as in the <a href="/dunning">dunning lesson</a>. In short, reminders go out in steps, each firmer than the last, and the final one warns that cover will stop.</p>
 
-<h2 id="dunning">6. When customers don't pay</h2>
-<p>In our story Hygge Hjem pays two days early. But suppose they had not. <strong>Dunning</strong> is the process of sending payment reminders. In SAP the <strong>dunning run</strong> (<strong>F150</strong>) works in two steps: a <strong>proposal</strong> lists who would get which reminder, someone checks it, and then the <strong>print run</strong> sends the letters and records the new dunning level on each item.</p>
-
-<div class="fig" role="img" aria-label="Example dunning ladder after the due date of 29.03: level 1 friendly reminder on 08.04, level 2 reminder with fee on 22.04, level 3 final notice on 06.05, then legal action or debt collection">
+<div class="fig" role="img" aria-label="Unpaid premium ladder after the due date of 15.03: level 1 reminder, level 2 reminder with fee, level 3 final notice, then cancellation for non-payment and a bad debt provision.">
 <svg viewBox="0 0 760 240">
 <defs><marker id="ar7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
 <path class="gout" d="M30,200 H735" marker-end="url(#ar7)"/>
-<rect class="bx" x="20" y="130" width="120" height="58" rx="8"/><text class="t" x="80" y="155" text-anchor="middle">Due date</text><text class="s" x="80" y="174" text-anchor="middle">29.03 · day 0</text>
-<rect class="bx" x="165" y="104" width="130" height="84" rx="8"/><text class="t" x="230" y="128" text-anchor="middle">Level 1</text><text class="s" x="230" y="147" text-anchor="middle">day 10 · 08.04</text><text class="s" x="230" y="164" text-anchor="middle">friendly reminder</text><text class="s" x="230" y="180" text-anchor="middle">no fee</text>
-<rect class="bx" x="320" y="78" width="130" height="110" rx="8"/><text class="t" x="385" y="102" text-anchor="middle">Level 2</text><text class="s" x="385" y="121" text-anchor="middle">day 24 · 22.04</text><text class="s" x="385" y="138" text-anchor="middle">second reminder</text><text class="s" x="385" y="155" text-anchor="middle">fee within the law</text>
-<rect class="bx" x="475" y="52" width="130" height="136" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="540" y="76" text-anchor="middle">Level 3</text><text class="s" x="540" y="95" text-anchor="middle">day 38 · 06.05</text><text class="s" x="540" y="112" text-anchor="middle">final notice</text><text class="s" x="540" y="129" text-anchor="middle">credit block</text><text class="s" x="540" y="146" text-anchor="middle">on new orders</text>
-<rect class="bx hl" x="630" y="26" width="120" height="162" rx="8"/><text class="t" x="690" y="54" text-anchor="middle">After that</text><text class="s" x="690" y="80" text-anchor="middle">debt collection</text><text class="s" x="690" y="98" text-anchor="middle">or legal action</text><text class="s" x="690" y="122" text-anchor="middle">bad debt</text><text class="s" x="690" y="140" text-anchor="middle">provision</text>
-<text class="lab-out" x="380" y="228" text-anchor="middle">Days overdue → each level is firmer than the last</text>
+<rect class="bx" x="20" y="130" width="120" height="58" rx="8"/><text class="t" x="80" y="155" text-anchor="middle">Due date</text><text class="s" x="80" y="174" text-anchor="middle">15.03 · day 0</text>
+<rect class="bx" x="165" y="104" width="130" height="84" rx="8"/><text class="t" x="230" y="128" text-anchor="middle">Level 1</text><text class="s" x="230" y="147" text-anchor="middle">day 14 · 29.03</text><text class="s" x="230" y="164" text-anchor="middle">email reminder</text><text class="s" x="230" y="180" text-anchor="middle">no fee</text>
+<rect class="bx" x="320" y="78" width="130" height="110" rx="8"/><text class="t" x="385" y="102" text-anchor="middle">Level 2</text><text class="s" x="385" y="121" text-anchor="middle">day 28 · 12.04</text><text class="s" x="385" y="138" text-anchor="middle">second reminder</text><text class="s" x="385" y="155" text-anchor="middle">fee within the law</text>
+<rect class="bx" x="475" y="52" width="130" height="136" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="540" y="76" text-anchor="middle">Level 3</text><text class="s" x="540" y="95" text-anchor="middle">day 42 · 26.04</text><text class="s" x="540" y="112" text-anchor="middle">final notice:</text><text class="s" x="540" y="129" text-anchor="middle">"cover will stop"</text>
+<rect class="bx hl" x="630" y="26" width="120" height="162" rx="8"/><text class="t" x="690" y="54" text-anchor="middle">After that</text><text class="s" x="690" y="80" text-anchor="middle">cancellation</text><text class="s" x="690" y="98" text-anchor="middle">for non-payment</text><text class="s" x="690" y="122" text-anchor="middle">tax reversed,</text><text class="s" x="690" y="140" text-anchor="middle">collection or</text><text class="s" x="690" y="158" text-anchor="middle">provision</text>
+<text class="lab-out" x="380" y="228" text-anchor="middle">Days overdue → each step is firmer than the last</text>
 </svg>
 </div>
 <p class="cap">An example ladder with at least 10 days between letters. Your project's days, texts and fees will differ.</p>
 
-<h3 id="dk-rules">6.1 Danish rules to check</h3>
-<p>Reminders and interest are regulated by the Danish Interest Act (<strong>renteloven</strong>). Rules change, so treat these as points to <strong>confirm with your legal or finance team</strong>, not as legal advice:</p>
-<ul>
-<li><strong>Reminder fees</strong> are capped (DKK 100 per reminder at the time of writing), only a limited number of fee-bearing reminders are allowed, and there must be at least <strong>10 days</strong> between them.</li>
-<li><strong>Business to business:</strong> when a business customer pays late, the creditor may be entitled to a fixed <strong>compensation of DKK 310</strong> for collection costs. Check how this combines with reminder fees in your company's policy.</li>
-<li><strong>Interest on late payment</strong> is usually allowed from the due date between businesses, at a statutory rate (the central bank reference rate plus a fixed margin) unless the contract says otherwise. SAP can calculate it with an interest run or as part of dunning.</li>
-</ul>
+<h3 id="cancel">6.1 Cancellation and insurance tax</h3>
+<p>If the policyholder still does not pay after the final notice, the policy can be <strong>cancelled for non-payment</strong>, if the letter followed the legal rules (see the dunning lesson). The unpaid premium that was already billed for the period after the cancellation date is <strong>reversed</strong>: the written premium falls and so does the receivable. The insurance tax on the reversed part is reversed too, so Nordica does not owe Skattestyrelsen tax on premium it never collects. Confirm the exact treatment with your tax team.</p>
+<h3 id="bad-debt">6.2 Bad debt provision</h3>
+<p>Some premium for cover already given may never be paid. Finance books a <strong>provision</strong> (expense now, for money that probably will not come) based on age. If the debt is certain to be lost, FS-CD <strong>writes it off</strong> (FP04 in many projects) against a bad debt expense account. Ask your finance team for the ageing rules, for example "provision 50% over 90 days".</p>
 
-<h3 id="bad-debt">6.2 Bad debt: provision and write-off</h3>
-<p>If a debt looks doubtful, finance books a <strong>provision</strong>: an expense now, for money that probably won't come, while the item stays open. If the customer goes bankrupt and the money is really lost, the item is <strong>written off</strong>: the receivable is cleared against a bad debt expense account. Output VAT on a confirmed loss can usually be reclaimed from <strong>SKAT</strong> (the Danish tax agency); confirm the rules with your tax team.</p>
-
-<h2 id="report">7. Customer line items, ageing and checking it yourself</h2>
-<p><strong>FBL5N</strong> (or the Fiori app "Manage customer line items") lists every item for a customer: open, cleared, or both. It is the first screen to open when someone asks "has Hygge Hjem paid?".</p>
-<div class="tbl"><table><thead><tr><th>Status</th><th>Doc. date</th><th>Type</th><th>Due</th><th style="text-align:right">DKK</th><th>Clearing</th></tr></thead><tbody>
-<tr><td>Cleared</td><td>15.03.2026</td><td>RV invoice</td><td>29.03.2026</td><td class="num" style="text-align:right">150,000.00</td><td>27.03.2026</td></tr>
-<tr><td>Cleared</td><td>27.03.2026</td><td>Payment (bank statement)</td><td>27.03.2026</td><td class="num" style="text-align:right">−150,000.00</td><td>27.03.2026</td></tr>
+<h2 id="otherar">7. Other receivables in FI-AR, and ageing</h2>
+<p>Premiums live in FS-CD. But Nordica also has <strong>non-premium receivables</strong>, and those use classic FI accounts receivable (FI-AR) with normal customer accounts and customer line items (<strong>FBL5N</strong>):</p>
+<div class="tbl"><table><thead><tr><th>Receivable</th><th>Example</th><th>Where it lives</th></tr></thead><tbody>
+<tr><td>Reinsurance recovery</td><td>Rhein Re AG (BP 500010) owes Nordica its share of a large claim. Invoiced in EUR.</td><td>141000 Receivables from reinsurers</td></tr>
+<tr><td>Recourse (regres) claim</td><td>After paying a claim, Nordica claims the money back from the person who caused the damage, or their insurer.</td><td>FI-AR customer account for that third party</td></tr>
+<tr><td>Premium from a policyholder</td><td>Hygge Hjem's DKK 121,320.00</td><td>FS-CD, summarised in 140000</td></tr>
 </tbody></table></div>
-<p class="cap">A simplified FBL5N view for customer 100250 with "all items" selected. Both lines share one clearing document.</p>
-
-<h3 id="ageing">7.1 Ageing and DSO</h3>
-<p>An <strong>ageing report</strong> sorts open items by how many days they are overdue. Peter Lund looks at it every month: money in the 90+ bucket is at risk.</p>
+<p class="cap">Foreign-currency receivables such as EUR from Rhein Re are revalued at month-end. That is covered in Lesson 5.</p>
+<p><strong>FBL5N</strong> shows items in FI-AR but not the policyholder's FS-CD items. For a premium question use <strong>FPL9</strong> (FS-CD account balance). For the GL total of 140000, use <strong>FBL3N</strong> or <strong>FS10N</strong>.</p>
+<h3 id="ageing">7.1 Ageing</h3>
+<p>An <strong>ageing report</strong> sorts open items by days overdue. Peter Lund looks at it monthly.</p>
 <div class="tbl"><table><thead><tr><th>Bucket (days overdue)</th><th>What it usually means</th></tr></thead><tbody>
-<tr><td>Not yet due</td><td>Normal. Hygge Hjem's invoice sat here from 15.03 to 29.03.</td></tr>
+<tr><td>Not yet due</td><td>Normal. Hygge Hjem's premium was here from 01.03 to 15.03.</td></tr>
 <tr><td>0–30</td><td>A little late. Level 1 reminder.</td></tr>
-<tr><td>31–60</td><td>Worth a phone call. Level 2 or 3.</td></tr>
-<tr><td>61–90</td><td>Serious. Credit block, talk of collection.</td></tr>
-<tr><td>90+</td><td>Probably needs a provision or collection agency.</td></tr>
+<tr><td>31–60</td><td>Worth a call. Level 2 or 3 and a cancellation warning.</td></tr>
+<tr><td>61–90</td><td>Serious. Cancellation for non-payment.</td></tr>
+<tr><td>90+</td><td>Probably needs a provision or collection.</td></tr>
 </tbody></table></div>
-<p><strong>DSO</strong> (days sales outstanding) says how many days of sales are waiting to be paid on average: receivables ÷ sales × number of days. Example: receivables of DKK 300,000.00 at the end of a quarter, sales (incl. VAT) of DKK 1,350,000.00 in that 90-day quarter: 300,000 ÷ 1,350,000 × 90 = <strong>20 days</strong>. Lower is better.</p>
 
 <h3 id="check">7.2 Check it yourself</h3>
-<p>After 27.03, look up each account in FS10N (account balance) or FBL3N. The story adds up like this:</p>
+<p>After payment on 13.03 and month-end on 31.03, look up the accounts in FS10N or FBL3N. For this one policy:</p>
 <div class="tbl"><table><thead><tr><th>Account</th><th style="text-align:right">Debits</th><th style="text-align:right">Credits</th><th style="text-align:right">Balance</th><th>Meaning</th></tr></thead><tbody>
-<tr><td>140000 Trade receivables</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td>Hygge Hjem owes nothing</td></tr>
-<tr><td>800000 Sales revenue</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">120,000.00</td><td class="num" style="text-align:right">120,000.00 Cr</td><td>Income from the sale</td></tr>
-<tr><td>175000 Output VAT</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">30,000.00</td><td class="num" style="text-align:right">30,000.00 Cr</td><td>Owed to SKAT with the VAT return</td></tr>
-<tr><td>113100 Bank incoming clearing</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td>Waiting room is empty: all matched</td></tr>
-<tr><td>110000 Bank: Danske Bank</td><td class="num" style="text-align:right">150,000.00</td><td class="num" style="text-align:right">0.00</td><td class="num" style="text-align:right">150,000.00 Dr</td><td>The cash arrived</td></tr>
-<tr><td><strong>Total</strong></td><td class="num" style="text-align:right"><strong>450,000.00</strong></td><td class="num" style="text-align:right"><strong>450,000.00</strong></td><td></td><td>Debits = credits</td></tr>
+<tr><td>140000 Premium receivables</td><td style="text-align:right">121,320.00</td><td style="text-align:right">121,320.00</td><td style="text-align:right">0.00</td><td>Hygge Hjem owes nothing</td></tr>
+<tr><td>300000 Gross written premium</td><td style="text-align:right">0.00</td><td style="text-align:right">120,000.00</td><td style="text-align:right">120,000.00 Cr</td><td>Billed for 12 months</td></tr>
+<tr><td>290100 Insurance tax payable</td><td style="text-align:right">0.00</td><td style="text-align:right">1,320.00</td><td style="text-align:right">1,320.00 Cr</td><td>Owed to Skattestyrelsen</td></tr>
+<tr><td>113100 Bank incoming clearing</td><td style="text-align:right">121,320.00</td><td style="text-align:right">121,320.00</td><td style="text-align:right">0.00</td><td>All matched</td></tr>
+<tr><td>110000 Bank: Danske Bank</td><td style="text-align:right">121,320.00</td><td style="text-align:right">0.00</td><td style="text-align:right">121,320.00 Dr</td><td>The cash arrived</td></tr>
+<tr><td>300500 Change in UPR</td><td style="text-align:right">110,000.00</td><td style="text-align:right">0.00</td><td style="text-align:right">110,000.00 Dr</td><td>Written 120,000 − 110,000 = earned 10,000</td></tr>
+<tr><td>250000 Unearned premium reserve</td><td style="text-align:right">0.00</td><td style="text-align:right">110,000.00</td><td style="text-align:right">110,000.00 Cr</td><td>Cover still owed</td></tr>
+<tr><td><strong>Total</strong></td><td style="text-align:right"><strong>352,640.00</strong></td><td style="text-align:right"><strong>352,640.00</strong></td><td></td><td>Debits = credits</td></tr>
 </tbody></table></div>
-<p class="cap">Goods issue (cost of goods sold and inventory) is left out here to keep the sum simple; it balances on its own.</p>
+<p class="cap">Debits: 121,320 + 121,320 + 110,000 = 352,640. Credits: 120,000 + 1,320 + 121,320 + 110,000 = 352,640. The tax stays owed until the tax return is paid.</p>
 
-<h2 id="ba">8. BA toolkit for accounts receivable</h2>
+<h2 id="ba">8. BA toolkit for premium receivables</h2>
 <h3 id="ba-questions">8.1 Questions to ask</h3>
 <ul>
-<li>Which payment methods do customers use (FI-kort +71, bank transfer, direct debit), and which reference do they send?</li>
-<li>What share of incoming payments should clear automatically? Who works the FEBAN queue, and by when?</li>
-<li>What are the payment difference tolerances, per company and per user? Which reason codes do we need?</li>
-<li>Partial payment or residual item: which does finance prefer, and why?</li>
-<li>Who sets and approves credit limits? What happens to an order that is blocked?</li>
-<li>What does each dunning level say, after how many days, with which fee, and does legal approve the texts?</li>
-<li>When is a debt provisioned, and who approves a write-off?</li>
+<li>Which parts are in the policy system, which in FS-CD, and which in FI? Who owns the interface?</li>
+<li>When does the FS-CD to GL transfer run, and what happens if it fails?</li>
+<li>Which tax rate and tax account apply per product? Where does motor liability tax go?</li>
+<li>How is premium earned (monthly, daily)? Who approves the UPR method?</li>
+<li>What share of payments should match automatically? Who works the clarification list?</li>
+<li>When do we cancel for non-payment, and how are written premium and tax reversed?</li>
+<li>When is a premium debt provisioned or written off, and who approves it?</li>
+<li>Which receivables are not premiums (reinsurers, recourse) and who chases them?</li>
 </ul>
 
 <h3 id="ba-tests">8.2 Test scenarios</h3>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th>Expected result</th></tr></thead><tbody>
-<tr><td>Bill 10 tables at DKK 12,000.00 with 25% VAT</td><td>Accounting document: debit customer 150,000, credit 800000 120,000, credit 175000 30,000. Due date 29.03.</td></tr>
-<tr><td>Bank statement line with correct +71 payment ID</td><td>Posted and cleared automatically; 113100 back to zero</td></tr>
-<tr><td>Bank statement line without reference</td><td>Bank posted, line waits in FEBAN; clearing it by hand clears the invoice</td></tr>
-<tr><td>Customer pays DKK 50.00 short</td><td>Inside tolerance: difference written off, invoice cleared</td></tr>
-<tr><td>Customer pays DKK 100,000.00</td><td>Residual or partial item of 50,000 as agreed; dunning picks up only what is still open</td></tr>
-<tr><td>New order of DKK 400,000.00 while 150,000 is open</td><td>Exceeds the DKK 500,000.00 limit: order blocked for credit check</td></tr>
-<tr><td>Dunning run 10 days after due date</td><td>Level 1 letter, no fee; second run less than 10 days later sends nothing new</td></tr>
+<tr><td>Bill policy ERH-2026-0042 (120,000 + 1.1% tax)</td><td>FS-CD item 121,320 due 15.03. GL: debit 140000 121,320, credit 300000 120,000, credit 290100 1,320.</td></tr>
+<tr><td>Payment with correct +71 payment ID on 13.03</td><td>Cleared automatically; 113100 back to zero; no dunning</td></tr>
+<tr><td>Payment without reference</td><td>Bank posted; item stays open and appears in clarification</td></tr>
+<tr><td>Month-end 31.03</td><td>UPR 110,000, change in UPR 110,000, earned premium 10,000 for this policy</td></tr>
+<tr><td>Premium unpaid at day 14</td><td>Level 1 reminder, no fee; no GL posting for the reminder</td></tr>
+<tr><td>Cancellation for non-payment</td><td>Written premium and insurance tax reversed for the uncovered period</td></tr>
+<tr><td>Reinsurance recovery from Rhein Re</td><td>Posted in FI-AR to 141000, not through FS-CD</td></tr>
 </tbody></table></div>
 
 <h3 id="ba-screens">8.3 Screens worth knowing</h3>
 <div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
-<tr><td>BP</td><td>Maintain Business Partner</td><td>Check reconciliation account, payment terms, dunning procedure</td></tr>
-<tr><td>VA03</td><td>Display sales order</td><td>See the order and its document flow</td></tr>
-<tr><td>VF03</td><td>Display billing document</td><td>Check the invoice and jump to its accounting document</td></tr>
-<tr><td>FBL5N</td><td>Customer line items</td><td>"Has Hygge Hjem paid?"</td></tr>
-<tr><td>F-28</td><td>Post incoming payment</td><td>Post and clear a payment by hand</td></tr>
-<tr><td>FF_5</td><td>Import electronic bank statement</td><td>Load the daily camt.053 or MT940 file</td></tr>
-<tr><td>FEBAN</td><td>Bank statement post-processing</td><td>Match payments the system could not</td></tr>
-<tr><td>F150</td><td>Dunning run</td><td>Create and print reminders</td></tr>
-<tr><td>UKM_BP</td><td>Credit management</td><td>See or change a customer's credit limit and exposure</td></tr>
+<tr><td>BP</td><td>Maintain Business Partner</td><td>Check contract account link, payment terms, dunning procedure</td></tr>
+<tr><td>FPL9</td><td>FS-CD account balance</td><td>"Has Hygge Hjem paid?"</td></tr>
+<tr><td>FPE3</td><td>Display one FS-CD document</td><td>See the premium and tax lines of the billing document</td></tr>
+<tr><td>FP05</td><td>Payment lot</td><td>Load and post incoming payments from the bank</td></tr>
+<tr><td>FPG1</td><td>Transfer to the general ledger</td><td>Check that daily totals reached FI</td></tr>
+<tr><td>FBL3N</td><td>GL account line items</td><td>See the postings on 140000 or 113100</td></tr>
+<tr><td>FBL5N</td><td>FI-AR customer line items</td><td>Reinsurance or recourse receivables</td></tr>
+<tr><td>FS10N</td><td>GL account balances</td><td>Check UPR 250000 or tax payable 290100</td></tr>
 </tbody></table></div>
-<p class="cap">Codes come from general SAP knowledge and differ by release; many projects use Fiori apps (such as "Manage customer line items" and "Reprocess bank statement items") instead. Confirm them in your own system.</p>
+<p class="cap">Codes come from general SAP knowledge and differ by release; many projects use Fiori apps instead. Confirm them in your own system.</p>
 
 <div class="tip"><b>A closing tip</b>
-<p>Watch the bank incoming clearing account (113100). If it is zero at the end of each day, payments are matching well. If it keeps growing, ask why: it is often missing references on invoices, or a search string that needs fixing.</p></div>
+<p>Reconcile FS-CD with the GL every day: the FS-CD balance of all policyholders should equal the balance of 140000. If they differ, the transfer job or account determination is the first place to look.</p></div>
 
 <h2 id="test">Test yourself</h2>
-<p>10 questions on accounts receivable. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<p>10 questions on premiums and receivables. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="fico-ar"></div>
 
 <!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
 <div id="suggest"></div>
 -->
 
-<footer>Accounts receivable in SAP FICO. Names, amounts, account numbers and codes are illustrative examples for learning. Legal limits and tax rules change over time; confirm current rules with your legal, tax and finance teams.
+<footer>Premiums and receivables at Nordica Forsikring. Names, amounts, account numbers, tax rates and codes are illustrative examples for learning. Tax and legal rules change over time; confirm current rules with your tax, legal and finance teams.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
@@ -374,8 +357,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
-<script src="/lms.js?v=20261021d" defer></script>
-<script src="/quiz.js?v=20261021d" defer></script>
+<script src="/lms.js?v=20261021e" defer></script>
+<script src="/quiz.js?v=20261021e" defer></script>
 <!-- <script src="/suggest.js" defer></script> -->
 </body>
 </html>
