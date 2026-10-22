@@ -7,6 +7,7 @@ The site is a small LMS ("SAP Academy") with several courses. `lms.js` holds eve
 - `/` is the home page listing all courses (`index.html`, `<body data-page="home">`).
 - Each course has a dashboard: `/fscd` (`fscd.html`) and `/fico` (`fico.html`), with `<body data-page="dashboard" data-course="ID">`.
 - FSCD lessons are top-level pages (`/basics`, `/payments`, ...); FICO lessons live in `fico/` (`/fico/basics`, `/fico/ap`, ...) with lesson IDs and quiz names prefixed `fico-`.
+- The top bar (with the Home button) and the back-to-top button are added by `lms.js` on every page that loads it; pages need no markup for them.
 - Progress is saved per course in localStorage (`fscd-academy-progress-v1`, `fico-academy-progress-v1`); never rename these keys.
 
 Every lesson page must have:

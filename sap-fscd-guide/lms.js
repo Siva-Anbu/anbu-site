@@ -145,7 +145,14 @@
   }
   bar.appendChild(prog);
   if (lesson) bar.appendChild(link(course.home, 'lms-dash', 'Dashboard'));
-  if (isDash) bar.appendChild(link('/', 'lms-dash', 'All courses'));
+  if (!isHome) {
+    var homeBtn = link('/', 'lms-home');
+    homeBtn.setAttribute('aria-label', 'Home: all courses');
+    homeBtn.setAttribute('title', 'Home: all courses');
+    homeBtn.appendChild(el('span', 'lms-home-i', '\u2302'));
+    homeBtn.appendChild(el('span', 'lms-home-t', 'Home'));
+    bar.appendChild(homeBtn);
+  }
   body.insertBefore(bar, body.firstChild);
   body.insertBefore(skip, body.firstChild);
 
@@ -156,6 +163,20 @@
     prog.setAttribute('title', 'Course progress: ' + pct() + '%');
   }
   paintProgress();
+
+  /* ---------- Back to top (all pages): appears once you have scrolled down ---------- */
+  var topBtn = el('button', 'lms-top', '\u2191');
+  topBtn.type = 'button';
+  topBtn.setAttribute('aria-label', 'Back to top');
+  topBtn.setAttribute('title', 'Back to top');
+  body.appendChild(topBtn);
+  function paintTop() { topBtn.classList.toggle('on', scrollY > 400); }
+  addEventListener('scroll', paintTop, { passive: true });
+  paintTop();
+  topBtn.addEventListener('click', function () {
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+  });
 
   if (lesson) lessonPage();
   if (isDash && course) dashboard();

@@ -1,7 +1,7 @@
 /* Course shell styles (top bar, outline sidebar, lesson chrome, dashboard,
    certificate). Uses the colour tokens from each page and theme.css. */
 :root{--bar:56px}
-body{padding-top:var(--bar)}
+body{padding-top:var(--bar);padding-bottom:76px}
 body::before{display:none}
 .lms-skip{position:absolute;left:-9999px;top:8px;z-index:100;background:var(--accent);color:#fff;padding:8px 14px;border-radius:6px}
 .lms-skip:focus{left:12px}
@@ -15,6 +15,14 @@ body::before{display:none}
 .lms-track span{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
 .lms-dash{font-size:14px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--fg)}
 .lms-dash:hover{border-color:var(--accent);color:var(--accent)}
+.lms-home{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--fg);white-space:nowrap}
+.lms-home:hover{border-color:var(--accent);color:var(--accent)}
+.lms-home-i{font-size:17px;line-height:1}
+.lms-top{position:fixed;right:20px;bottom:20px;z-index:50;width:46px;height:46px;border:0;border-radius:50%;background:var(--accent);color:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 10px rgba(15,60,55,.3);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s}
+.lms-top.on{opacity:1;visibility:visible;transform:none}
+.lms-top:hover{filter:brightness(1.1)}
+.lms-top:focus-visible,.lms-home:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-color-scheme:dark){.lms-top{color:#0b1f1d}}
 .lms-menu{display:none;font:inherit;font-size:20px;line-height:1;background:none;border:1px solid var(--line);border-radius:8px;width:38px;height:38px;color:var(--fg);cursor:pointer}
 .lms-read{position:fixed;top:var(--bar);left:0;right:0;height:3px;z-index:39;background:transparent}
 .lms-read span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#3b82c4)}
@@ -125,12 +133,12 @@ nav#toc a.lms-allc{display:block;margin-top:14px;border:0;font-size:13px;font-we
   .lms-pn{grid-template-columns:1fr}
   .lms-pn-next{grid-column:1}
 }
-@media (max-width:520px){.lms-brand-t{display:none}.lms-row{flex-wrap:wrap}}
+@media (max-width:520px){.lms-brand-t{display:none}.lms-row{flex-wrap:wrap}.lms-home-t{display:none}.lms-home{padding:6px 10px}.lms-bar{gap:10px;padding:0 12px}.lms-top{right:14px;bottom:14px}}
 
 /* Print: lessons print as clean text; the certificate prints on its own */
 @media print{
   body{padding-top:0}
-  .lms-bar,.lms-read,.lms-skip,nav#toc,.lms-complete,.lms-pn,#quiz,.lms-noprint{display:none!important}
+  .lms-bar,.lms-top,.lms-read,.lms-skip,nav#toc,.lms-complete,.lms-pn,#quiz,.lms-noprint{display:none!important}
   .layout{display:block}
   body.lms-printing *{visibility:hidden}
   body.lms-printing .lms-cert,body.lms-printing .lms-cert *{visibility:visible}
