@@ -1,7 +1,7 @@
 # anbu-site
 
-## sap-fscd-guide (https://sap-fscd-guide.vercel.app)
-Static pages deployed to the Vercel project `sap-fscd-guide`.
+## SAP Academy (https://learn-sap.vercel.app)
+Static pages deployed to the Vercel project `sap-fscd-guide`. The live address is `learn-sap.vercel.app`; the old `sap-fscd-guide.vercel.app` redirects to it (host rule in `vercel.json`).
 
 The site is a small LMS ("SAP Academy") with several courses. `lms.js` holds every course outline (`COURSES`): add every new lesson to its course there.
 - `/` is the home page listing all courses (`index.html`, `<body data-page="home">`).
