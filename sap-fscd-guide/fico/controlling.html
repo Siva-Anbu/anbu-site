@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Controlling: costs, cost centres and profitability | FICO Academy</title>
-<meta name="description" content="SAP Controlling (CO) explained simply for business analysts: primary and secondary cost elements, cost centres, internal orders and settlement, assessments, profit centres and margin analysis, with a Danish furniture company example.">
+<title>Controlling: costs, lines of business and the combined ratio | FICO Academy</title>
+<meta name="description" content="SAP Controlling (CO) explained simply for insurance business analysts: cost elements, cost centres, internal orders, assessments, profit centres as lines of business, and the loss, expense and combined ratio, with a Danish non-life insurer example.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
 @media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
@@ -75,8 +75,8 @@ td:first-child{font-weight:500}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
-<link rel="stylesheet" href="/theme.css?v=20261021d">
-<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="stylesheet" href="/theme.css?v=20261021e">
+<link rel="stylesheet" href="/lms.css?v=20261021e">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0f766e">
 </head>
@@ -84,31 +84,31 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
-<h1 id="top">Controlling: costs, cost centres and profitability</h1>
-<p class="lede">Financial accounting tells you what the company spent. Controlling tells you who spent it, why, and which products really make money. Follow Jonas, the controller, through March at Nordlys Møbler.</p>
+<h1 id="top">Controlling: costs, lines of business and the combined ratio</h1>
+<p class="lede">Financial accounting tells you what the insurer spent. Controlling tells you who spent it, why, and whether motor or home insurance earns an underwriting profit. Follow Jonas, the controller, through March at Nordica Forsikring.</p>
 
 <div class="tip"><b>Before you start</b>
-<p>This is Lesson 4 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a>, where you met the general ledger, GL accounts, the company code DK01 and the Universal Journal. <a href="/fico/ap">Lesson 2: accounts payable</a> (buying oak from Jysk Træ) and <a href="/fico/ar">Lesson 3: accounts receivable</a> (selling tables to Hygge Hjem) help, but you can follow this one without them. All names, amounts, accounts and codes are made up for learning.</p></div>
+<p>This is Lesson 4 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a> (the general ledger, GL accounts, company code NF01 and the Universal Journal). It reuses numbers from <a href="/fico/ap">Lesson 2: accounts payable</a> (the laptops), <a href="/fico/ar">Lesson 3: premiums and receivables</a> (earned premium) and <a href="/fico/close">Lesson 5: assets, reserves and close</a> (the claims centre fit-out), but you can follow this lesson on its own. The <a href="/fscd">FSCD course</a> covers the premium and claims side. All names, amounts, accounts and codes are made up for learning.</p></div>
 
 <h2 id="meet">Meet the people in this lesson</h2>
-<p>It is the start of April 2026. March is booked in the general ledger and the profit and loss statement looks fine. But <strong>Jonas Krogh</strong>, the controller, is not happy with one total. He wants to know two things: <em>what does each department cost?</em> and <em>which product line makes money, tables or chairs?</em> He asks you, <strong>Sofie Holm</strong>, to help him explain the answers to the managers.</p>
+<p>It is the start of April 2026. March is booked in the general ledger at <strong>Nordica Forsikring A/S</strong>, a Danish non-life insurer in Copenhagen (motor, home, travel and small business cover). The profit and loss statement looks fine. But <strong>Jonas Krogh</strong>, the controller, is not happy with one total. He wants to know two things: <em>what does each department cost?</em> and <em>which line of business, motor or home, makes an underwriting profit?</em> He asks you, <strong>Sofie Holm</strong>, to help him explain the answers.</p>
 <div class="cast">
-<div><b>Jonas Krogh</b><span>Controller. Owns the CO setup, runs the month-end allocations and reports</span></div>
-<div><b>Cost centre managers</b><span>Production, Sales, Administration and IT heads. Each answers for "their" costs</span></div>
-<div><b>Peter Lund</b><span>Finance manager. Wants FI and CO to show the same numbers</span></div>
-<div><b>You, Sofie</b><span>BA. Turn questions like "what did the fair cost?" into SAP objects and tests</span></div>
+<div><b>Jonas Krogh</b><span>Controller. Owns the CO setup, runs month-end allocations and reports</span></div>
+<div><b>Line Madsen</b><span>Actuary. Estimates the claims reserves and reads the ratios</span></div>
+<div><b>Cost centre managers</b><span>Heads of Claims handling, Sales, Administration and IT. Each answers for "their" costs</span></div>
+<div><b>You, Sofie</b><span>BA. Turn questions like "what did the campaign cost?" into SAP objects and tests</span></div>
 </div>
 
 <h2 id="fi-co">1. FI and CO: same postings, different questions</h2>
-<p><strong>FI</strong> (Financial Accounting) is the official, legal view: balance sheet, profit and loss, VAT, what the auditors and tax authorities see. It answers <em>"what did we spend, and on what kind of thing?"</em> <strong>CO</strong> (Controlling) is the internal management view. It answers <em>"who spent it, for which purpose, and what did it earn?"</em> Nobody outside the company sees CO, so the company can design it the way managers think.</p>
-<p>In older SAP systems FI and CO kept separate tables and needed a nightly reconciliation. In <strong>S/4HANA</strong> they share one table, the <strong>Universal Journal (ACDOCA)</strong>. Every cost line carries both the GL account (for FI) and a <strong>cost object</strong> such as a cost centre, an internal order or a profit centre (for CO). One posting, two ways of looking at it.</p>
+<p><strong>FI</strong> (Financial Accounting) is the official, legal view: balance sheet, profit and loss, what the auditors, Finanstilsynet (the Danish FSA) and Skattestyrelsen (the tax agency) see. It answers <em>"what did we spend, and on what kind of thing?"</em> <strong>CO</strong> (Controlling) is the internal management view. It answers <em>"who spent it, for which purpose, and what did it earn?"</em> Nobody outside the company sees CO, so the company can design it the way managers think.</p>
+<p>In older SAP systems FI and CO kept separate tables and needed a reconciliation. In <strong>S/4HANA</strong> they share one table, the <strong>Universal Journal (ACDOCA)</strong>. Every cost line carries both the GL account (for FI) and a <strong>cost object</strong> such as a cost centre, an internal order or a profit centre (for CO). One posting, two ways of looking at it.</p>
 
 <div class="fig" role="img" aria-label="The March rent posting lands as one line in the Universal Journal with account 470000, amount DKK 50,000 and cost centre 3000. FI reads it as rent expense in the profit and loss; CO reads it as a cost of the Administration department">
 <svg viewBox="0 0 760 250">
 <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<rect class="bx" x="10" y="85" width="160" height="80" rx="8"/><text class="t" x="90" y="115" text-anchor="middle">Rent for March</text><text class="s" x="90" y="135" text-anchor="middle">posted 01.03.2026</text><text class="s" x="90" y="152" text-anchor="middle">DKK 50,000</text>
+<rect class="bx" x="10" y="85" width="160" height="80" rx="8"/><text class="t" x="90" y="115" text-anchor="middle">Rent for March</text><text class="s" x="90" y="135" text-anchor="middle">paid 01.03.2026</text><text class="s" x="90" y="152" text-anchor="middle">DKK 50,000</text>
 <rect class="bx hl" x="215" y="25" width="250" height="200" rx="8"/><text class="t" x="340" y="52" text-anchor="middle">Universal Journal (ACDOCA)</text><text class="s" x="340" y="74" text-anchor="middle">one line, many fields</text>
-<text class="s" x="235" y="104">Company code: DK01</text><text class="s" x="235" y="126">GL account: 470000 Rent</text><text class="s" x="235" y="148">Amount: DKK 50,000.00</text><text class="s" x="235" y="170">Cost centre: 3000</text><text class="s" x="235" y="192">Profit centre, segment, ...</text>
+<text class="s" x="235" y="104">Company code: NF01</text><text class="s" x="235" y="126">GL account: 470000 Rent</text><text class="s" x="235" y="148">Amount: DKK 50,000.00</text><text class="s" x="235" y="170">Cost centre: 3000</text><text class="s" x="235" y="192">Profit centre, segment, ...</text>
 <rect class="bx" x="515" y="25" width="235" height="88" rx="8"/><text class="t" x="632" y="52" text-anchor="middle">FI view</text><text class="s" x="632" y="73" text-anchor="middle">"What did we spend?"</text><text class="s" x="632" y="93" text-anchor="middle">Rent expense in the P&amp;L</text>
 <rect class="bx" x="515" y="137" width="235" height="88" rx="8"/><text class="t" x="632" y="164" text-anchor="middle">CO view</text><text class="s" x="632" y="185" text-anchor="middle">"Who spent it and why?"</text><text class="s" x="632" y="205" text-anchor="middle">Cost of Administration</text>
 <path class="gfile" d="M170,125 H213" marker-end="url(#m1)"/>
@@ -119,102 +119,113 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p class="cap">There is no separate "CO copy" of the rent. FI and CO read the same line, which is why they agree by design.</p>
 
 <h2 id="elements">2. Cost elements: primary and secondary</h2>
-<p>A <strong>cost element</strong> says <em>what kind</em> of cost it is: rent, electricity, salaries. In S/4HANA a cost element is simply a <strong>GL account</strong> (maintained in FS00) that has a <strong>cost element category</strong>. The category tells CO how the account may be used. There are two families.</p>
+<p>A <strong>cost element</strong> says <em>what kind</em> of cost it is: rent, telephony, depreciation. In S/4HANA a cost element is simply a <strong>GL account</strong> (maintained in FS00) that has a <strong>cost element category</strong>. The category tells CO how the account may be used. There are two families.</p>
 <div class="term"><h4>Primary cost element</h4><p><strong>In simple words:</strong> a cost (or revenue) that comes <em>from outside</em> the company and is posted in FI. Every primary cost element is a P&amp;L account.</p><p class="ex">Example: the rent invoice of <b>DKK 50,000</b> on account 470000. The money really leaves the company.</p></div>
 <div class="term"><h4>Secondary cost element</h4><p><strong>In simple words:</strong> a cost that only moves <em>inside</em> CO, from one department to another. No money leaves the company and FI's profit does not change.</p><p class="ex">Example: <b>940000 Secondary cost: IT assessment</b>, used when the IT department's costs are shared out to the other departments (section 5).</p></div>
 <div class="tbl"><table><thead><tr><th>Account</th><th>Name</th><th>Type</th><th>Category (typical)</th><th>Where it comes from</th></tr></thead><tbody>
-<tr><td>470000</td><td>Rent</td><td>Primary</td><td>1: primary costs</td><td>FI: rent invoice or payment</td></tr>
-<tr><td>473000</td><td>Electricity</td><td>Primary</td><td>1: primary costs</td><td>FI: supplier invoice from the utility</td></tr>
+<tr><td>470000</td><td>Rent</td><td>Primary</td><td>1: primary costs</td><td>FI: rent invoice (paid 01.03)</td></tr>
+<tr><td>473000</td><td>Telephony and call centre</td><td>Primary</td><td>1: primary costs</td><td>FI: telecom supplier invoice (paid 04.03)</td></tr>
+<tr><td>476000</td><td>IT equipment, low value</td><td>Primary</td><td>1: primary costs</td><td>FI-AP: the 40 laptops of Lesson 2, DKK 100,000 including non-deductible VAT</td></tr>
 <tr><td>481000</td><td>Depreciation</td><td>Primary</td><td>1: primary costs</td><td>FI-AA: monthly depreciation run (Lesson 5)</td></tr>
-<tr><td>400000</td><td>Raw material consumption</td><td>Primary</td><td>1: primary costs</td><td>MM: oak taken from stock into production</td></tr>
-<tr><td>800000</td><td>Sales revenue: domestic</td><td>Primary</td><td>11: revenues</td><td>SD billing (Lesson 3)</td></tr>
+<tr><td>400000</td><td>Claims paid</td><td>Primary</td><td>1: primary costs</td><td>FS-CD daily totals; carries the line of business</td></tr>
+<tr><td>300000</td><td>Gross written premium</td><td>Primary</td><td>11: revenues</td><td>FS-CD daily totals; carries the line of business</td></tr>
 <tr><td>940000</td><td>Secondary cost: IT assessment</td><td>Secondary</td><td>42: assessment</td><td>CO only: the IT assessment cycle</td></tr>
 </tbody></table></div>
-<p class="cap">Balance sheet accounts such as 110000 Bank or 160000 Trade payables are not cost elements: they never carry a cost centre.</p>
-<div class="tip"><b>BA tip: "cost element required"</b>
+<p class="cap">Balance sheet accounts such as 110000 Bank, 160000 Trade payables or 260000 Claims reserves are not cost elements: they never carry a cost centre. Note that Nordica cannot deduct VAT, so the VAT on a purchase is part of the cost on the same account.</p>
+<div class="tip"><b>BA tip: "cost object required"</b>
 <p>If an account is a primary cost element, SAP insists on a cost object when you post to it. Posting rent without a cost centre gives an error like "account 470000 requires an assignment to a CO object". Users meet this message often; it is a feature, not a bug.</p></div>
 
 <h2 id="centres">3. Cost centres and the standard hierarchy</h2>
-<p>A <strong>cost centre</strong> is a place in the company where costs arise and someone is responsible for them: usually a department. Nordlys Møbler has four. Each cost centre belongs to the controlling area <strong>NM00</strong>, has a manager, a validity period and a <strong>category</strong> (production, sales, administration, service).</p>
+<p>A <strong>cost centre</strong> is a place in the company where costs arise and someone is responsible for them: usually a department. Nordica has four. Each belongs to the controlling area <strong>NF00</strong>, has a manager, a validity period and a <strong>category</strong> (for example administration or sales).</p>
 <p>All cost centres must hang in one tree called the <strong>standard hierarchy</strong>. Its groups let Jonas report on "all of Administration and IT" with one click. You create cost centres with <strong>KS01</strong>; the hierarchy itself is maintained in its own screen (OKEON in classic GUI).</p>
 
-<div class="fig" role="img" aria-label="Standard hierarchy NM00 with three groups: NM-PROD with cost centre 1000 Production Aarhus, NM-SALES with cost centre 2000 Sales, and NM-ADMIN with cost centres 3000 Administration and 4100 IT">
+<div class="fig" role="img" aria-label="Standard hierarchy NF00 with three groups: NF-CLAIMS with cost centre 1000 Claims handling, NF-SALES with cost centre 2000 Sales and distribution, and NF-ADMIN with cost centres 3000 Administration and 4100 IT">
 <svg viewBox="0 0 760 290">
-<rect class="bx hl" x="255" y="15" width="250" height="60" rx="8"/><text class="t" x="380" y="40" text-anchor="middle">NM00</text><text class="s" x="380" y="60" text-anchor="middle">standard hierarchy: Nordlys Møbler</text>
+<rect class="bx hl" x="255" y="15" width="250" height="60" rx="8"/><text class="t" x="380" y="40" text-anchor="middle">NF00</text><text class="s" x="380" y="60" text-anchor="middle">standard hierarchy: Nordica Forsikring</text>
 <path class="lin" d="M380,75 V98 H120 V120 M380,98 V120 M380,98 H640 V120"/>
-<rect class="bx" x="30" y="120" width="180" height="56" rx="8"/><text class="t" x="120" y="144" text-anchor="middle">NM-PROD</text><text class="s" x="120" y="163" text-anchor="middle">Production</text>
-<rect class="bx" x="290" y="120" width="180" height="56" rx="8"/><text class="t" x="380" y="144" text-anchor="middle">NM-SALES</text><text class="s" x="380" y="163" text-anchor="middle">Sales and marketing</text>
-<rect class="bx" x="550" y="120" width="180" height="56" rx="8"/><text class="t" x="640" y="144" text-anchor="middle">NM-ADMIN</text><text class="s" x="640" y="163" text-anchor="middle">Administration and IT</text>
+<rect class="bx" x="30" y="120" width="180" height="56" rx="8"/><text class="t" x="120" y="144" text-anchor="middle">NF-CLAIMS</text><text class="s" x="120" y="163" text-anchor="middle">Claims</text>
+<rect class="bx" x="290" y="120" width="180" height="56" rx="8"/><text class="t" x="380" y="144" text-anchor="middle">NF-SALES</text><text class="s" x="380" y="163" text-anchor="middle">Sales and distribution</text>
+<rect class="bx" x="550" y="120" width="180" height="56" rx="8"/><text class="t" x="640" y="144" text-anchor="middle">NF-ADMIN</text><text class="s" x="640" y="163" text-anchor="middle">Administration and IT</text>
 <path class="lin" d="M120,176 V215 M380,176 V215 M640,176 V196 H543 V215 M640,196 H683 V215"/>
-<rect class="bx" x="30" y="215" width="180" height="60" rx="8"/><text class="t" x="120" y="240" text-anchor="middle">1000</text><text class="s" x="120" y="260" text-anchor="middle">Production Aarhus</text>
-<rect class="bx" x="290" y="215" width="180" height="60" rx="8"/><text class="t" x="380" y="240" text-anchor="middle">2000</text><text class="s" x="380" y="260" text-anchor="middle">Sales</text>
+<rect class="bx" x="30" y="215" width="180" height="60" rx="8"/><text class="t" x="120" y="240" text-anchor="middle">1000</text><text class="s" x="120" y="260" text-anchor="middle">Claims handling</text>
+<rect class="bx" x="290" y="215" width="180" height="60" rx="8"/><text class="t" x="380" y="240" text-anchor="middle">2000</text><text class="s" x="380" y="260" text-anchor="middle">Sales and distribution</text>
 <rect class="bx" x="480" y="215" width="126" height="60" rx="8"/><text class="t" x="543" y="240" text-anchor="middle">3000</text><text class="s" x="543" y="260" text-anchor="middle">Administration</text>
 <rect class="bx" x="620" y="215" width="126" height="60" rx="8"/><text class="t" x="683" y="240" text-anchor="middle">4100</text><text class="s" x="683" y="260" text-anchor="middle">IT</text>
 </svg>
 </div>
 <p class="cap">Group names are made up. Real companies often mirror the organisation chart, so a re-organisation means a hierarchy change.</p>
 
+<h3 id="expense-types">Why an insurer splits costs into three types</h3>
+<p>A factory has one big "cost of goods sold". An insurer has none. Its biggest cost is <strong>claims</strong>, and the rest of its costs are split by <em>purpose</em>. The usual split is:</p>
+<div class="tbl"><table><thead><tr><th>Expense type</th><th>In simple words</th><th>Nordica example</th></tr></thead><tbody>
+<tr><td>Claims handling costs (loss adjustment expenses)</td><td>The cost of dealing with claims: handlers, call centre, claims IT</td><td>Cost centre 1000: telephony, the 40 laptops, the claims centre depreciation</td></tr>
+<tr><td>Acquisition costs</td><td>The cost of winning and renewing policies: advertising, sales staff, broker commission</td><td>Cost centre 2000 and order 700100 (the spring motor campaign)</td></tr>
+<tr><td>Administration costs</td><td>Everything else needed to run the company</td><td>Cost centre 3000 (rent) and 4100 (IT, once shared out)</td></tr>
+</tbody></table></div>
+<p>Why bother? Because the <strong>combined ratio</strong> (section 6), the statutory reports to Finanstilsynet and the IFRS 17 reporting all need these types separately. Claims handling costs are often counted <em>with</em> claims, acquisition costs are often tied to new policies, and administration is reported on its own. A good cost centre design makes the split almost automatic: the cost centre already tells you the type. Treat the table above as an example and <strong>confirm the exact split with your finance team</strong>, because your actuarial and finance colleagues own the reporting rules.</p>
+
 <h3 id="posting">Posting a cost to a cost centre</h3>
-<p>On 01.03.2026 Peter's team pays the March rent for the Aarhus office. The FI entry is ordinary; the only new thing is the cost centre on the expense line.</p>
+<p>On 01.03.2026 the March rent for the head office is paid. The FI entry is ordinary; the only new thing is the cost centre on the expense line.</p>
 <div class="tbl"><table><thead><tr><th>Line</th><th>Account</th><th>Debit / Credit</th><th>Cost object</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>1</td><td>470000 Rent</td><td>Debit</td><td>Cost centre 3000</td><td class="num">50,000.00</td></tr>
 <tr><td>2</td><td>110000 Bank: Danske Bank</td><td>Credit</td><td>none (balance sheet)</td><td class="num">50,000.00</td></tr>
 </tbody></table></div>
-<p>The same day the electricity bill for the factory is posted: <strong>DKK 18,000</strong> on 473000 with cost centre <strong>1000 Production Aarhus</strong>. Where does the cost centre come from? Either the user types it, or SAP proposes it from a default rule (for example "account 473000 always goes to 1000", set in OKB9), or it comes from the purchase order.</p>
+<p>On 04.03 the claims call-centre telephony of <strong>DKK 18,000</strong> is posted to 473000 with cost centre <strong>1000 Claims handling</strong>. Where does the cost centre come from? Either the user types it, or SAP proposes it from a default rule (for example "account 473000 always goes to 1000", set in OKB9), or it comes from the purchase order. The laptops of Lesson 2 (DKK 100,000, account 476000) also went to cost centre 1000 that way.</p>
 <p>To see what landed on a cost centre, Jonas uses <strong>KSB1</strong> (cost centre actual line items): every posting with date, account, amount and document number. It is the first place to look when a manager asks "why is this cost on my department?"</p>
 
 <h3 id="plan">Plan versus actual</h3>
 <p><strong>Planning</strong> simply means writing down, before the year starts, what each cost centre is expected to cost. The rent contract says DKK 600,000 a year, so Jonas plans <strong>DKK 50,000 a month</strong> on cost centre 3000. During the year SAP compares the plan with the actual postings, and the <strong>variance</strong> (actual minus plan) shows where to look. Many S/4HANA projects plan in SAP Analytics Cloud or Fiori apps; older systems used KP06.</p>
 <div class="tbl"><table><thead><tr><th>Cost centre</th><th>Cost element</th><th class="num">Plan March</th><th class="num">Actual March</th><th class="num">Variance</th></tr></thead><tbody>
-<tr><td>1000 Production Aarhus</td><td>473000 Electricity</td><td class="num">15,000.00</td><td class="num">18,000.00</td><td class="num">+3,000.00</td></tr>
-<tr><td>1000 Production Aarhus</td><td>481000 Depreciation</td><td class="num">5,000.00</td><td class="num">5,000.00</td><td class="num">0.00</td></tr>
+<tr><td>1000 Claims handling</td><td>473000 Telephony</td><td class="num">16,000.00</td><td class="num">18,000.00</td><td class="num">+2,000.00</td></tr>
+<tr><td>1000 Claims handling</td><td>476000 Laptops</td><td class="num">100,000.00</td><td class="num">100,000.00</td><td class="num">0.00</td></tr>
+<tr><td>1000 Claims handling</td><td>481000 Depreciation</td><td class="num">5,000.00</td><td class="num">5,000.00</td><td class="num">0.00</td></tr>
 <tr><td>3000 Administration</td><td>470000 Rent</td><td class="num">50,000.00</td><td class="num">50,000.00</td><td class="num">0.00</td></tr>
 <tr><td>4100 IT</td><td>IT services and licences</td><td class="num">25,000.00</td><td class="num">24,000.00</td><td class="num">−1,000.00</td></tr>
-<tr><td colspan="2"><strong>Total</strong></td><td class="num"><strong>95,000.00</strong></td><td class="num"><strong>97,000.00</strong></td><td class="num"><strong>+2,000.00</strong></td></tr>
+<tr><td colspan="2"><strong>Total</strong></td><td class="num"><strong>196,000.00</strong></td><td class="num"><strong>197,000.00</strong></td><td class="num"><strong>+1,000.00</strong></td></tr>
 </tbody></table></div>
-<p class="cap">Only the story's postings are shown; a real month has thousands of lines, including salaries. The DKK 5,000 is the monthly depreciation of the new CNC machine from Lesson 5.</p>
-<p>The electricity variance of DKK 3,000 (20% over plan) is what Jonas asks the production manager about. The report he uses is <strong>S_ALR_87013611</strong> (cost centres: actual/plan/variance).</p>
+<p class="cap">Only the story's postings are shown; a real month has thousands of lines, including salaries.</p>
+<p>The telephony variance of DKK 2,000 (12.5% over plan) is what Jonas asks the claims manager about: a storm week meant more calls. The report he uses is <strong>S_ALR_87013611</strong> (cost centres: actual/plan/variance).</p>
 
 <h2 id="orders">4. Internal orders: collecting costs for a temporary job</h2>
 <p>Cost centres are permanent. But some costs belong to a <em>temporary</em> event or project, and managers want to see its total cost on its own. For that SAP has the <strong>internal order</strong>: a short-lived cost collector with its own number, a budget and an end date. You create one with <strong>KO01</strong>.</p>
-<p>Nordlys Møbler will show its new table range at <strong>Formland</strong>, the design fair in Herning. Jonas creates order <strong>700100 "Formland trade fair 2026"</strong> with a budget of <strong>DKK 80,000</strong>. Every invoice for the fair is posted with order 700100 instead of a cost centre.</p>
+<p>In spring Nordica runs a marketing push for car insurance. Jonas creates order <strong>700100 "Spring motor campaign 2026"</strong> with a budget of <strong>DKK 80,000</strong>. Every invoice for the campaign is posted with order 700100 instead of a cost centre. This is an <strong>acquisition cost</strong>: it is meant to win new motor policies.</p>
 
-<div class="fig" role="img" aria-label="Stand rent 40,000, transport 10,000 and catering 15,000 are posted to internal order 700100, total 65,000 against a budget of 80,000. At month-end the order is settled to cost centre 2000 Sales">
+<div class="fig" role="img" aria-label="Online ads 40,000, agency 10,000 and events 15,000 are posted to internal order 700100, total 65,000 against a budget of 80,000. At month-end the order is settled to cost centre 2000 Sales and distribution">
 <svg viewBox="0 0 760 270">
 <defs>
 <marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
 <marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
 </defs>
-<rect class="bx" x="10" y="20" width="170" height="54" rx="8"/><text class="t" x="95" y="43" text-anchor="middle">Stand rent</text><text class="s" x="95" y="62" text-anchor="middle">DKK 40,000</text>
-<rect class="bx" x="10" y="98" width="170" height="54" rx="8"/><text class="t" x="95" y="121" text-anchor="middle">Transport</text><text class="s" x="95" y="140" text-anchor="middle">DKK 10,000</text>
-<rect class="bx" x="10" y="176" width="170" height="54" rx="8"/><text class="t" x="95" y="199" text-anchor="middle">Catering</text><text class="s" x="95" y="218" text-anchor="middle">DKK 15,000</text>
+<rect class="bx" x="10" y="20" width="170" height="54" rx="8"/><text class="t" x="95" y="43" text-anchor="middle">Online ads</text><text class="s" x="95" y="62" text-anchor="middle">DKK 40,000</text>
+<rect class="bx" x="10" y="98" width="170" height="54" rx="8"/><text class="t" x="95" y="121" text-anchor="middle">Agency fee</text><text class="s" x="95" y="140" text-anchor="middle">DKK 10,000</text>
+<rect class="bx" x="10" y="176" width="170" height="54" rx="8"/><text class="t" x="95" y="199" text-anchor="middle">Events</text><text class="s" x="95" y="218" text-anchor="middle">DKK 15,000</text>
 <path class="gin" d="M180,47 C210,47 210,125 243,125" marker-end="url(#m2)"/>
 <path class="gin" d="M180,125 H243" marker-end="url(#m2)"/>
 <path class="gin" d="M180,203 C210,203 210,125 243,125" marker-end="url(#m2)"/>
-<rect class="bx hl" x="245" y="60" width="200" height="130" rx="8"/><text class="t" x="345" y="88" text-anchor="middle">Order 700100</text><text class="s" x="345" y="110" text-anchor="middle">Formland trade fair 2026</text><text class="s" x="345" y="134" text-anchor="middle">Budget DKK 80,000</text><text class="s" x="345" y="154" text-anchor="middle">Actual DKK 65,000</text><text class="s" x="345" y="174" text-anchor="middle">Left DKK 15,000</text>
+<rect class="bx hl" x="245" y="60" width="200" height="130" rx="8"/><text class="t" x="345" y="88" text-anchor="middle">Order 700100</text><text class="s" x="345" y="110" text-anchor="middle">Spring motor campaign</text><text class="s" x="345" y="134" text-anchor="middle">Budget DKK 80,000</text><text class="s" x="345" y="154" text-anchor="middle">Actual DKK 65,000</text><text class="s" x="345" y="174" text-anchor="middle">Left DKK 15,000</text>
 <path class="gout" d="M445,125 H568" marker-end="url(#m3)"/>
 <text class="lab-out" x="506" y="113" text-anchor="middle">Settlement</text><text class="lab-out" x="506" y="146" text-anchor="middle">KO88</text>
-<rect class="bx" x="570" y="80" width="180" height="90" rx="8"/><text class="t" x="660" y="108" text-anchor="middle">Cost centre 2000</text><text class="s" x="660" y="129" text-anchor="middle">Sales</text><text class="s" x="660" y="150" text-anchor="middle">+ DKK 65,000</text>
-<text class="lab-file" x="380" y="256" text-anchor="middle">After settlement the order balance is 0 and the cost sits with Sales</text>
+<rect class="bx" x="570" y="80" width="180" height="90" rx="8"/><text class="t" x="660" y="108" text-anchor="middle">Cost centre 2000</text><text class="s" x="660" y="129" text-anchor="middle">Sales and distribution</text><text class="s" x="660" y="150" text-anchor="middle">+ DKK 65,000</text>
+<text class="lab-file" x="380" y="256" text-anchor="middle">After settlement the order balance is 0 and the cost sits with Sales and distribution</text>
 </svg>
 </div>
 
 <div class="tip"><b>Check it yourself</b>
-<p>40,000 + 10,000 + 15,000 = <strong>65,000</strong>. Budget 80,000 − actual 65,000 = <strong>15,000</strong> left. If a fourth invoice of DKK 20,000 had arrived, the total would be 85,000 and SAP's <strong>availability control</strong> could warn or block the posting, because it is over the budget.</p></div>
+<p>40,000 + 10,000 + 15,000 = <strong>65,000</strong>. Budget 80,000 − actual 65,000 = <strong>15,000</strong> left. If a fourth invoice of DKK 20,000 arrived, the total would be 85,000 and SAP's <strong>availability control</strong> could warn or block the posting, because it is over budget.</p></div>
 
 <h3 id="settlement">Settlement: emptying the order</h3>
-<p>An internal order is only a temporary bucket. At month-end Jonas <strong>settles</strong> it: SAP moves the balance to the receiver named in the order's <strong>settlement rule</strong>, here cost centre <strong>2000 Sales</strong>, because the fair is a sales activity. He runs <strong>KO88</strong> (one order; KO8G settles many at once). Settlement is a CO posting: the order is credited and the cost centre is debited. Depending on the settlement profile it keeps the original cost elements or uses a settlement cost element (a secondary one). Once the fair is over and all invoices are in, the order is closed so nobody can post to it again.</p>
+<p>An internal order is only a temporary bucket. At month-end Jonas <strong>settles</strong> it: SAP moves the balance to the receiver named in the order's <strong>settlement rule</strong>, here cost centre <strong>2000 Sales and distribution</strong>, because the campaign is a sales activity. He runs <strong>KO88</strong> (one order; KO8G settles many at once). Settlement is a CO posting: the order is credited and the cost centre is debited. Depending on the settlement profile it keeps the original cost elements or uses a settlement cost element (a secondary one). Once the campaign is over and all invoices are in, the order is closed so nobody can post to it again.</p>
 
 <h2 id="alloc">5. Allocations: sharing IT costs by headcount</h2>
-<p>Cost centre <strong>4100 IT</strong> has DKK 24,000 of costs in March: licences, laptops and support. IT does not sell anything; it serves the other departments. To show the true cost of each department, Jonas shares the IT cost out. This is an <strong>allocation</strong>, and the most common kind is an <strong>assessment</strong>.</p>
+<p>Cost centre <strong>4100 IT</strong> has DKK 24,000 of costs in March: licences and support. IT does not sell insurance; it serves the other departments. To show the true cost of each department, Jonas shares the IT cost out. This is an <strong>allocation</strong>, and the most common kind is an <strong>assessment</strong>.</p>
 <p>He needs a fair key. IT work roughly follows the number of people, so he uses <strong>headcount</strong>, stored in SAP as a <strong>statistical key figure</strong> (a number, not money, posted per cost centre).</p>
 
-<div class="fig" role="img" aria-label="Assessment: cost centre 4100 IT with DKK 24,000 is credited and the amount is shared by headcount: 15,000 to 1000 Production for 30 people, 5,000 to 2000 Sales for 10 people, and 4,000 to 3000 Administration for 8 people, using secondary cost element 940000">
+<div class="fig" role="img" aria-label="Assessment: cost centre 4100 IT with DKK 24,000 is credited and the amount is shared by headcount: 15,000 to 1000 Claims handling for 30 people, 5,000 to 2000 Sales and distribution for 10 people, and 4,000 to 3000 Administration for 8 people, using secondary cost element 940000">
 <svg viewBox="0 0 760 300">
 <defs><marker id="m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
 <rect class="bx hl" x="15" y="100" width="210" height="100" rx="8"/><text class="t" x="120" y="128" text-anchor="middle">Sender: 4100 IT</text><text class="s" x="120" y="150" text-anchor="middle">costs DKK 24,000</text><text class="s" x="120" y="170" text-anchor="middle">credited −24,000</text><text class="s" x="120" y="188" text-anchor="middle">on 940000</text>
-<rect class="bx" x="520" y="20" width="230" height="64" rx="8"/><text class="t" x="635" y="46" text-anchor="middle">1000 Production</text><text class="s" x="635" y="68" text-anchor="middle">30 people · + DKK 15,000</text>
-<rect class="bx" x="520" y="118" width="230" height="64" rx="8"/><text class="t" x="635" y="144" text-anchor="middle">2000 Sales</text><text class="s" x="635" y="166" text-anchor="middle">10 people · + DKK 5,000</text>
+<rect class="bx" x="520" y="20" width="230" height="64" rx="8"/><text class="t" x="635" y="46" text-anchor="middle">1000 Claims handling</text><text class="s" x="635" y="68" text-anchor="middle">30 people · + DKK 15,000</text>
+<rect class="bx" x="520" y="118" width="230" height="64" rx="8"/><text class="t" x="635" y="144" text-anchor="middle">2000 Sales and distr.</text><text class="s" x="635" y="166" text-anchor="middle">10 people · + DKK 5,000</text>
 <rect class="bx" x="520" y="216" width="230" height="64" rx="8"/><text class="t" x="635" y="242" text-anchor="middle">3000 Administration</text><text class="s" x="635" y="264" text-anchor="middle">8 people · + DKK 4,000</text>
 <path class="gout" d="M225,150 C380,150 360,52 518,52" marker-end="url(#m4)"/>
 <path class="gout" d="M225,150 H518" marker-end="url(#m4)"/>
@@ -227,8 +238,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p class="cap">The sender is credited and the receivers are debited, all on secondary cost element 940000. Total cost in the company does not change.</p>
 
 <div class="tbl"><table><thead><tr><th>Receiver</th><th class="num">Headcount</th><th>Share</th><th class="num">Debit DKK (940000)</th></tr></thead><tbody>
-<tr><td>1000 Production Aarhus</td><td class="num">30</td><td>24,000 × 30/48</td><td class="num">15,000.00</td></tr>
-<tr><td>2000 Sales</td><td class="num">10</td><td>24,000 × 10/48</td><td class="num">5,000.00</td></tr>
+<tr><td>1000 Claims handling</td><td class="num">30</td><td>24,000 × 30/48</td><td class="num">15,000.00</td></tr>
+<tr><td>2000 Sales and distribution</td><td class="num">10</td><td>24,000 × 10/48</td><td class="num">5,000.00</td></tr>
 <tr><td>3000 Administration</td><td class="num">8</td><td>24,000 × 8/48</td><td class="num">4,000.00</td></tr>
 <tr><td><strong>Total</strong></td><td class="num"><strong>48</strong></td><td></td><td class="num"><strong>24,000.00</strong></td></tr>
 <tr><td>4100 IT (sender)</td><td></td><td>Credit</td><td class="num">−24,000.00</td></tr>
@@ -239,88 +250,128 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <h3 id="cycles">Cycles: KSU1 and KSU5</h3>
 <p>The rule "share 4100 by headcount to 1000, 2000 and 3000" is saved once as an <strong>assessment cycle</strong> with <strong>KSU1</strong>. A cycle holds one or more <em>segments</em>: sender, receivers, the key (headcount) and the secondary cost element 940000. Every month-end Jonas runs it with <strong>KSU5</strong>, first as a <strong>test run</strong> to check the amounts, then for real. If headcount changes in April, he updates the statistical key figure; the cycle stays the same.</p>
 <div class="tbl"><table><thead><tr><th></th><th>Assessment</th><th>Distribution</th></tr></thead><tbody>
-<tr><td>Cost element on the receiver</td><td>A secondary cost element (940000): the receiver sees "IT assessment"</td><td>The original primary cost element: the receiver sees "electricity" or "licences"</td></tr>
+<tr><td>Cost element on the receiver</td><td>A secondary cost element (940000): the receiver sees "IT assessment"</td><td>The original primary cost element: the receiver sees the original cost type</td></tr>
 <tr><td>Detail kept</td><td>Less: one line per receiver</td><td>More: the original cost types stay visible</td></tr>
-<tr><td>Typical use</td><td>Sharing a whole service department, like IT</td><td>Sharing one shared bill, like a single electricity meter</td></tr>
+<tr><td>Typical use</td><td>Sharing a whole service department, like IT</td><td>Sharing one shared bill</td></tr>
 <tr><td>Transactions</td><td>KSU1 create, KSU5 run</td><td>KSV1 create, KSV5 run</td></tr>
 </tbody></table></div>
 
-<h2 id="profit">6. Profit centres and margin analysis</h2>
-<p>Cost centres answer "what does each department cost?". Jonas's second question, "do tables or chairs make money?", needs <strong>revenue</strong> as well as cost. Two tools answer it.</p>
-<div class="term"><h4>Profit centre</h4><p><strong>In simple words:</strong> a part of the business that is run like a small company of its own, with revenue, costs and profit. Every cost centre, product and order is linked to one, so postings find their profit centre automatically.</p><p class="ex">Example: Nordlys Møbler has <b>PC-TABLES</b> (dining tables) and <b>PC-CHAIRS</b> (chairs). The table billing to Hygge Hjem lands on PC-TABLES because the product master points there.</p></div>
-<div class="term"><h4>Margin analysis (account-based CO-PA)</h4><p><strong>In simple words:</strong> profitability analysis that slices revenue and cost by <em>characteristics</em> such as customer, product, region and sales channel. In S/4HANA it is account-based, so it reads the same GL accounts in the Universal Journal.</p><p class="ex">Example: "What margin did we make on oak tables sold to Hygge Hjem in the Copenhagen region in March?"</p></div>
+<h2 id="profit">6. Profit centres, lines of business and the combined ratio</h2>
+<p>Cost centres answer "what does each department cost?". Jonas's second question, "does motor or home make money?", needs <strong>premium and claims</strong> as well as cost. Two tools answer it.</p>
+<div class="term"><h4>Profit centre</h4><p><strong>In simple words:</strong> a part of the business run like a small company of its own, with income, costs and a result. For an insurer the natural profit centre is a <strong>line of business</strong>.</p><p class="ex">Example: Nordica has <b>PC-MOTOR</b> (car insurance) and <b>PC-HOME</b> (home and property). The Hygge Hjem commercial property policy ERH-2026-0042 sits in PC-HOME because the product points there.</p></div>
+<div class="term"><h4>Margin analysis (account-based CO-PA)</h4><p><strong>In simple words:</strong> profitability analysis that slices premium and cost by <em>characteristics</em> such as line of business, product, sales channel (direct, broker, partner) and region. In S/4HANA it is account-based, so it reads the same GL accounts in the Universal Journal.</p><p class="ex">Example: "What was the result of motor insurance sold through brokers in Region Hovedstaden in March?"</p></div>
 
-<div class="fig" role="img" aria-label="Revenue of DKK 120,000 and cost of goods sold of DKK 70,000 for the Hygge Hjem table sale both carry the same profitability segment: customer Hygge Hjem, product oak dining table, profit centre PC-TABLES, region Copenhagen. The KE30 report shows margin 50,000 or 41.7 percent">
-<svg viewBox="0 0 760 290">
-<defs>
-<marker id="m5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
-<marker id="m6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker>
-<marker id="m7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
-</defs>
-<rect class="bx" x="10" y="30" width="205" height="84" rx="8"/><text class="t" x="112" y="56" text-anchor="middle">Revenue (800000)</text><text class="s" x="112" y="77" text-anchor="middle">billing 15.03, 10 tables</text><text class="s" x="112" y="97" text-anchor="middle">DKK 120,000</text>
-<rect class="bx" x="10" y="146" width="205" height="84" rx="8"/><text class="t" x="112" y="172" text-anchor="middle">Cost of goods sold</text><text class="s" x="112" y="193" text-anchor="middle">delivery 13.03</text><text class="s" x="112" y="213" text-anchor="middle">DKK 70,000</text>
-<rect class="bx hl" x="270" y="25" width="240" height="210" rx="8"/><text class="t" x="390" y="52" text-anchor="middle">Profitability segment</text>
-<text class="s" x="288" y="84">Customer: Hygge Hjem (100250)</text><text class="s" x="288" y="110">Product: oak dining table</text><text class="s" x="288" y="136">Profit centre: PC-TABLES</text><text class="s" x="288" y="162">Region: Copenhagen</text><text class="s" x="288" y="188">Company code: DK01</text><text class="s" x="288" y="214">... and more fields</text>
-<path class="gin" d="M215,72 H268" marker-end="url(#m5)"/>
-<path class="gout" d="M215,188 H268" marker-end="url(#m6)"/>
-<rect class="bx" x="565" y="55" width="185" height="150" rx="8"/><text class="t" x="657" y="82" text-anchor="middle">KE30 report</text><text class="s" x="657" y="106" text-anchor="middle">Revenue 120,000</text><text class="s" x="657" y="128" text-anchor="middle">COGS −70,000</text><text class="s" x="657" y="150" text-anchor="middle">Margin 50,000</text><text class="s" x="657" y="172" text-anchor="middle">= 41.7%</text>
-<path class="gfile" d="M510,130 H563" marker-end="url(#m7)"/>
-<text class="lab-file" x="380" y="272" text-anchor="middle">Each journal line carries these fields, so margin can be sliced by any of them</text>
+<h3 id="ratios">Earned premium, claims incurred and the ratios</h3>
+<p>Insurers do not compare "sales" with "cost of goods". They use four ideas. Line Madsen, the actuary, owns most of them.</p>
+<ul>
+<li><strong>Earned premium</strong>: the part of the premium that belongs to the months already passed. Gross written premium minus the change in the unearned premium reserve (UPR). Example: Hygge Hjem's DKK 120,000 annual premium earns DKK 10,000 a month.</li>
+<li><strong>Claims incurred</strong>: claims paid plus the change in claims reserves (RBNS and IBNR, estimated by Line). It is what the March business <em>will cost</em>, not only what was paid.</li>
+<li><strong>Operating expenses</strong>: the three expense types from section 3, after the allocations of this lesson.</li>
+<li><strong>Technical result</strong>: earned premium − claims incurred − operating expenses.</li>
+</ul>
+<div class="tbl"><table><thead><tr><th>March 2026, DKK</th><th class="num">PC-MOTOR</th><th class="num">PC-HOME</th><th class="num">Total</th></tr></thead><tbody>
+<tr><td>Gross written premium</td><td class="num">1,500,000</td><td class="num">900,000</td><td class="num">2,400,000</td></tr>
+<tr><td>Change in UPR</td><td class="num">−500,000</td><td class="num">−300,000</td><td class="num">−800,000</td></tr>
+<tr><td><strong>Earned premium</strong></td><td class="num"><strong>1,000,000</strong></td><td class="num"><strong>600,000</strong></td><td class="num"><strong>1,600,000</strong></td></tr>
+<tr><td>Claims paid</td><td class="num">500,000</td><td class="num">260,000</td><td class="num">760,000</td></tr>
+<tr><td>Change in claims reserves</td><td class="num">200,000</td><td class="num">100,000</td><td class="num">300,000</td></tr>
+<tr><td><strong>Claims incurred</strong></td><td class="num"><strong>700,000</strong></td><td class="num"><strong>360,000</strong></td><td class="num"><strong>1,060,000</strong></td></tr>
+<tr><td>Operating expenses</td><td class="num">200,000</td><td class="num">150,000</td><td class="num">350,000</td></tr>
+<tr><td><strong>Technical result</strong></td><td class="num"><strong>100,000</strong></td><td class="num"><strong>90,000</strong></td><td class="num"><strong>190,000</strong></td></tr>
+</tbody></table></div>
+<p>Now divide each cost by the earned premium. The <strong>loss ratio</strong> is claims incurred ÷ earned premium. The <strong>expense ratio</strong> is operating expenses ÷ earned premium. Add them and you get the <strong>combined ratio</strong>.</p>
+
+<div class="fig" role="img" aria-label="Stacked bars against 100 percent of earned premium. Motor: loss ratio 70 percent, expense ratio 20 percent, combined ratio 90 percent, 10 percent left over. Home: loss 60, expense 25, combined 85, 15 percent left over. Total: loss 66.25, expense 21.875, combined 88.1, about 11.9 percent left over">
+<svg viewBox="0 0 760 310">
+<rect class="bx" x="130" y="52" width="350" height="44" style="fill:var(--due);fill-opacity:.35"/><rect class="bx" x="480" y="52" width="100" height="44" style="fill:var(--accent);fill-opacity:.35"/><rect class="bx" x="580" y="52" width="50" height="44" style="fill:var(--ok);fill-opacity:.35"/>
+<text class="t" x="15" y="80">PC-MOTOR</text>
+<text class="s" x="305" y="79" text-anchor="middle">Loss 70%</text><text class="s" x="530" y="79" text-anchor="middle">Exp. 20%</text><text class="s" x="605" y="79" text-anchor="middle">10%</text>
+<text class="t" x="642" y="79">Combined 90%</text>
+<rect class="bx" x="130" y="112" width="300" height="44" style="fill:var(--due);fill-opacity:.35"/><rect class="bx" x="430" y="112" width="125" height="44" style="fill:var(--accent);fill-opacity:.35"/><rect class="bx" x="555" y="112" width="75" height="44" style="fill:var(--ok);fill-opacity:.35"/>
+<text class="t" x="15" y="140">PC-HOME</text>
+<text class="s" x="280" y="139" text-anchor="middle">Loss 60%</text><text class="s" x="492" y="139" text-anchor="middle">Exp. 25%</text><text class="s" x="592" y="139" text-anchor="middle">15%</text>
+<text class="t" x="642" y="139">Combined 85%</text>
+<rect class="bx" x="130" y="172" width="331" height="44" style="fill:var(--due);fill-opacity:.35"/><rect class="bx" x="461" y="172" width="109" height="44" style="fill:var(--accent);fill-opacity:.35"/><rect class="bx" x="570" y="172" width="60" height="44" style="fill:var(--ok);fill-opacity:.35"/>
+<text class="t" x="15" y="200">Total</text>
+<text class="s" x="295" y="199" text-anchor="middle">Loss 66.25%</text><text class="s" x="515" y="199" text-anchor="middle">Exp. 21.9%</text><text class="s" x="600" y="199" text-anchor="middle">11.9%</text>
+<text class="t" x="642" y="199">Combined 88.1%</text>
+<path class="gbad" d="M630,36 V226"/>
+<text class="lab-bad" x="630" y="26" text-anchor="middle">100% of earned premium = break-even</text>
+<text class="s" x="130" y="246">0%</text>
+<rect x="150" y="264" width="14" height="14" style="fill:var(--due);fill-opacity:.45"/><text class="s" x="170" y="276">Loss ratio</text>
+<rect x="290" y="264" width="14" height="14" style="fill:var(--accent);fill-opacity:.45"/><text class="s" x="310" y="276">Expense ratio</text>
+<rect x="450" y="264" width="14" height="14" style="fill:var(--ok);fill-opacity:.45"/><text class="s" x="470" y="276">Left over: underwriting profit</text>
 </svg>
 </div>
+<p class="cap">Bars are drawn to scale: the red dashed line is 100% of earned premium. Each bar ends where its combined ratio is; the green part is what remains.</p>
 
-<h3 id="march-margin">March margin by profit centre</h3>
-<p>In March Nordlys Møbler sold the 10 tables to Hygge Hjem (Lesson 3) and 40 chairs at DKK 1,500 to several smaller shops. When goods leave the warehouse, SAP posts the <strong>cost of goods sold</strong> (COGS): what the products cost to make, mostly oak and labour. Revenue minus COGS is the <strong>gross margin</strong>.</p>
-<div class="tbl"><table><thead><tr><th>Profit centre</th><th class="num">Revenue</th><th class="num">COGS</th><th class="num">Margin</th><th class="num">Margin %</th></tr></thead><tbody>
-<tr><td>PC-TABLES (10 tables × 12,000)</td><td class="num">120,000.00</td><td class="num">70,000.00</td><td class="num">50,000.00</td><td class="num">41.7%</td></tr>
-<tr><td>PC-CHAIRS (40 chairs × 1,500)</td><td class="num">60,000.00</td><td class="num">36,000.00</td><td class="num">24,000.00</td><td class="num">40.0%</td></tr>
-<tr><td><strong>Total</strong></td><td class="num"><strong>180,000.00</strong></td><td class="num"><strong>106,000.00</strong></td><td class="num"><strong>74,000.00</strong></td><td class="num"><strong>41.1%</strong></td></tr>
+<div class="tbl"><table><thead><tr><th>Ratio</th><th class="num">PC-MOTOR</th><th class="num">PC-HOME</th><th class="num">Total</th></tr></thead><tbody>
+<tr><td>Loss ratio (claims incurred ÷ earned)</td><td class="num">700 ÷ 1,000 = 70%</td><td class="num">360 ÷ 600 = 60%</td><td class="num">1,060 ÷ 1,600 = 66.25%</td></tr>
+<tr><td>Expense ratio (operating expenses ÷ earned)</td><td class="num">200 ÷ 1,000 = 20%</td><td class="num">150 ÷ 600 = 25%</td><td class="num">350 ÷ 1,600 = 21.875%</td></tr>
+<tr><td><strong>Combined ratio</strong></td><td class="num"><strong>90%</strong></td><td class="num"><strong>85%</strong></td><td class="num"><strong>88.1%</strong></td></tr>
 </tbody></table></div>
-<p>Both lines make money, and tables do slightly better per krone. Notice that this is a <em>gross</em> margin: the rent, IT and the Formland fair still sit on cost centres. Many companies later assign those overheads to profitability segments too, to see a net margin per product. That is a design decision for Jonas, not a technical must.</p>
-<p>Jonas reads margin analysis with <strong>KE30</strong> (run a profitability report) and drills down from "all customers" to Hygge Hjem to single documents. For profit centres he uses <strong>KE5Z</strong> (profit centre line items), or the Fiori apps that read the same ACDOCA lines.</p>
+<p class="cap">Amounts in thousand DKK. Total combined ratio: 66.25% + 21.875% = 88.125%, shown as 88.1%.</p>
+<div class="tip"><b>Below 100% is an underwriting profit</b>
+<p>A combined ratio of 100% means that for every krone of premium earned, one krone went on claims and costs. Below 100%, the insurance business itself earns money: Motor keeps 10 øre of every krone and Home keeps 15 øre. Above 100% the insurer makes an underwriting loss and has to rely on investment income to stay profitable. Note that Home has the lower loss ratio but the higher expense ratio, so cost allocation matters for the answer.</p></div>
+<div class="tip"><b>Check it yourself</b>
+<p>Technical result: 1,600,000 − 1,060,000 − 350,000 = <strong>190,000</strong> (Motor 100,000 + Home 90,000). Add March investment income of DKK 40,000 (bond interest and value changes) and the result before tax is <strong>230,000</strong>. Also: 100% − 88.125% = 11.875%, and 11.875% of 1,600,000 is 190,000.</p></div>
+
+<h3 id="by-line">From cost centres to lines of business</h3>
+<p>Operating expenses of DKK 350,000 are the sum of everything in this lesson: rent 50,000, telephony 18,000, IT 24,000, depreciation 5,000, campaign 65,000, laptops 100,000 and salaries and other costs 88,000. Check: 50 + 18 + 24 + 5 + 65 + 100 + 88 = 350 (thousand).</p>
+<div class="tbl"><table><thead><tr><th>Cost centre</th><th class="num">Own costs</th><th class="num">Order settlement</th><th class="num">IT assessment</th><th class="num">Total March</th></tr></thead><tbody>
+<tr><td>1000 Claims handling</td><td class="num">163,000.00</td><td class="num">0.00</td><td class="num">15,000.00</td><td class="num">178,000.00</td></tr>
+<tr><td>2000 Sales and distribution</td><td class="num">20,000.00</td><td class="num">65,000.00</td><td class="num">5,000.00</td><td class="num">90,000.00</td></tr>
+<tr><td>3000 Administration</td><td class="num">78,000.00</td><td class="num">0.00</td><td class="num">4,000.00</td><td class="num">82,000.00</td></tr>
+<tr><td>4100 IT</td><td class="num">24,000.00</td><td class="num">0.00</td><td class="num">−24,000.00</td><td class="num">0.00</td></tr>
+<tr><td><strong>Total</strong></td><td class="num"><strong>285,000.00</strong></td><td class="num"><strong>65,000.00</strong></td><td class="num"><strong>0.00</strong></td><td class="num"><strong>350,000.00</strong></td></tr>
+</tbody></table></div>
+<p class="cap">Own costs: Claims handling = telephony 18,000 + laptops 100,000 + depreciation 5,000 + salaries and other 40,000. Sales = salaries and other 20,000. Administration = rent 50,000 + salaries and other 28,000. IT = 24,000. Salaries and other: 40,000 + 20,000 + 28,000 = 88,000.</p>
+<p>The last step is to share each cost centre over the two lines of business, using keys such as claim counts, policy counts or premium. In this example the keys give the split below. Jonas runs it as a second allocation cycle; the amounts are chosen to tie to the ratios above.</p>
+<div class="tbl"><table><thead><tr><th>Cost centre (after IT assessment)</th><th class="num">Total</th><th class="num">PC-MOTOR</th><th class="num">PC-HOME</th></tr></thead><tbody>
+<tr><td>1000 Claims handling</td><td class="num">178,000.00</td><td class="num">100,000.00</td><td class="num">78,000.00</td></tr>
+<tr><td>2000 Sales and distribution</td><td class="num">90,000.00</td><td class="num">50,000.00</td><td class="num">40,000.00</td></tr>
+<tr><td>3000 Administration</td><td class="num">82,000.00</td><td class="num">50,000.00</td><td class="num">32,000.00</td></tr>
+<tr><td><strong>Total operating expenses</strong></td><td class="num"><strong>350,000.00</strong></td><td class="num"><strong>200,000.00</strong></td><td class="num"><strong>150,000.00</strong></td></tr>
+</tbody></table></div>
+<p>Jonas reads the result with <strong>KE30</strong> (run a profitability report) and drills from "all lines" into PC-HOME, then to the Hygge Hjem policy. For profit centre postings he uses <strong>KE5Z</strong> (profit centre line items), or the Fiori apps that read the same ACDOCA lines. In the margin analysis he can also slice by product (motor liability, comprehensive, contents), by channel (direct, broker, partner) and by region. Many insurers do their full actuarial and IFRS 17 measurement in specialised tools and use SAP margin analysis for management reporting; your finance team decides where each report lives.</p>
 
 <h2 id="monthend">7. Month-end in controlling</h2>
-<p>After FI has posted everything for March (invoices, depreciation, accruals), CO does its own short list. The order matters: senders must be complete before they are shared out.</p>
+<p>After FI has posted everything for March (invoices, depreciation, accruals, the FS-CD daily totals and the actuary's reserve entries), CO does its own short list. The order matters: senders must be complete before they are shared out.</p>
 <ol class="timeline">
 <li><span class="d">01.04:</span> check that all March invoices carry a cost object; fix wrong cost centres with a repost (KB11N) rather than a new FI posting.</li>
 <li><span class="d">02.04:</span> settle internal orders (KO88 or KO8G). Order 700100 sends DKK 65,000 to cost centre 2000.</li>
-<li><span class="d">02.04:</span> run assessment cycles (KSU5), test run first. IT's DKK 24,000 is shared to 1000, 2000 and 3000.</li>
-<li><span class="d">03.04:</span> plan/actual reports per cost centre (S_ALR_87013611) and margin reports (KE30). Managers explain big variances.</li>
+<li><span class="d">02.04:</span> run the IT assessment cycle (KSU5), test run first. IT's DKK 24,000 is shared to 1000, 2000 and 3000.</li>
+<li><span class="d">03.04:</span> allocate cost centres to the lines of business (second cycle), then run plan/actual reports (S_ALR_87013611) and margin reports (KE30). Line checks the ratios; managers explain big variances.</li>
 <li><span class="d">03.04:</span> close the CO period (OKP1) so nobody posts to March by mistake.</li>
 </ol>
-<div class="tbl"><table><thead><tr><th>Cost centre</th><th class="num">Primary costs</th><th class="num">Order settlement</th><th class="num">IT assessment</th><th class="num">Total March</th></tr></thead><tbody>
-<tr><td>1000 Production Aarhus</td><td class="num">23,000.00</td><td class="num">0.00</td><td class="num">15,000.00</td><td class="num">38,000.00</td></tr>
-<tr><td>2000 Sales</td><td class="num">0.00</td><td class="num">65,000.00</td><td class="num">5,000.00</td><td class="num">70,000.00</td></tr>
-<tr><td>3000 Administration</td><td class="num">50,000.00</td><td class="num">0.00</td><td class="num">4,000.00</td><td class="num">54,000.00</td></tr>
-<tr><td>4100 IT</td><td class="num">24,000.00</td><td class="num">0.00</td><td class="num">−24,000.00</td><td class="num">0.00</td></tr>
-<tr><td><strong>Total</strong></td><td class="num"><strong>97,000.00</strong></td><td class="num"><strong>65,000.00</strong></td><td class="num"><strong>0.00</strong></td><td class="num"><strong>162,000.00</strong></td></tr>
-</tbody></table></div>
 <div class="tip"><b>Check it yourself: does CO still agree with FI?</b>
-<p>The story's costs in FI are 97,000 (on cost centres) + 65,000 (the fair, first on order 700100) = <strong>162,000</strong>. The cost centre totals after month-end are 38,000 + 70,000 + 54,000 + 0 = <strong>162,000</strong>. The assessment column sums to 0 and settlement only moved the fair's cost. Because FI and CO both read ACDOCA, they agree by design; there is no separate FI/CO reconciliation step like in older systems.</p></div>
+<p>Operating expenses in the FI profit and loss are 350,000: 285,000 posted directly on cost centres plus 65,000 on order 700100. The cost centre totals after month-end are 178,000 + 90,000 + 82,000 + 0 = <strong>350,000</strong>, and the two lines of business add up to 200,000 + 150,000 = <strong>350,000</strong>. The assessment column sums to 0 and settlement only moved the campaign's cost. Because FI and CO both read ACDOCA, they agree by design; there is no separate FI/CO reconciliation step like in older systems.</p></div>
 
 <h2 id="ba">8. BA toolkit for controlling</h2>
 <h3 id="ba-questions">8.1 Questions to ask</h3>
 <ul>
 <li>Which departments need their own cost centre, and who is the responsible manager for each?</li>
+<li>How do the cost centres map to claims handling, acquisition and administration costs? Who in finance confirms the split?</li>
 <li>What does the standard hierarchy look like, and who approves changes when the organisation changes?</li>
 <li>Which GL accounts are primary cost elements, and which secondary cost elements do we need for allocations?</li>
-<li>Which temporary events or projects need an internal order? What budget, and should SAP warn or block when it is exceeded?</li>
+<li>Which campaigns or projects need an internal order? What budget, and should SAP warn or block when it is exceeded?</li>
 <li>Who receives each order at settlement, and when is an order closed?</li>
-<li>Which costs are shared out, by which key (headcount, square metres, hours), and in which order do the cycles run?</li>
-<li>Which characteristics does margin analysis need: customer, product, region, sales channel? Should overheads reach profitability?</li>
-<li>Where is planning done, and at what level of detail?</li>
+<li>Which keys share costs (headcount, claim counts, premium), and in which order do the cycles run?</li>
+<li>Which lines of business are profit centres? Which characteristics does margin analysis need: product, channel, region?</li>
+<li>Who owns the combined ratio definition: finance or the actuarial team?</li>
 </ul>
 
 <h3 id="ba-tests">8.2 Test scenarios</h3>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
 <tr><td>Post rent on 470000 without a cost object</td><td>SAP blocks the posting with a "CO account assignment required" message</td></tr>
-<tr><td>Post electricity with no cost centre typed</td><td>Default rule puts it on 1000; KSB1 shows the line</td></tr>
-<tr><td>Fourth Formland invoice of DKK 20,000</td><td>Availability control warns or blocks (total 85,000 &gt; budget 80,000)</td></tr>
+<tr><td>Post telephony with no cost centre typed</td><td>Default rule puts it on 1000; KSB1 shows the line</td></tr>
+<tr><td>Fourth campaign invoice of DKK 20,000</td><td>Availability control warns or blocks (total 85,000 &gt; budget 80,000)</td></tr>
 <tr><td>Settle order 700100</td><td>Order balance 0; cost centre 2000 debited DKK 65,000; second run settles nothing</td></tr>
 <tr><td>Assessment test run for March</td><td>15,000 / 5,000 / 4,000 on 940000; 4100 ends at 0; sum 24,000</td></tr>
 <tr><td>Headcount changes in April</td><td>New key figures used; cycle unchanged; March amounts not touched</td></tr>
-<tr><td>Hygge Hjem billing</td><td>KE30 shows revenue 120,000, COGS 70,000, margin 50,000 on PC-TABLES and the right customer</td></tr>
-<tr><td>Compare FI and CO totals</td><td>P&amp;L costs in FI equal the CO totals for the period</td></tr>
+<tr><td>Hygge Hjem policy premium</td><td>Posts to PC-HOME; KE30 shows it under line of business Home</td></tr>
+<tr><td>Combined ratio per line</td><td>Motor 90%, Home 85%, total 88.1% from earned premium, claims incurred and operating expenses</td></tr>
+<tr><td>Compare FI and CO totals</td><td>Operating expenses in FI equal the CO totals for the period (350,000)</td></tr>
 </tbody></table></div>
 
 <h3 id="ba-codes">8.3 Screens worth knowing</h3>
@@ -328,27 +379,27 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <tr><td>KS01</td><td>Create cost centre</td><td>Set up 4100 IT with its manager and category</td></tr>
 <tr><td>KSB1</td><td>Cost centre actual line items</td><td>"Why is this cost on my department?"</td></tr>
 <tr><td>S_ALR_87013611</td><td>Cost centres: actual/plan/variance</td><td>Monthly plan versus actual per cost centre</td></tr>
-<tr><td>KO01</td><td>Create internal order</td><td>Open order 700100 for the Formland fair</td></tr>
-<tr><td>KO88</td><td>Settle one internal order</td><td>Move the fair's DKK 65,000 to cost centre 2000</td></tr>
+<tr><td>KO01</td><td>Create internal order</td><td>Open order 700100 for the spring motor campaign</td></tr>
+<tr><td>KO88</td><td>Settle one internal order</td><td>Move the campaign's DKK 65,000 to cost centre 2000</td></tr>
 <tr><td>KSU1</td><td>Create assessment cycle</td><td>Define "share IT by headcount"</td></tr>
 <tr><td>KSU5</td><td>Run assessment cycle</td><td>Month-end test run, then the real run</td></tr>
-<tr><td>KE30</td><td>Run profitability report</td><td>Margin by customer, product or region</td></tr>
-<tr><td>KE5Z</td><td>Profit centre line items</td><td>See every line on PC-TABLES</td></tr>
+<tr><td>KE30</td><td>Run profitability report</td><td>Result by line of business, product, channel or region</td></tr>
+<tr><td>KE5Z</td><td>Profit centre line items</td><td>See every line on PC-HOME</td></tr>
 </tbody></table></div>
 <p class="cap">Codes come from general SAP knowledge and differ by release. Many S/4HANA projects use Fiori apps instead (for example "Manage Allocations" or "Cost Centres: Plan/Actual"); confirm in your own system.</p>
 
 <div class="tip"><b>A closing tip</b>
-<p>When a manager says "these numbers are wrong", start with one line item in KSB1 and follow it: which account, which cost centre, where did the cost centre come from, and was it moved later by settlement or assessment? Nine times out of ten the answer is a missing or wrong cost object, not a broken report.</p></div>
+<p>When a manager says "these numbers are wrong", start with one line item in KSB1 and follow it: which account, which cost centre, where did the cost centre come from, and was it moved later by settlement or assessment? Nine times out of ten the answer is a missing or wrong cost object, not a broken report. For ratios, ask Line first which definition of "operating expenses" is being used.</p></div>
 
 <h2 id="test">Test yourself</h2>
-<p>10 questions on controlling: cost elements, cost centres, internal orders, allocations and margin analysis. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<p>10 questions on controlling: cost elements, cost centres, internal orders, allocations and the combined ratio. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="fico-controlling"></div>
 
 <!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
 <div id="suggest"></div>
 -->
 
-<footer>Controlling: costs, cost centres and profitability, Lesson 4 of SAP FICO for Business Analysts. Names, amounts, account numbers and codes are illustrative examples for learning. Transaction codes and categories differ by SAP release; confirm them in your own system.
+<footer>Controlling: costs, lines of business and the combined ratio, Lesson 4 of SAP FICO for Business Analysts. Names, amounts, account numbers and codes are illustrative examples for learning. Transaction codes and categories differ by SAP release, and the expense split and ratio definitions must be confirmed with your finance and actuarial teams.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
@@ -356,8 +407,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
-<script src="/lms.js?v=20261021d" defer></script>
-<script src="/quiz.js?v=20261021d" defer></script>
+<script src="/lms.js?v=20261021e" defer></script>
+<script src="/quiz.js?v=20261021e" defer></script>
 <!-- <script src="/suggest.js" defer></script> -->
 </body>
 </html>
