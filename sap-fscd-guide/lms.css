@@ -144,3 +144,10 @@ nav#toc a.lms-allc{display:block;margin-top:14px;border:0;font-size:13px;font-we
   body.lms-printing .lms-cert,body.lms-printing .lms-cert *{visibility:visible}
   body.lms-printing .lms-cert{position:fixed;inset:0;margin:0;display:flex;flex-direction:column;justify-content:center}
 }
+
+.lms-about{margin:22px 0 8px;padding:16px 18px;border:1px solid var(--line,#d9e2e0);border-radius:12px;background:var(--card,#fff)}
+.lms-about h2{margin:0 0 8px;font-size:18px}
+.lms-about ul{margin:0 0 12px;padding-left:20px}
+.lms-about li{margin:4px 0}
+.lms-about-f{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0;font-size:14px;color:var(--muted,#5b6b68)}
+.lms-note{margin:10px 0 4px;font-size:14px}

@@ -7,12 +7,13 @@
    Home page (all courses): <body data-page="home">
    To add a lesson, add it to its course in COURSES below and give its page data-lesson. */
 (function () {
-  var SITE = 'SAP Academy';
+  var SITE = 'SAP Learning Notes';
+  var MAIL = 'mailto:s.anbuselvan@gmail.com?subject=' + encodeURIComponent('SAP learning notes: correction or suggestion');
   var COURSES = [
     {
-      id: 'fscd', title: 'SAP FSCD for Business Analysts', brand: 'FSCD Academy', logo: 'FS',
+      id: 'fscd', title: 'SAP FSCD for Business Analysts', brand: 'FSCD Notes', logo: 'FS',
       home: '/fscd', key: 'fscd-academy-progress-v1',
-      lede: 'Learn SAP FSCD the simple way: plain English, real insurance stories from Denmark, Sweden and Norway, pictures of the key screens, and a short test after every lesson.',
+      lede: 'My study notes on SAP FSCD, in plain English, with insurance examples from Denmark, Sweden and Norway, simple pictures and a short self-test after each lesson. I am still learning, so please read them as a study aid.',
       blurb: 'Insurance billing and payments: premiums, Nordic payment methods, dunning, the general ledger and SAP BRIM, told with a Danish insurer.',
       modules: [
         { title: 'FSCD foundations', lessons: [
@@ -38,9 +39,9 @@
       ]
     },
     {
-      id: 'fico', title: 'SAP FICO for Business Analysts', brand: 'FICO Academy', logo: 'FI',
+      id: 'fico', title: 'SAP FICO for Business Analysts', brand: 'FICO Notes', logo: 'FI',
       home: '/fico', key: 'fico-academy-progress-v1',
-      lede: 'Learn SAP FICO the simple way, the insurance way: plain English, one Danish insurer followed through the year, diagrams of every flow, and a short test after every lesson.',
+      lede: 'My study notes on SAP FICO, in plain English, following one made-up Danish insurer through the year, with simple diagrams and a short self-test after each lesson. I am still learning, so please read them as a study aid.',
       blurb: 'Financial accounting and controlling at a Danish insurer: the general ledger, suppliers, premiums, reserves, costs by line of business, the combined ratio and month-end.',
       modules: [
         { title: 'FICO foundations', lessons: [
@@ -177,6 +178,15 @@
     var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
   });
+
+  /* ---------- Modest note in every footer ---------- */
+  var foot = document.querySelector('footer');
+  if (foot) {
+    var note = el('p', 'lms-note', 'These are a beginner\'s study notes, not official SAP guidance. Found a mistake? ');
+    note.appendChild(link(MAIL, null, 'Please tell me'));
+    note.appendChild(document.createTextNode('.'));
+    foot.insertBefore(note, foot.querySelector('.copy'));
+  }
 
   if (lesson) lessonPage();
   if (isDash && course) dashboard();
@@ -357,13 +367,29 @@
     root.innerHTML = '';
     var hero = el('section', 'lms-hero lms-hero-home');
     var ht = el('div');
-    ht.appendChild(el('p', 'lms-kicker', 'Free self-paced courses · ' + COURSES.length + ' courses'));
-    ht.appendChild(el('h1', null, 'Learn SAP the simple way'));
-    ht.appendChild(el('p', 'lede', 'Plain-English courses for business analysts, testers and new team members. Every course follows one Danish company or customer from start to finish, with diagrams, screen walk-throughs and a short test after every lesson.'));
+    ht.appendChild(el('p', 'lms-kicker', 'Study notes · ' + COURSES.length + ' topics'));
+    ht.appendChild(el('h1', null, 'My SAP learning notes'));
+    ht.appendChild(el('p', 'lede', 'I am learning SAP and writing down what I understand, in plain English, using a made-up Danish insurance company. I share it in case it helps other beginners too.'));
     hero.appendChild(ht);
     root.appendChild(hero);
 
-    root.appendChild(el('h2', null, 'Choose a course'));
+    var about = el('section', 'lms-about');
+    about.appendChild(el('h2', null, 'About these notes'));
+    var ul = el('ul');
+    [
+      'Written by a learner. I am new to SAP, so please treat these notes as a study aid, not as official guidance.',
+      'Made with the help of AI tools and general SAP knowledge. They have not been formally reviewed yet. Names, account numbers and amounts are made up.',
+      'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP\'s own documentation.',
+      'Many of you know this area far better than I do. If something is wrong or unclear, please tell me and I will gladly correct it.'
+    ].forEach(function (t) { ul.appendChild(el('li', null, t)); });
+    about.appendChild(ul);
+    var ab = el('p', 'lms-about-f');
+    ab.appendChild(link(MAIL, 'lms-btn', 'Send a correction or suggestion'));
+    ab.appendChild(el('span', null, 'Last updated: October 2026'));
+    about.appendChild(ab);
+    root.appendChild(about);
+
+    root.appendChild(el('h2', null, 'Choose a topic'));
     var grid = el('div', 'lms-courses');
     COURSES.forEach(function (c, ci) {
       var p = progress(c);
