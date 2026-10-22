@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Accounts payable: from purchase to payment | FICO Academy</title>
-<meta name="description" content="SAP accounts payable explained simply for business analysts: purchase order, goods receipt, GR/IR, invoice verification with three-way match, and the F110 payment run, with one worked example from a Danish furniture maker.">
+<title>Accounts payable: buying and paying at an insurer | FICO Academy</title>
+<meta name="description" content="SAP accounts payable for business analysts at a Danish insurer: purchase order, goods receipt, GR/IR, three-way match, why insurers cannot deduct VAT, the F110 payment run, and what goes through FS-CD instead.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
 @media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
@@ -75,8 +75,8 @@ td:first-child{font-weight:500}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
-<link rel="stylesheet" href="/theme.css?v=20261021d">
-<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="stylesheet" href="/theme.css?v=20261021e">
+<link rel="stylesheet" href="/lms.css?v=20261021e">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0f766e">
 </head>
@@ -84,18 +84,18 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
-<h1 id="top">Accounts payable: from purchase to payment</h1>
-<p class="lede">Follow one load of oak from the order to the bank transfer: the purchase order, the goods receipt, the supplier invoice and the payment run, and the accounting entries each step creates. About 20 minutes.</p>
+<h1 id="top">Accounts payable: buying and paying at an insurer</h1>
+<p class="lede">Follow one order of laptops from the purchase order to the bank transfer, see which accounting entries each step creates, and learn why an insurer cannot reclaim VAT. About 20 minutes.</p>
 
 <div class="tip"><b>Before you start</b>
-<p>This is Lesson 2 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a>, where you met company code DK01, GL accounts, debit and credit, and the Universal Journal. If "debit" and "credit" still feel strange, read section 3 of Lesson 1 again first. All names, amounts and account numbers are made up for learning.</p></div>
+<p>This is Lesson 2 of the FICO course. It builds on <a href="/fico/basics">Lesson 1: FICO basics</a>, where you met company code NF01, GL accounts, debit and credit, and the Universal Journal. If "debit" and "credit" still feel strange, read that lesson first. It also helps to know that claims payouts live in the FSCD course (<a href="/fscd">overview</a>, <a href="/basics">FSCD basics</a>, <a href="/payments">payments</a>). All names, amounts and account numbers are made up for learning.</p></div>
 
 <h2 id="meet">Meet the people in this story</h2>
-<p>Nordlys Møbler A/S in Aarhus makes oak dining tables. Tables need wood, and in March 2026 the workshop is running low. Over the next five weeks you, Sofie, will watch the company buy <strong>20 m³ of oak</strong> from its regular supplier and pay for it. This whole chain is called <strong>procure to pay</strong> (P2P), and the finance part of it is <strong>accounts payable</strong> (AP): the money the company owes to its suppliers.</p>
+<p>Nordica Forsikring A/S in Copenhagen sells motor, home and travel insurance. In March 2026 the claims department hires new people, and they need computers. Over the next five weeks you, Sofie, will watch Nordica buy <strong>40 laptops for claims handlers</strong> and pay for them. This chain is called <strong>procure to pay</strong> (P2P), and the finance part of it is <strong>accounts payable</strong> (AP): the money the company owes to its suppliers.</p>
 <div class="cast">
 <div><b>Maria Berg</b><span>AP clerk. Checks and posts supplier invoices, runs the payment run</span></div>
-<div><b>Jysk Træ ApS</b><span>Oak supplier in Silkeborg, business partner 300120</span></div>
-<div><b>Purchasing team</b><span>Orders the wood and agrees price and quantity with Jysk Træ</span></div>
+<div><b>Nordic IT Supply ApS</b><span>Laptop and IT equipment supplier in Aarhus, business partner 300120</span></div>
+<div><b>Claims handling team</b><span>Cost centre 1000. Needs the laptops and confirms they arrived</span></div>
 <div><b>Sofie Holm (you)</b><span>New BA. Wants to understand every step and every posting</span></div>
 </div>
 
@@ -105,20 +105,20 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="fig" role="img" aria-label="Procure to pay chain: purchase requisition, purchase order on 02.03, goods receipt on 05.03, supplier invoice on 08.03, payment run on 06.04, bank. The requisition and the purchase order create no posting. Goods receipt, invoice and payment each create an accounting posting.">
 <svg viewBox="0 0 760 250">
 <defs><marker id="p1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<text class="lab-file" x="262" y="22" text-anchor="middle">MM: purchasing, warehouse, invoice check</text>
+<text class="lab-file" x="262" y="22" text-anchor="middle">MM: purchasing, goods receipt, invoice check</text>
 <text class="lab-file" x="646" y="22" text-anchor="middle">FI: accounts payable</text>
 <path class="lin" d="M8,34 H514"/><path class="lin" d="M534,34 H752"/>
-<rect class="bx" x="8" y="50" width="104" height="78" rx="8"/><text class="t" x="60" y="80" text-anchor="middle">Purchase</text><text class="t" x="60" y="97" text-anchor="middle">requisition</text><text class="s" x="60" y="116" text-anchor="middle">"we need oak"</text>
+<rect class="bx" x="8" y="50" width="104" height="78" rx="8"/><text class="t" x="60" y="80" text-anchor="middle">Purchase</text><text class="t" x="60" y="97" text-anchor="middle">requisition</text><text class="s" x="60" y="116" text-anchor="middle">"we need laptops"</text>
 <rect class="bx" x="136" y="50" width="104" height="78" rx="8"/><text class="t" x="188" y="80" text-anchor="middle">Purchase</text><text class="t" x="188" y="97" text-anchor="middle">order</text><text class="s" x="188" y="116" text-anchor="middle">ME21N · 02.03</text>
 <rect class="bx hl" x="264" y="50" width="104" height="78" rx="8"/><text class="t" x="316" y="80" text-anchor="middle">Goods</text><text class="t" x="316" y="97" text-anchor="middle">receipt</text><text class="s" x="316" y="116" text-anchor="middle">MIGO · 05.03</text>
 <rect class="bx hl" x="392" y="50" width="104" height="78" rx="8"/><text class="t" x="444" y="80" text-anchor="middle">Supplier</text><text class="t" x="444" y="97" text-anchor="middle">invoice</text><text class="s" x="444" y="116" text-anchor="middle">MIRO · 08.03</text>
 <rect class="bx hl" x="520" y="50" width="104" height="78" rx="8"/><text class="t" x="572" y="80" text-anchor="middle">Payment</text><text class="t" x="572" y="97" text-anchor="middle">run</text><text class="s" x="572" y="116" text-anchor="middle">F110 · 06.04</text>
-<rect class="bx" x="648" y="50" width="104" height="78" rx="8"/><text class="t" x="700" y="80" text-anchor="middle">Danske</text><text class="t" x="700" y="97" text-anchor="middle">Bank</text><text class="s" x="700" y="116" text-anchor="middle">pays Jysk Træ</text>
+<rect class="bx" x="648" y="50" width="104" height="78" rx="8"/><text class="t" x="700" y="80" text-anchor="middle">Danske</text><text class="t" x="700" y="97" text-anchor="middle">Bank</text><text class="s" x="700" y="116" text-anchor="middle">pays supplier</text>
 <path class="gfile" d="M112,89 H134" marker-end="url(#p1)"/><path class="gfile" d="M240,89 H262" marker-end="url(#p1)"/><path class="gfile" d="M368,89 H390" marker-end="url(#p1)"/><path class="gfile" d="M496,89 H518" marker-end="url(#p1)"/><path class="gfile" d="M624,89 H646" marker-end="url(#p1)"/>
 <text class="s" x="60" y="152" text-anchor="middle">no posting</text>
 <text class="s" x="188" y="152" text-anchor="middle">no posting</text>
-<text class="lab-in" x="316" y="152" text-anchor="middle">posting</text><text class="s" x="316" y="170" text-anchor="middle">Dr Inventory</text><text class="s" x="316" y="186" text-anchor="middle">Cr GR/IR</text>
-<text class="lab-in" x="444" y="152" text-anchor="middle">posting</text><text class="s" x="444" y="170" text-anchor="middle">Dr GR/IR + VAT</text><text class="s" x="444" y="186" text-anchor="middle">Cr Supplier</text>
+<text class="lab-in" x="316" y="152" text-anchor="middle">posting</text><text class="s" x="316" y="170" text-anchor="middle">Dr IT equipment</text><text class="s" x="316" y="186" text-anchor="middle">Cr GR/IR</text>
+<text class="lab-in" x="444" y="152" text-anchor="middle">posting</text><text class="s" x="444" y="170" text-anchor="middle">Dr GR/IR + VAT cost</text><text class="s" x="444" y="186" text-anchor="middle">Cr Supplier</text>
 <text class="lab-in" x="572" y="152" text-anchor="middle">posting</text><text class="s" x="572" y="170" text-anchor="middle">Dr Supplier</text><text class="s" x="572" y="186" text-anchor="middle">Cr Bank</text>
 <text class="s" x="700" y="152" text-anchor="middle">file: pain.001</text>
 <text class="lab-out" x="380" y="230" text-anchor="middle">Promises (requisition, order) do not touch the books. Goods, invoices and money do.</text>
@@ -126,36 +126,47 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 </div>
 <p class="cap">The P2P chain for PO 4500001234. Green "posting" means a journal entry lands in the Universal Journal (ACDOCA) automatically.</p>
 
-<p>Why does the purchase order not create a posting? Because nothing has happened yet in the real world. Nordlys has only <em>promised</em> to buy. Accounting records events that change what the company owns or owes: wood arriving, a bill arriving, money leaving. The PO is still very important: every later step is checked against it.</p>
+<p>Why does the purchase order not create a posting? Because nothing has happened yet in the real world. Nordica has only <em>promised</em> to buy. Accounting records events that change what the company owns or owes: laptops arriving, a bill arriving, money leaving. The PO is still very important: every later step is checked against it.</p>
 <div class="tbl"><table><thead><tr><th>Step</th><th>Who</th><th>Code</th><th>What it says in simple words</th></tr></thead><tbody>
-<tr><td>Purchase requisition</td><td>Workshop</td><td>ME51N</td><td>"Please buy 20 m³ of oak." An internal request.</td></tr>
-<tr><td>Purchase order 4500001234</td><td>Purchasing</td><td>ME21N</td><td>"Dear Jysk Træ, we order 20 m³ oak at DKK 4,000 per m³." Sent to the supplier on 02.03.</td></tr>
-<tr><td>Goods receipt</td><td>Warehouse</td><td>MIGO</td><td>"The oak arrived on 05.03, all 20 m³, in good shape."</td></tr>
-<tr><td>Invoice receipt</td><td>Maria (AP)</td><td>MIRO</td><td>"Jysk Træ's bill dated 08.03 matches what we ordered and received."</td></tr>
+<tr><td>Purchase requisition</td><td>Claims handling</td><td>ME51N</td><td>"Please buy 40 laptops." An internal request.</td></tr>
+<tr><td>Purchase order 4500001234</td><td>Purchasing</td><td>ME21N</td><td>"Dear Nordic IT Supply, we order 40 laptops at DKK 2,000 each." Sent on 02.03.</td></tr>
+<tr><td>Goods receipt</td><td>Receiving / IT</td><td>MIGO</td><td>"All 40 laptops arrived on 05.03, in good shape."</td></tr>
+<tr><td>Invoice receipt</td><td>Maria (AP)</td><td>MIRO</td><td>"Nordic IT Supply's bill dated 08.03 matches what we ordered and received."</td></tr>
 <tr><td>Payment</td><td>Maria (AP)</td><td>F110</td><td>"Pay everything that is due before the next run." Runs on 06.04.</td></tr>
 </tbody></table></div>
 
-<h2 id="bp">2. The supplier as a Business Partner</h2>
-<p>Before anyone can order from Jysk Træ, the supplier must exist in SAP. In S/4HANA every supplier and customer is a <strong>Business Partner</strong> (BP), maintained in transaction <strong>BP</strong>. The same BP can have several <strong>roles</strong>: Jysk Træ has the supplier role. If it ever bought furniture from Nordlys too, it could get the customer role on the same BP number.</p>
-<p>A BP has <em>general data</em> (name, address, tax number, bank details) that is the same everywhere, and <em>company code data</em> that is specific to DK01. For Jysk Træ, BP 300120:</p>
-<div class="tbl"><table><thead><tr><th>Field</th><th>Value for Jysk Træ</th><th>Why it matters</th></tr></thead><tbody>
-<tr><td>Name, address</td><td>Jysk Træ ApS, Silkeborg</td><td>Printed on the payment advice and the bank file</td></tr>
-<tr><td>VAT number</td><td>DK + its 8-digit CVR number</td><td>In Denmark the CVR number is the company registration number; the VAT number is "DK" plus the CVR number</td></tr>
-<tr><td>Bank details</td><td>Account at its bank (IBAN)</td><td>Where the payment run sends the money. A wrong digit here means paying the wrong person</td></tr>
+<h2 id="roads">2. Two roads for payments at an insurer</h2>
+<p>An insurer pays out money in many ways, and not all of it goes through accounts payable. This is the first thing a new BA at an insurer must get right. There are two roads:</p>
+<div class="tbl"><table><thead><tr><th></th><th>FI accounts payable (this lesson)</th><th>Claims system + FS-CD</th></tr></thead><tbody>
+<tr><td>Who gets the money</td><td>Operating suppliers: IT, rent, consultants, marketing agencies, cleaning</td><td>Policyholders, garages and repairers (claims payouts), agents and brokers (commission)</td></tr>
+<tr><td>Where the request starts</td><td>Purchase order or a supplier invoice entered by AP</td><td>A claim decision in the claims system, or a commission calculation</td></tr>
+<tr><td>Sub-ledger</td><td>Supplier account in FI-AP, total on 160000</td><td>Contract accounts in FS-CD (see <a href="/basics">FSCD basics</a>)</td></tr>
+<tr><td>How it is paid</td><td>Payment run F110, bank file pain.001</td><td>FS-CD disbursement run (see <a href="/payments">payments</a>)</td></tr>
+<tr><td>What reaches the GL</td><td>Every document, one by one</td><td>Daily totals</td></tr>
+<tr><td>Example at Nordica</td><td>40 laptops for DKK 100,000</td><td>A DKK 8,000 windscreen claim paid to a garage</td></tr>
+</tbody></table></div>
+<p class="cap">Rule of thumb: if the money is a cost of running the company, it is AP. If it is part of the insurance business itself (claims, commission, premiums), it is FS-CD.</p>
+
+<h2 id="bp">3. The supplier as a Business Partner</h2>
+<p>Before anyone can order from Nordic IT Supply, the supplier must exist in SAP. In S/4HANA every supplier and customer is a <strong>Business Partner</strong> (BP), maintained in transaction <strong>BP</strong>. The same BP can have several <strong>roles</strong>. Nordic IT Supply has the supplier role. A BP has <em>general data</em> (name, address, tax number, bank details) and <em>company code data</em> that is specific to NF01. For BP 300120:</p>
+<div class="tbl"><table><thead><tr><th>Field</th><th>Value</th><th>Why it matters</th></tr></thead><tbody>
+<tr><td>Name, address</td><td>Nordic IT Supply ApS, Aarhus</td><td>Printed on the payment advice and the bank file</td></tr>
+<tr><td>VAT number</td><td>DK + its 8-digit CVR number</td><td>The CVR number is the Danish company registration number; the VAT number is "DK" plus the CVR number</td></tr>
+<tr><td>Bank details</td><td>Account at its bank (IBAN)</td><td>Where the payment run sends the money. A wrong digit means paying the wrong person</td></tr>
 <tr><td>Reconciliation account</td><td>160000 Trade payables</td><td>The GL account that collects the totals of all suppliers (explained below)</td></tr>
 <tr><td>Payment terms</td><td>30 days net</td><td>Pay the full amount within 30 days of the invoice date</td></tr>
-<tr><td>Payment methods</td><td>Bank transfer</td><td>How the payment run is allowed to pay this supplier</td></tr>
+<tr><td>Payment methods</td><td>Bank transfer</td><td>How the payment run may pay this supplier</td></tr>
 </tbody></table></div>
 
-<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> each supplier has its own small ledger (a <em>sub-ledger</em>) showing every invoice and payment. The general ledger does not list every supplier. It has one account, 160000, that always shows the <em>total</em> of all supplier sub-ledgers. You never post to 160000 directly; posting to a supplier updates it automatically.</p><p class="ex">Example: on 31.03 Nordlys owes <b>DKK 100,000</b> to Jysk Træ, DKK 12,500 to a glue supplier and DKK 6,250 to a cleaning company. FBL1N shows the three suppliers separately. GL account 160000 shows one number: <b>DKK 118,750</b>.</p></div>
+<div class="term"><h4>Reconciliation account</h4><p><strong>In simple words:</strong> each supplier has its own small ledger (a <em>sub-ledger</em>) showing every invoice and payment. The general ledger does not list every supplier. It has one account, 160000, that always shows the <em>total</em> of all supplier sub-ledgers. You never post to 160000 directly; posting to a supplier updates it automatically.</p><p class="ex">Example: on 31.03 Nordica owes <b>DKK 100,000</b> to Nordic IT Supply, DKK 12,500 to a marketing agency and DKK 6,250 to a cleaning company. FBL1N shows the three suppliers separately. GL account 160000 shows one number: <b>DKK 118,750</b>.</p></div>
 
-<div class="fig" role="img" aria-label="Three supplier sub-ledgers, Jysk Træ DKK 100,000, glue supplier DKK 12,500 and cleaning company DKK 6,250, all add up into one general ledger reconciliation account 160000 with a total of DKK 118,750">
+<div class="fig" role="img" aria-label="Three supplier sub-ledgers, Nordic IT Supply DKK 100,000, marketing agency DKK 12,500 and cleaning company DKK 6,250, all add up into one general ledger reconciliation account 160000 with a total of DKK 118,750">
 <svg viewBox="0 0 760 230">
 <defs><marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
 <text class="lab-file" x="140" y="20" text-anchor="middle">Sub-ledger (one per supplier)</text>
 <text class="lab-file" x="590" y="20" text-anchor="middle">General ledger</text>
-<rect class="bx" x="20" y="34" width="240" height="52" rx="8"/><text class="t" x="140" y="56" text-anchor="middle">Jysk Træ ApS · 300120</text><text class="s" x="140" y="75" text-anchor="middle">owes: DKK 100,000</text>
-<rect class="bx" x="20" y="98" width="240" height="52" rx="8"/><text class="t" x="140" y="120" text-anchor="middle">Glue supplier</text><text class="s" x="140" y="139" text-anchor="middle">owes: DKK 12,500</text>
+<rect class="bx" x="20" y="34" width="240" height="52" rx="8"/><text class="t" x="140" y="56" text-anchor="middle">Nordic IT Supply · 300120</text><text class="s" x="140" y="75" text-anchor="middle">owes: DKK 100,000</text>
+<rect class="bx" x="20" y="98" width="240" height="52" rx="8"/><text class="t" x="140" y="120" text-anchor="middle">Marketing agency</text><text class="s" x="140" y="139" text-anchor="middle">owes: DKK 12,500</text>
 <rect class="bx" x="20" y="162" width="240" height="52" rx="8"/><text class="t" x="140" y="184" text-anchor="middle">Cleaning company</text><text class="s" x="140" y="203" text-anchor="middle">owes: DKK 6,250</text>
 <rect class="bx hl" x="470" y="78" width="240" height="90" rx="8"/><text class="t" x="590" y="106" text-anchor="middle">160000 Trade payables</text><text class="s" x="590" y="128" text-anchor="middle">reconciliation account</text><text class="t" x="590" y="152" text-anchor="middle">DKK 118,750</text>
 <path class="gin" d="M260,60 C370,60 360,110 468,112" marker-end="url(#r1)"/>
@@ -166,25 +177,40 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 </div>
 <p class="cap">Details per supplier in the sub-ledger (FBL1N), one total in the general ledger (FS10N or FBL3N). The two always agree.</p>
 
-<h2 id="gr">3. Goods receipt: the oak arrives (05.03)</h2>
-<p>On Thursday 05.03 a lorry from Silkeborg delivers the oak. The warehouse worker opens transaction <strong>MIGO</strong>, enters PO 4500001234, checks that 20 m³ arrived and posts the goods receipt. Two documents are created: a <strong>material document</strong> (the logistics record: "20 m³ in stock") and an <strong>accounting document</strong>, because Nordlys now owns wood worth money.</p>
-<p>The value comes from the PO: 20 m³ × DKK 4,000 = <strong>DKK 80,000</strong>. But there is no invoice yet, so the system cannot credit Jysk Træ. Instead it credits a special account: <strong>GR/IR clearing</strong>.</p>
-<h3 id="gr-entry">The goods receipt posting</h3>
-<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>Debit</td><td>200000 Raw materials: oak timber</td><td class="num">80,000.00</td></tr>
-<tr><td>Credit</td><td>191100 GR/IR clearing</td><td class="num">80,000.00</td></tr>
-</tbody></table></div>
-<p>Nobody types these account numbers. MM <strong>account determination</strong> (configuration) decides them from the material and the movement type. That is why the BA must check this configuration in testing: a wrong setting posts every delivery to the wrong account.</p>
+<h2 id="vat">4. The insurance twist: VAT is a cost, not a refund</h2>
+<p>Most companies pay VAT (moms) on purchases and then <strong>deduct</strong> it in their VAT return: the tax agency gives it back. Danish insurance is <strong>VAT-exempt</strong> (momsfritaget). Nordica charges no VAT on premiums, so it also has <strong>no right to deduct</strong> the VAT on what it buys. The 25% VAT on the laptop invoice is simply part of what the laptops cost.</p>
+<div class="fig" role="img" aria-label="Same invoice of DKK 100,000 in two companies. A VAT-registered company books DKK 80,000 cost and DKK 20,000 input VAT it claims back. Nordica, an insurer, cannot deduct VAT, so the whole DKK 100,000 is cost.">
+<svg viewBox="0 0 760 230">
+<text class="lab-file" x="190" y="22" text-anchor="middle">A company with VAT deduction</text>
+<text class="lab-file" x="570" y="22" text-anchor="middle">Nordica, an insurer</text>
+<rect class="bx" x="20" y="38" width="340" height="58" rx="8"/><text class="t" x="190" y="62" text-anchor="middle">Cost: DKK 80,000</text><text class="s" x="190" y="82" text-anchor="middle">the net price of the goods</text>
+<rect class="bx" x="20" y="108" width="340" height="62" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="190" y="132" text-anchor="middle">Input VAT: DKK 20,000</text><text class="s" x="190" y="152" text-anchor="middle">claimed back in the VAT return</text>
+<rect class="bx hl" x="400" y="38" width="340" height="132" rx="8"/><text class="t" x="570" y="76" text-anchor="middle">Cost: DKK 100,000</text><text class="s" x="570" y="102" text-anchor="middle">DKK 80,000 laptops</text><text class="s" x="570" y="122" text-anchor="middle">+ DKK 20,000 VAT that cannot be claimed</text><text class="s" x="570" y="146" text-anchor="middle">no input VAT account is used</text>
+<text class="lab-out" x="380" y="205" text-anchor="middle">Same invoice, same VAT. The difference is who may claim it back.</text>
+</svg>
+</div>
+<p class="cap">Financial companies pay <em>lønsumsafgift</em> (a payroll-based tax) instead of VAT. Always confirm the exact rules with your tax team; some costs can have special treatment.</p>
+<p>For a BA this means two things in a test: <strong>(1)</strong> the tax code on Nordica's purchase invoices must be one that posts the VAT to the <em>cost</em> account, not to an input-VAT account, and <strong>(2)</strong> the cost centre must be filled on the VAT line too, because the VAT is a cost.</p>
 
-<div class="term"><h4>GR/IR clearing account</h4><p><strong>In simple words:</strong> a waiting room between the goods and the invoice. When goods arrive first, their value waits in GR/IR until the invoice comes. When the invoice arrives, the value leaves the waiting room and becomes a debt to the supplier. If everything matches, the room is empty again.</p><p class="ex">Example: from <b>05.03 to 08.03</b>, DKK 80,000 sits in GR/IR. It means "we have the oak, but Jysk Træ's bill hasn't arrived yet".</p></div>
+<h2 id="gr">5. Goods receipt: the laptops arrive (05.03)</h2>
+<p>On Thursday 05.03 the laptops arrive. IT opens transaction <strong>MIGO</strong>, enters PO 4500001234, checks that 40 laptops came and posts the goods receipt. A <strong>material document</strong> and an <strong>accounting document</strong> are created. The value comes from the PO: 40 × DKK 2,000 = <strong>DKK 80,000</strong>. Without an invoice the system cannot credit the supplier yet, so it credits <strong>GR/IR clearing</strong>.</p>
+<p>The laptops cost about DKK 2,500 each including VAT, which is below the <strong>small-asset limit</strong>, so they are <strong>expensed</strong> straight away, not capitalised and depreciated. They go to account 476000 (IT equipment, low value) with cost centre 1000 Claims handling. Confirm the limit with your finance team.</p>
+<h3 id="gr-entry">The goods receipt posting</h3>
+<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th>Cost centre</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>Debit</td><td>476000 IT equipment, low value</td><td>1000</td><td class="num">80,000.00</td></tr>
+<tr><td>Credit</td><td>191100 GR/IR clearing</td><td></td><td class="num">80,000.00</td></tr>
+</tbody></table></div>
+<p>Nobody types these account numbers. MM <strong>account determination</strong> (configuration) decides them from the material and the movement type. That is why a BA checks it in testing: a wrong setting posts every delivery to the wrong account.</p>
+
+<div class="term"><h4>GR/IR clearing account</h4><p><strong>In simple words:</strong> a waiting room between the goods and the invoice. When goods arrive first, their value waits in GR/IR until the invoice comes. When the invoice arrives, the value leaves the waiting room and becomes a debt to the supplier. If everything matches, the room is empty again.</p><p class="ex">Example: from <b>05.03 to 07.03</b>, DKK 80,000 sits in GR/IR. It means "we have the laptops, but Nordic IT Supply's bill hasn't arrived yet".</p></div>
 
 <div class="fig" role="img" aria-label="GR/IR as a waiting room: on 05.03 the goods receipt puts DKK 80,000 into GR/IR, on 08.03 the invoice takes DKK 80,000 out and moves it to the supplier account. Balance of GR/IR: 0 before, 80,000 between 05.03 and 08.03, 0 after.">
 <svg viewBox="0 0 760 230">
 <defs><marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
 <marker id="g2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
-<rect class="bx" x="20" y="40" width="170" height="80" rx="8"/><text class="t" x="105" y="70" text-anchor="middle">Goods receipt</text><text class="s" x="105" y="90" text-anchor="middle">05.03 · MIGO</text><text class="s" x="105" y="106" text-anchor="middle">20 m³ oak arrives</text>
+<rect class="bx" x="20" y="40" width="170" height="80" rx="8"/><text class="t" x="105" y="70" text-anchor="middle">Goods receipt</text><text class="s" x="105" y="90" text-anchor="middle">05.03 · MIGO</text><text class="s" x="105" y="106" text-anchor="middle">40 laptops arrive</text>
 <rect class="bx hl" x="285" y="30" width="190" height="100" rx="8"/><text class="t" x="380" y="60" text-anchor="middle">191100 GR/IR</text><text class="s" x="380" y="80" text-anchor="middle">"the waiting room"</text><text class="t" x="380" y="108" text-anchor="middle">DKK 80,000 waits</text>
-<rect class="bx" x="570" y="40" width="170" height="80" rx="8"/><text class="t" x="655" y="70" text-anchor="middle">Invoice</text><text class="s" x="655" y="90" text-anchor="middle">08.03 · MIRO</text><text class="s" x="655" y="106" text-anchor="middle">moves to Jysk Træ</text>
+<rect class="bx" x="570" y="40" width="170" height="80" rx="8"/><text class="t" x="655" y="70" text-anchor="middle">Invoice</text><text class="s" x="655" y="90" text-anchor="middle">08.03 · MIRO</text><text class="s" x="655" y="106" text-anchor="middle">moves to the supplier</text>
 <path class="gin" d="M190,80 H283" marker-end="url(#g1)"/><text class="lab-in" x="236" y="70" text-anchor="middle">in</text>
 <path class="gout" d="M475,80 H568" marker-end="url(#g2)"/><text class="lab-out" x="521" y="70" text-anchor="middle">out</text>
 <text class="lab-file" x="380" y="168" text-anchor="middle">Balance of GR/IR over time</text>
@@ -195,24 +221,24 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 </div>
 <p class="cap">A GR/IR balance that never goes back to zero is a warning sign: goods without an invoice, or an invoice without goods.</p>
 
-<h2 id="invoice">4. The invoice and the three-way match (08.03)</h2>
-<p>Jysk Træ's invoice is dated Sunday 08.03: 20 m³ × DKK 4,000 = DKK 80,000, plus 25% Danish VAT (moms) DKK 20,000, total <strong>DKK 100,000</strong>. Maria enters it in <strong>MIRO</strong> (logistics invoice verification), referring to PO 4500001234. MIRO proposes the PO lines and the received quantity, and Maria enters the invoice total and VAT code. Before posting, SAP performs the <strong>three-way match</strong>.</p>
+<h2 id="invoice">6. The invoice and the three-way match (08.03)</h2>
+<p>Nordic IT Supply's invoice is dated Sunday 08.03: 40 × DKK 2,000 = DKK 80,000, plus 25% VAT DKK 20,000, total <strong>DKK 100,000</strong>. Maria enters it in <strong>MIRO</strong> (logistics invoice verification) with a reference to PO 4500001234. Before posting, SAP performs the <strong>three-way match</strong>.</p>
 
-<div class="term"><h4>Three-way match</h4><p><strong>In simple words:</strong> before you pay a bill, you check three papers against each other. What did we order (PO)? What did we receive (goods receipt)? What are we being charged (invoice)? Quantity and price must agree, within an agreed tolerance.</p><p class="ex">Example: PO says <b>20 m³ at 4,000</b>, the goods receipt says <b>20 m³</b>, the invoice says <b>20 m³ at 4,000</b>. All three agree, so the invoice is posted and free for payment.</p></div>
+<div class="term"><h4>Three-way match</h4><p><strong>In simple words:</strong> before you pay a bill, you check three papers against each other. What did we order (PO)? What did we receive (goods receipt)? What are we being charged (invoice)? Quantity and price must agree, within an agreed tolerance.</p><p class="ex">Example: PO says <b>40 at 2,000</b>, the goods receipt says <b>40 laptops</b>, the invoice says <b>40 at 2,000</b>. All three agree, so the invoice is posted and free for payment.</p></div>
 
 <div class="fig" role="img" aria-label="Three-way match: the purchase order, the goods receipt and the invoice all feed into MIRO, which compares quantity and price. If they match, the invoice is posted and free for payment. If the difference is above tolerance, the invoice is posted but blocked for payment and must be released in MRBR.">
 <svg viewBox="0 0 760 290">
 <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
 <marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
 <marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker></defs>
-<rect class="bx" x="20" y="14" width="190" height="64" rx="8"/><text class="t" x="115" y="40" text-anchor="middle">1. Purchase order</text><text class="s" x="115" y="60" text-anchor="middle">20 m³ × DKK 4,000</text>
-<rect class="bx" x="20" y="98" width="190" height="64" rx="8"/><text class="t" x="115" y="124" text-anchor="middle">2. Goods receipt</text><text class="s" x="115" y="144" text-anchor="middle">20 m³ received</text>
-<rect class="bx" x="20" y="182" width="190" height="64" rx="8"/><text class="t" x="115" y="208" text-anchor="middle">3. Invoice</text><text class="s" x="115" y="228" text-anchor="middle">20 m³ × 4,000 + VAT</text>
+<rect class="bx" x="20" y="14" width="190" height="64" rx="8"/><text class="t" x="115" y="40" text-anchor="middle">1. Purchase order</text><text class="s" x="115" y="60" text-anchor="middle">40 laptops × DKK 2,000</text>
+<rect class="bx" x="20" y="98" width="190" height="64" rx="8"/><text class="t" x="115" y="124" text-anchor="middle">2. Goods receipt</text><text class="s" x="115" y="144" text-anchor="middle">40 laptops received</text>
+<rect class="bx" x="20" y="182" width="190" height="64" rx="8"/><text class="t" x="115" y="208" text-anchor="middle">3. Invoice</text><text class="s" x="115" y="228" text-anchor="middle">40 × 2,000 + VAT</text>
 <rect class="bx hl" x="280" y="88" width="170" height="84" rx="8"/><text class="t" x="365" y="118" text-anchor="middle">MIRO compares</text><text class="s" x="365" y="138" text-anchor="middle">quantity and price</text><text class="s" x="365" y="155" text-anchor="middle">within tolerance?</text>
 <path class="gfile" d="M210,46 C250,46 245,110 278,112" marker-end="url(#m1)"/>
 <path class="gfile" d="M210,130 H278" marker-end="url(#m1)"/>
 <path class="gfile" d="M210,214 C250,214 245,150 278,148" marker-end="url(#m1)"/>
-<rect class="bx" x="530" y="30" width="215" height="80" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="637" y="58" text-anchor="middle">Match: posted</text><text class="s" x="637" y="78" text-anchor="middle">free for payment</text><text class="s" x="637" y="95" text-anchor="middle">(our oak invoice)</text>
+<rect class="bx" x="530" y="30" width="215" height="80" rx="8" style="stroke:var(--ok);stroke-width:2"/><text class="t" x="637" y="58" text-anchor="middle">Match: posted</text><text class="s" x="637" y="78" text-anchor="middle">free for payment</text><text class="s" x="637" y="95" text-anchor="middle">(our laptop invoice)</text>
 <rect class="bx" x="530" y="150" width="215" height="96" rx="8" style="stroke:var(--bad);stroke-width:2"/><text class="t" x="637" y="176" text-anchor="middle">Too big a difference</text><text class="s" x="637" y="196" text-anchor="middle">posted, but blocked</text><text class="s" x="637" y="213" text-anchor="middle">for payment (block R)</text><text class="s" x="637" y="230" text-anchor="middle">release later in MRBR</text>
 <path class="gin" d="M450,115 C490,115 490,70 528,70" marker-end="url(#m2)"/><text class="lab-in" x="488" y="62" text-anchor="middle">yes</text>
 <path class="gbad" d="M450,145 C490,145 490,198 528,198" marker-end="url(#m3)"/><text class="lab-bad" x="486" y="212" text-anchor="middle">no</text>
@@ -222,27 +248,31 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p class="cap">The match happens at line level: each invoice line is compared with its PO line and the quantity received for that line.</p>
 
 <h3 id="inv-entry">The invoice posting</h3>
-<p>The invoice matches, so MIRO posts it. Look at what happens to the waiting room:</p>
-<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>Debit</td><td>191100 GR/IR clearing</td><td class="num">80,000.00</td></tr>
-<tr><td>Debit</td><td>154000 Input VAT (købsmoms)</td><td class="num">20,000.00</td></tr>
-<tr><td>Credit</td><td>160000 Trade payables (supplier Jysk Træ, 300120)</td><td class="num">100,000.00</td></tr>
-<tr><td colspan="2"><strong>Total debit = total credit</strong></td><td class="num"><strong>100,000.00</strong></td></tr>
+<p>The invoice matches, so MIRO posts it. The waiting room empties, and because Nordica cannot deduct VAT, the DKK 20,000 VAT goes to the <em>same cost account and cost centre</em> as the laptops:</p>
+<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th>Cost centre</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>Debit</td><td>191100 GR/IR clearing</td><td></td><td class="num">80,000.00</td></tr>
+<tr><td>Debit</td><td>476000 IT equipment (non-deductible VAT)</td><td>1000</td><td class="num">20,000.00</td></tr>
+<tr><td>Credit</td><td>160000 Trade payables (Nordic IT Supply, 300120)</td><td></td><td class="num">100,000.00</td></tr>
+<tr><td colspan="3"><strong>Total debit = total credit</strong></td><td class="num"><strong>100,000.00</strong></td></tr>
 </tbody></table></div>
-<p>The DKK 80,000 leaves GR/IR. The supplier line creates an <strong>open item</strong> of DKK 100,000 on Jysk Træ's account, with a <strong>due date of 07.04</strong> (invoice date 08.03 + 30 days). The VAT is an asset: Nordlys will get it back from the Danish tax agency (Skattestyrelsen) in its VAT return, because it is a VAT-registered business.</p>
+<p>The supplier line creates an <strong>open item</strong> of DKK 100,000 on the supplier account, with a <strong>due date of 07.04</strong> (invoice date 08.03 + 30 days). Note what is missing: there is <em>no input VAT line</em>. For a normal company there would be one; for an insurer the VAT is cost.</p>
 
-<div class="term"><h4>What if the price is wrong?</h4><p><strong>In simple words:</strong> if the difference is small, inside the tolerance, SAP accepts it. If it is bigger, the invoice is still posted, so the debt is in the books, but it gets a <em>payment block</em>. The payment run skips it until someone checks and releases it.</p><p class="ex">Example: suppose Jysk Træ had charged <b>DKK 4,200</b> per m³. Net DKK 84,000 instead of 80,000, a DKK 4,000 (5%) difference. That is far above a typical tolerance, so the invoice is blocked. Purchasing either agrees the new price (and Maria releases the block in MRBR) or asks Jysk Træ for a credit note.</p></div>
+<div class="term"><h4>What if the price is wrong?</h4><p><strong>In simple words:</strong> if the difference is small, inside the tolerance, SAP accepts it. If it is bigger, the invoice is still posted, so the debt is in the books, but it gets a <em>payment block</em>. The payment run skips it until someone checks and releases it.</p><p class="ex">Example: suppose Nordic IT Supply had charged <b>DKK 2,100</b> per laptop. Net DKK 84,000 instead of 80,000, a DKK 4,000 (5%) difference, far above a typical tolerance. The invoice is blocked. Purchasing either agrees the new price (and Maria releases the block in MRBR) or asks for a credit note.</p></div>
 
 <h3 id="fb60">Invoices without a purchase order: FB60</h3>
-<p>Not every bill has a PO. The cleaning company sends a monthly invoice of DKK 5,000 + 25% VAT = DKK 6,250. There was no order and no goods receipt, so there is nothing to match. Maria enters it directly in FI with <strong>FB60</strong> (enter supplier invoice) and chooses the expense account herself, for example a cleaning expense account with cost centre 3000 Administration. These invoices usually need an <strong>approval</strong> (someone confirms the service was delivered) because the three-way match cannot protect them.</p>
+<p>Not every bill has a PO. The cleaning company sends a monthly invoice of DKK 5,000 + 25% VAT DKK 1,250 = <strong>DKK 6,250</strong>. There was no order and no goods receipt, so there is nothing to match. Maria enters it directly in FI with <strong>FB60</strong> and chooses the expense account herself, with cost centre 3000 Administration. Because VAT is not deductible, the full DKK 6,250 is cost. These invoices usually need an <strong>approval</strong> (someone confirms the service was delivered), because the three-way match cannot protect them.</p>
+<div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th>Cost centre</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>Debit</td><td>Cleaning expense account (net 5,000 + VAT 1,250)</td><td>3000</td><td class="num">6,250.00</td></tr>
+<tr><td>Credit</td><td>160000 Trade payables (cleaning company)</td><td></td><td class="num">6,250.00</td></tr>
+</tbody></table></div>
 <div class="tbl"><table><thead><tr><th></th><th>MIRO (with PO)</th><th>FB60 (without PO)</th></tr></thead><tbody>
 <tr><td>Module</td><td>MM logistics invoice verification</td><td>FI accounts payable</td></tr>
-<tr><td>Debit account</td><td>GR/IR (from the PO), found automatically</td><td>Expense account typed by the clerk</td></tr>
+<tr><td>Debit account</td><td>GR/IR and cost, found automatically</td><td>Expense account typed by the clerk</td></tr>
 <tr><td>Control</td><td>Three-way match, tolerances</td><td>Approval workflow, duplicate check</td></tr>
-<tr><td>Typical use</td><td>Materials, goods, ordered services</td><td>Cleaning, utilities, small one-off bills</td></tr>
+<tr><td>Typical use</td><td>Equipment, goods, ordered services</td><td>Cleaning, utilities, small one-off bills</td></tr>
 </tbody></table></div>
 
-<h2 id="pay">5. Paying the supplier: the payment run (06.04)</h2>
+<h2 id="pay">7. Paying the supplier: the payment run (06.04)</h2>
 <p>Maria does not pay invoices one by one. Every Monday she runs the automatic <strong>payment program, F110</strong>. It looks at all open supplier items, picks the ones that must be paid now, creates the payment postings and writes a payment file for the bank.</p>
 
 <div class="fig" role="img" aria-label="Payment run F110 in five steps: 1 parameters, 2 proposal, 3 review and edit, 4 payment run which posts, 5 payment medium file in ISO 20022 pain.001 format sent to Danske Bank">
@@ -259,111 +289,112 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="lab-out" x="380" y="206" text-anchor="middle">Steps 2 and 3 are the safety net: people look before money leaves</text>
 </svg>
 </div>
-<p class="cap">The same idea as a dunning run: a proposal you can check, then the real run.</p>
+<p class="cap">The same idea as a dunning run in FSCD: a proposal you can check, then the real run.</p>
 
 <div class="tbl"><table><thead><tr><th>Step</th><th>What Maria does</th><th>For our invoice</th></tr></thead><tbody>
-<tr><td>1. Parameters</td><td>Enters a run date and an ID, the company code, payment methods, the next run date and which suppliers to include</td><td>Run date 06.04.2026, company code DK01, method bank transfer, next run 13.04</td></tr>
-<tr><td>2. Proposal</td><td>SAP lists every open item that is due before the next run, grouped per supplier</td><td>Due 07.04, and 07.04 is before 13.04. If it waits a week it would be late, so it is picked today</td></tr>
-<tr><td>3. Review / edit</td><td>Checks the list; can block an item or change the bank used</td><td>Maria sees DKK 100,000 to Jysk Træ, no block. OK</td></tr>
+<tr><td>1. Parameters</td><td>Enters a run date and an ID, the company code, payment methods, the next run date and which suppliers to include</td><td>Run date 06.04.2026, company code NF01, method bank transfer, next run 13.04</td></tr>
+<tr><td>2. Proposal</td><td>SAP lists every open item that is due before the next run, grouped per supplier</td><td>Due 07.04, which is before 13.04. If it waits a week it would be late, so it is picked today</td></tr>
+<tr><td>3. Review / edit</td><td>Checks the list; can block an item or change the bank used</td><td>Maria sees DKK 100,000 to Nordic IT Supply, no block. OK</td></tr>
 <tr><td>4. Payment run</td><td>Posts one payment document per supplier and clears the paid items</td><td>Payment document for DKK 100,000; the invoice is cleared</td></tr>
 <tr><td>5. Payment medium</td><td>Creates the bank file and (optionally) a payment advice to the supplier</td><td>A pain.001 file goes to Danske Bank, which transfers the money</td></tr>
 </tbody></table></div>
 
 <h3 id="pay-entry">The payment posting</h3>
 <div class="tbl"><table><thead><tr><th>Debit / Credit</th><th>Account</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>Debit</td><td>160000 Trade payables (supplier Jysk Træ, 300120)</td><td class="num">100,000.00</td></tr>
+<tr><td>Debit</td><td>160000 Trade payables (Nordic IT Supply, 300120)</td><td class="num">100,000.00</td></tr>
 <tr><td>Credit</td><td>110000 Bank: Danske Bank</td><td class="num">100,000.00</td></tr>
 </tbody></table></div>
-<p>The debit on the supplier <strong>clears</strong> the open item: the invoice and the payment are linked by a clearing document and both become <em>cleared items</em>. Many companies credit an <em>outgoing payments clearing</em> account instead of the bank account itself, and move it to the bank account only when the bank statement confirms the money left. We keep it simple here and credit 110000.</p>
+<p>The debit on the supplier <strong>clears</strong> the open item: the invoice and the payment are linked by a clearing document and both become <em>cleared items</em>. Many companies credit an <em>outgoing payments clearing</em> account instead of the bank account itself, and move it to the bank account when the bank statement confirms the money left. We keep it simple and credit 110000.</p>
 
-<div class="term"><h4>ISO 20022 pain.001</h4><p><strong>In simple words:</strong> a standard XML file format for "please make these payments". SAP writes the file, and the bank reads it. The same format is used by banks all over Europe, so one setup can talk to many banks.</p><p class="ex">Example: the 06.04 file contains one payment: <b>DKK 100,000</b> to Jysk Træ's IBAN, with the invoice number as the reference so Jysk Træ knows what it is for.</p></div>
+<div class="term"><h4>ISO 20022 pain.001</h4><p><strong>In simple words:</strong> a standard XML file format for "please make these payments". SAP writes the file, and the bank reads it. The same format is used by banks all over Europe, so one setup can talk to many banks.</p><p class="ex">Example: the 06.04 file contains one payment: <b>DKK 100,000</b> to the supplier's IBAN, with the invoice number as the reference so Nordic IT Supply knows what it is for.</p></div>
 
 <div class="tip"><b>Danish note: how suppliers want to be paid</b>
-<p>Most Danish B2B payments are plain bank transfers to a bank account. Many Danish bills also carry an <strong>FI-kort</strong> payment line (types +71, +73 or +75): a creditor number plus, for +71 and +75, a payment reference that tells the supplier exactly which invoice is paid. When a supplier invoice has an FI-kort, the AP team enters that information so the payment run can pay it with the right reference. Ask early in a Danish project which payment methods the bank and suppliers expect.</p></div>
+<p>Most Danish B2B payments are plain bank transfers. Many Danish bills also carry an <strong>FI-kort</strong> payment line (types +71, +73 or +75): a creditor number plus, for +71 and +75, a payment reference that tells the supplier which invoice is paid. When a supplier invoice has an FI-kort, AP enters that information so the payment run pays it with the right reference. Ask early which payment methods the bank and suppliers expect.</p></div>
 
 <h3 id="timeline">The whole story on one timeline</h3>
 <ol class="timeline">
-<li><span class="d">02.03.2026:</span> purchasing creates PO 4500001234 for 20 m³ oak at DKK 4,000 = DKK 80,000 net. No posting.</li>
-<li><span class="d">05.03:</span> goods receipt in MIGO. Raw materials +80,000, GR/IR 80,000 waiting.</li>
-<li><span class="d">08.03:</span> invoice dated 08.03, DKK 100,000 incl. VAT, posted in MIRO. GR/IR back to 0, Jysk Træ open item DKK 100,000, due 07.04.</li>
+<li><span class="d">02.03.2026:</span> purchasing creates PO 4500001234 for 40 laptops at DKK 2,000 = DKK 80,000 net. No posting.</li>
+<li><span class="d">05.03:</span> goods receipt in MIGO. IT equipment cost +80,000 (cost centre 1000), GR/IR 80,000 waiting.</li>
+<li><span class="d">08.03:</span> invoice dated 08.03, DKK 100,000 incl. VAT, posted in MIRO. GR/IR back to 0, VAT of 20,000 booked as cost, supplier open item DKK 100,000, due 07.04.</li>
 <li><span class="d">06.04:</span> payment run F110 (next run 13.04). The item is due before the next run, so it is paid. Payment document posted, open item cleared, pain.001 file to Danske Bank.</li>
-<li><span class="d">07.04:</span> the due date. Jysk Træ already has its money. Nobody is late, nobody is early by much.</li>
+<li><span class="d">07.04:</span> the due date. Nordic IT Supply already has its money.</li>
 </ol>
 
-<h2 id="check">6. Check it yourself: where did the money go?</h2>
-<p>Add up the three postings, account by account. This is exactly what a controller does when something "looks odd" in the balances.</p>
+<h2 id="check">8. Check it yourself: where did the money go?</h2>
+<p>Add up the three postings, account by account. This is what a controller does when something "looks odd" in the balances.</p>
 <div class="tbl"><table><thead><tr><th>Account</th><th class="num">GR 05.03</th><th class="num">Invoice 08.03</th><th class="num">Payment 06.04</th><th class="num">Balance</th></tr></thead><tbody>
-<tr><td>200000 Raw materials</td><td class="num">+80,000</td><td class="num"></td><td class="num"></td><td class="num"><strong>80,000 debit</strong></td></tr>
+<tr><td>476000 IT equipment, low value (CC 1000)</td><td class="num">+80,000</td><td class="num">+20,000</td><td class="num"></td><td class="num"><strong>100,000 debit (cost)</strong></td></tr>
 <tr><td>191100 GR/IR clearing</td><td class="num">−80,000</td><td class="num">+80,000</td><td class="num"></td><td class="num"><strong>0</strong></td></tr>
-<tr><td>154000 Input VAT</td><td class="num"></td><td class="num">+20,000</td><td class="num"></td><td class="num"><strong>20,000 debit</strong></td></tr>
 <tr><td>160000 Trade payables</td><td class="num"></td><td class="num">−100,000</td><td class="num">+100,000</td><td class="num"><strong>0</strong></td></tr>
 <tr><td>110000 Bank</td><td class="num"></td><td class="num"></td><td class="num">−100,000</td><td class="num"><strong>100,000 credit</strong></td></tr>
-<tr><td colspan="4"><strong>Sum of debits (80,000 + 20,000) and credits (100,000)</strong></td><td class="num"><strong>equal</strong></td></tr>
+<tr><td colspan="4"><strong>Debits (80,000 + 100,000 + 100,000) and credits (80,000 + 100,000 + 100,000) over all three postings</strong></td><td class="num"><strong>both 280,000</strong></td></tr>
 </tbody></table></div>
-<p class="cap">+ means debit, − means credit. Amounts in DKK.</p>
-<p>Read it in plain words: Nordlys gave away <strong>DKK 100,000</strong> from the bank. In return it has <strong>DKK 80,000</strong> of oak in stock and a <strong>DKK 20,000</strong> VAT claim it will reclaim in its VAT return. GR/IR is empty and nobody owes anybody anything. If your test system shows the same picture after the full cycle, the P2P configuration works for this case.</p>
+<p class="cap">+ means debit, − means credit. Amounts in DKK. Each single posting also balances on its own.</p>
+<p>In plain words: Nordica gave away <strong>DKK 100,000</strong> from the bank. In return the claims department has laptops, and the full <strong>DKK 100,000</strong> is a cost of cost centre 1000. There is no VAT refund. GR/IR is empty and nobody owes anybody anything. These DKK 100,000 are also part of the "laptops 100,000" in March's operating expenses, which you will meet again in Lesson 4.</p>
 
-<h2 id="wrong">7. Things that go wrong</h2>
+<h2 id="wrong">9. Things that go wrong</h2>
 <p>A BA spends much of their time on the exceptions. These are the ones every AP team knows.</p>
-<div class="tbl"><table><thead><tr><th>Problem</th><th>What SAP does</th><th>Oak example</th></tr></thead><tbody>
-<tr><td>Price difference</td><td>Above tolerance: invoice posted with payment block R. Release in MRBR after checking</td><td>Invoice at DKK 4,200/m³ instead of 4,000: blocked until purchasing agrees</td></tr>
-<tr><td>Quantity difference</td><td>Invoiced more than received: blocked. GR/IR keeps a balance until it is sorted</td><td>Invoice for 22 m³, only 20 m³ received: blocked; Jysk Træ sends a credit note for 2 m³</td></tr>
-<tr><td>Missing goods receipt</td><td>Invoice arrives first. With GR-based invoice verification it cannot be matched (or is blocked) until MIGO is posted</td><td>Suppose the bill had arrived on 04.03, before the lorry on 05.03: Maria waits for the receipt</td></tr>
-<tr><td>Duplicate invoice</td><td>Duplicate check warns or stops when the same supplier, reference (invoice number), date and amount were already entered</td><td>Jysk Træ emails the invoice and also posts a paper copy: the second entry is caught</td></tr>
-<tr><td>Manually blocked invoice</td><td>Any user with the right access can set a payment block; F110 skips the item</td><td>Wood was damaged: Maria blocks the invoice until a credit note arrives</td></tr>
-<tr><td>Wrong or changed bank details</td><td>Money goes to the wrong account. Many projects use dual control: a second person must confirm a change to bank details</td><td>An email "from Jysk Træ" asks to change the IBAN. Classic fraud: always call the supplier on a known number</td></tr>
+<div class="tbl"><table><thead><tr><th>Problem</th><th>What SAP does</th><th>Laptop example</th></tr></thead><tbody>
+<tr><td>Price difference</td><td>Above tolerance: invoice posted with payment block R. Release in MRBR after checking</td><td>Invoice at DKK 2,100 per laptop instead of 2,000: blocked until purchasing agrees</td></tr>
+<tr><td>Quantity difference</td><td>Invoiced more than received: blocked. GR/IR keeps a balance until it is sorted</td><td>Invoice for 42 laptops, only 40 received: blocked; a credit note for 2 is requested</td></tr>
+<tr><td>Missing goods receipt</td><td>Invoice arrives first. With GR-based invoice verification it cannot be matched (or is blocked) until MIGO is posted</td><td>Suppose the bill came on 04.03, before the delivery on 05.03: Maria waits for the receipt</td></tr>
+<tr><td>Duplicate invoice</td><td>Duplicate check warns or stops when the same supplier, reference, date and amount were already entered</td><td>Nordic IT Supply emails the invoice and also posts a paper copy: the second entry is caught</td></tr>
+<tr><td>Manually blocked invoice</td><td>Any user with the right access can set a payment block; F110 skips the item</td><td>Two laptops arrived broken: Maria blocks the invoice until a credit note arrives</td></tr>
+<tr><td>Wrong or changed bank details</td><td>Money goes to the wrong account. Many projects use dual control: a second person confirms a change to bank details</td><td>An email "from Nordic IT Supply" asks to change the IBAN. Classic fraud: call the supplier on a known number</td></tr>
+<tr><td>Wrong tax code</td><td>If a code with input VAT is used by mistake, VAT lands on an input-VAT account Nordica should not use</td><td>The 20,000 must end up on 476000, not on a VAT account</td></tr>
 </tbody></table></div>
 
-<div class="term"><h4>Cash discount (early payment discount)</h4><p><strong>In simple words:</strong> some suppliers say "pay early and pay less". Payment terms like <em>2% within 8 days, 30 days net</em> mean: pay within 8 days and take 2% off, or pay the full amount within 30 days. F110 can pick such items early to use the discount, if the run settings allow it.</p><p class="ex">Example (not our real terms, which are 30 days net): with 2/8 terms, paying by <b>16.03</b> would cost DKK 100,000 − 2% = <b>DKK 98,000</b>, saving DKK 2,000. SAP posts the discount to a discount account and, depending on settings, also corrects the VAT part.</p></div>
+<div class="term"><h4>Cash discount (early payment discount)</h4><p><strong>In simple words:</strong> some suppliers say "pay early and pay less". Terms like <em>2% within 8 days, 30 days net</em> mean: pay within 8 days and take 2% off, or pay the full amount within 30 days. F110 can pick such items early to use the discount, if the run settings allow it.</p><p class="ex">Example (not our real terms, which are 30 days net): with 2/8 terms, paying Nordic IT Supply by <b>16.03</b> would cost DKK 100,000 − 2% = <b>DKK 98,000</b>, saving DKK 2,000. Since all of the invoice is cost for Nordica, the saving reduces cost, either on a discount account or on the cost account, depending on settings.</p></div>
 
-<h2 id="ba">8. BA toolkit for accounts payable</h2>
-<h3 id="ba-questions">8.1 Questions to ask</h3>
+<h2 id="ba">10. BA toolkit for accounts payable</h2>
+<h3 id="ba-questions">10.1 Questions to ask</h3>
 <ul>
 <li>Which purchases must have a PO, and which may be entered with FB60? Who approves non-PO invoices?</li>
-<li>What price and quantity tolerances apply? Are they the same for all suppliers and materials?</li>
-<li>Is invoice verification GR-based (invoice only after goods receipt)?</li>
-<li>Which fields does the duplicate check use? Should it warn or stop?</li>
-<li>How often does the payment run happen, which payment methods and banks are used, and who reviews the proposal?</li>
+<li>Which tax codes are used on purchases, and do they all post VAT to cost? Who in the tax team confirms this, including lønsumsafgift?</li>
+<li>What is the small-asset limit, and which spend is expensed versus capitalised?</li>
+<li>What price and quantity tolerances apply? Is invoice verification GR-based?</li>
+<li>Which payments are AP (suppliers) and which are FS-CD (claims, commission)? Where is the border for loss adjusters, repairers and brokers?</li>
+<li>How often does the payment run happen, which banks and payment methods are used, and who reviews the proposal?</li>
 <li>Who may create suppliers and change bank details? Is dual control switched on?</li>
-<li>How do invoices arrive: paper, PDF by email, or electronic (OIOUBL / Peppol in Denmark)? Is there OCR or a scanning tool?</li>
-<li>Who looks at old GR/IR balances at month-end, and how often?</li>
+<li>How do invoices arrive: paper, PDF by email, or electronic (OIOUBL / Peppol)? Is there scanning or OCR?</li>
 </ul>
-<h3 id="ba-tests">8.2 Test scenarios</h3>
+<h3 id="ba-tests">10.2 Test scenarios</h3>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th>Expected result</th></tr></thead><tbody>
-<tr><td>Full happy path: PO, GR, invoice, F110</td><td>Postings as in section 6; GR/IR 0; supplier item cleared; pain.001 file created</td></tr>
-<tr><td>Invoice price 5% above PO price</td><td>Invoice posted with payment block R; not in the F110 proposal; can be released in MRBR</td></tr>
+<tr><td>Full happy path: PO, GR, invoice, F110</td><td>Postings as in section 8; GR/IR 0; supplier item cleared; pain.001 file created</td></tr>
+<tr><td>Invoice with 25% VAT</td><td>VAT of 20,000 posted to 476000, cost centre 1000; no input VAT line</td></tr>
+<tr><td>Invoice price 5% above PO price</td><td>Posted with payment block R; not in the F110 proposal; can be released in MRBR</td></tr>
 <tr><td>Invoice before goods receipt</td><td>Behaviour follows the GR-based setting; after MIGO the invoice can be matched</td></tr>
 <tr><td>Same invoice number entered twice</td><td>Duplicate check message appears</td></tr>
-<tr><td>Non-PO invoice in FB60 with 25% VAT</td><td>Expense, input VAT and supplier lines correct; cost centre filled</td></tr>
+<tr><td>Cleaning invoice in FB60</td><td>Full 6,250 on cost centre 3000, supplier line correct, approval step works</td></tr>
 <tr><td>Item due after the next run date</td><td>Not paid today; picked up in a later run</td></tr>
+<tr><td>Garage claim payment</td><td>Not in F110: it goes through the claims system and FS-CD</td></tr>
 <tr><td>Bank details changed by one user</td><td>Payment blocked until a second user confirms (if dual control is used)</td></tr>
-<tr><td>Supplier with 2/8 cash discount terms</td><td>Discount taken when paid in time; discount posted to the right account</td></tr>
 </tbody></table></div>
-<h3 id="ba-codes">8.3 Screens worth knowing</h3>
+<h3 id="ba-codes">10.3 Screens worth knowing</h3>
 <div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
-<tr><td>BP</td><td>Maintain business partner</td><td>Look at Jysk Træ's bank details, terms, reconciliation account</td></tr>
+<tr><td>BP</td><td>Maintain business partner</td><td>Look at Nordic IT Supply's bank details, terms, reconciliation account</td></tr>
 <tr><td>ME23N</td><td>Display purchase order</td><td>See PO 4500001234 and its history (GR and invoice)</td></tr>
 <tr><td>MIGO</td><td>Goods movements</td><td>Post or display the 05.03 goods receipt</td></tr>
-<tr><td>MIRO</td><td>Enter invoice with PO reference</td><td>Post the 08.03 oak invoice</td></tr>
+<tr><td>MIRO</td><td>Enter invoice with PO reference</td><td>Post the 08.03 laptop invoice</td></tr>
 <tr><td>FB60</td><td>Enter supplier invoice without PO</td><td>The cleaning company's bill</td></tr>
-<tr><td>FBL1N</td><td>Supplier line items</td><td>"Is Jysk Træ's invoice open, blocked or cleared?"</td></tr>
+<tr><td>FBL1N</td><td>Supplier line items</td><td>"Is the invoice open, blocked or cleared?"</td></tr>
 <tr><td>F110</td><td>Automatic payment run</td><td>The Monday payment run on 06.04</td></tr>
 <tr><td>MRBR</td><td>Release blocked invoices</td><td>Release an invoice blocked for a price difference</td></tr>
 </tbody></table></div>
-<p class="cap">Codes come from general SAP knowledge and can differ by release and project. Many S/4HANA projects use Fiori apps instead (for example Manage Supplier Line Items, Create Supplier Invoice, Manage Automatic Payments). Confirm them in your own system.</p>
+<p class="cap">Codes come from general SAP knowledge and can differ by release and project. Many S/4HANA projects use Fiori apps instead (for example Manage Supplier Line Items, Create Supplier Invoice, Manage Automatic Payments). Confirm them in your own system. Tax treatment: confirm with your tax team.</p>
 
 <div class="tip"><b>A closing tip</b>
-<p>When someone says "AP is wrong", ask for the PO number first. With ME23N you can see the order, the goods receipt and the invoice in one history, and from there jump to every accounting document. Nine out of ten P2P questions are answered by that one screen.</p></div>
+<p>When someone says "AP is wrong", ask for the PO number first. With ME23N you can see the order, the goods receipt and the invoice in one history, and from there jump to every accounting document. And always ask the first insurance question: is this really an AP payment, or does it belong to claims and FS-CD?</p></div>
 
 <h2 id="test">Test yourself</h2>
-<p>10 questions on accounts payable and procure to pay. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<p>10 questions on accounts payable at an insurer. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="fico-ap"></div>
 
 <!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
 <div id="suggest"></div>
 -->
 
-<footer>Accounts payable: from purchase to payment. Lesson 2 of SAP FICO for Business Analysts. Names, amounts, account numbers and codes are illustrative examples for learning. Tolerances, payment methods and screens depend on your project's configuration and SAP release.
+<footer>Accounts payable: buying and paying at an insurer. Lesson 2 of SAP FICO for Business Analysts. Names, amounts, account numbers and codes are illustrative examples for learning. Tax treatment, tolerances, payment methods and screens depend on your project's configuration and SAP release; confirm tax points with your tax team.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
@@ -371,8 +402,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
-<script src="/lms.js?v=20261021d" defer></script>
-<script src="/quiz.js?v=20261021d" defer></script>
+<script src="/lms.js?v=20261021e" defer></script>
+<script src="/quiz.js?v=20261021e" defer></script>
 <!-- <script src="/suggest.js" defer></script> -->
 </body>
 </html>
