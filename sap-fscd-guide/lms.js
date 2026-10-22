@@ -40,28 +40,28 @@
     {
       id: 'fico', title: 'SAP FICO for Business Analysts', brand: 'FICO Academy', logo: 'FI',
       home: '/fico', key: 'fico-academy-progress-v1',
-      lede: 'Learn SAP FICO the simple way: plain English, one Danish company followed through the year, diagrams of every flow, and a short test after every lesson.',
-      blurb: 'Financial accounting and controlling: the general ledger, buying and paying, selling and collecting, costs and profitability, assets and month-end.',
+      lede: 'Learn SAP FICO the simple way, the insurance way: plain English, one Danish insurer followed through the year, diagrams of every flow, and a short test after every lesson.',
+      blurb: 'Financial accounting and controlling at a Danish insurer: the general ledger, suppliers, premiums, reserves, costs by line of business, the combined ratio and month-end.',
       modules: [
         { title: 'FICO foundations', lessons: [
-          { id: 'fico-basics', url: '/fico/basics', title: 'FICO basics, with a Danish example', mins: 25,
-            blurb: 'What FI and CO are, how a company is set up in SAP, GL accounts, journal entries and the Universal Journal.' }
+          { id: 'fico-basics', url: '/fico/basics', title: 'FICO basics for an insurer, with a Danish example', mins: 25,
+            blurb: 'What FI and CO are, where they sit next to the policy, claims and FS-CD systems, GL accounts, journal entries and the Universal Journal.' }
         ] },
         { title: 'Procure to pay', lessons: [
-          { id: 'fico-ap', url: '/fico/ap', title: 'Accounts payable: from purchase to payment', mins: 20,
-            blurb: 'Suppliers, purchase orders, goods receipt, invoice matching, GR/IR and the payment run.' }
+          { id: 'fico-ap', url: '/fico/ap', title: 'Accounts payable: buying and paying at an insurer', mins: 20,
+            blurb: 'Suppliers, purchase orders, GR/IR, invoice matching, non-deductible VAT, the payment run, and what goes through FS-CD instead.' }
         ] },
-        { title: 'Order to cash', lessons: [
-          { id: 'fico-ar', url: '/fico/ar', title: 'Accounts receivable: from sale to cash', mins: 20,
-            blurb: 'Customers, billing, revenue and VAT postings, incoming payments, bank statements and dunning.' }
+        { title: 'Premium to cash', lessons: [
+          { id: 'fico-ar', url: '/fico/ar', title: 'Premiums and receivables: from policy to cash', mins: 20,
+            blurb: 'Premium billing from FS-CD into the general ledger, insurance tax, incoming payments, written and earned premium, and the unearned premium reserve.' }
         ] },
         { title: 'Controlling', lessons: [
-          { id: 'fico-controlling', url: '/fico/controlling', title: 'Controlling: costs, cost centres and profitability', mins: 20,
-            blurb: 'Cost elements, cost centres, internal orders, allocations, profit centres and margin analysis.' }
+          { id: 'fico-controlling', url: '/fico/controlling', title: 'Controlling: costs, lines of business and the combined ratio', mins: 20,
+            blurb: 'Cost centres, internal orders, allocations, profit centres per line of business, and the loss, expense and combined ratios.' }
         ] },
-        { title: 'Assets and closing', lessons: [
-          { id: 'fico-close', url: '/fico/close', title: 'Fixed assets and month-end close', mins: 20,
-            blurb: 'Asset master data, depreciation, accruals, currency valuation, VAT, period close and financial statements.' }
+        { title: 'Assets, reserves and closing', lessons: [
+          { id: 'fico-close', url: '/fico/close', title: 'Fixed assets, insurance reserves and month-end close', mins: 20,
+            blurb: 'Depreciation, accruals, currency valuation, premium and claims reserves (RBNS, IBNR), insurance tax, the close and the insurer\'s financial statements.' }
         ] }
       ]
     }
