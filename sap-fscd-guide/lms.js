@@ -119,6 +119,13 @@
     return lessons.filter(function (l) { return !rec(l.id).done; })[0] || null;
   }
 
+  /* ---------- Visitor counts: Vercel Web Analytics (no cookies, no personal data) ---------- */
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  var vaScript = el('script');
+  vaScript.defer = true;
+  vaScript.src = '/_vercel/insights/script.js';
+  document.head.appendChild(vaScript);
+
   /* ---------- Top bar (all pages) ---------- */
   var skip = link('#content', 'lms-skip', 'Skip to content');
   var bar = el('header', 'lms-bar');
