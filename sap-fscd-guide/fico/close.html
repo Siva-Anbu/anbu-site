@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fixed Assets and Month-End Close | FICO Academy</title>
-<meta name="description" content="Fixed assets, depreciation and the month-end close in SAP FICO, explained simply for business analysts: asset master data, the depreciation run, accruals, currency valuation, VAT, closing periods, financial statements and year-end.">
+<title>Fixed Assets, Insurance Reserves and Month-End Close | FICO Academy</title>
+<meta name="description" content="Fixed assets, depreciation, insurance reserves (UPR, RBNS, IBNR) and the month-end close at a Danish non-life insurer in SAP FICO, explained simply for business analysts: asset master data, accruals, currency valuation, insurance tax, closing periods, the insurer's financial statements and year-end.">
 <style>
 :root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
 @media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
@@ -75,8 +75,8 @@ td:first-child{font-weight:500}
 footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
 @media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
 </style>
-<link rel="stylesheet" href="/theme.css?v=20261021d">
-<link rel="stylesheet" href="/lms.css?v=20261021d">
+<link rel="stylesheet" href="/theme.css?v=20261021e">
+<link rel="stylesheet" href="/lms.css?v=20261021e">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0f766e">
 </head>
@@ -84,28 +84,28 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <div class="layout">
 <nav id="toc"><b>Contents</b></nav>
 <main>
-<h1 id="top">Fixed assets and month-end close</h1>
-<p class="lede">How Nordlys Møbler looks after its new CNC machine, spreads its cost over ten years, and closes the books for March 2026. Then a short look at what changes at year-end.</p>
+<h1 id="top">Fixed assets, insurance reserves and month-end close</h1>
+<p class="lede">How Nordica Forsikring looks after its new claims centre fit-out, sets aside money for claims it will pay in the future, and closes the books for March 2026. Then a short look at year-end and reporting.</p>
 
 <div class="tip"><b>Before you start</b>
-<p>This is the last lesson of the course. It uses postings from <a href="/fico/basics">Lesson 1: FICO basics</a>, <a href="/fico/ap">Lesson 2: accounts payable</a>, <a href="/fico/ar">Lesson 3: accounts receivable</a> and <a href="/fico/controlling">Lesson 4: controlling</a>. You should know what a <em>GL account</em>, a <em>reconciliation account</em>, a <em>posting period</em> and a <em>cost centre</em> are. All names, amounts, account numbers and codes are made up for learning.</p></div>
+<p>This is the last lesson of the course. It uses postings from <a href="/fico/basics">Lesson 1: FICO basics</a>, <a href="/fico/ap">Lesson 2: accounts payable</a>, <a href="/fico/ar">Lesson 3: premiums and receivables</a> and <a href="/fico/controlling">Lesson 4: controlling</a>. You should know what a <em>GL account</em>, a <em>reconciliation account</em>, a <em>posting period</em> and a <em>cost centre</em> are. Premium collection and claims payouts live in SAP FS-CD, which has its own course (start at <a href="/accounting">FS-CD accounting</a>). All names, amounts, account numbers and codes are made up for learning.</p></div>
 
-<h2 id="meet">Meet the people and the machine</h2>
-<p>It's Tuesday 31.03.2026, the last day of March. Peter Lund, the finance manager, has invited Sofie to sit with him for the close. "This is where everything you have learned comes together," he says. "If the postings during the month were right, the close is calm. If not, we find out now."</p>
+<h2 id="meet">Meet the people and the asset</h2>
+<p>It's Tuesday 31.03.2026, the last day of March. Peter Lund, the finance manager at <strong>Nordica Forsikring A/S</strong> in Copenhagen, has invited Sofie to sit with him for the close. "This is where everything you have learned comes together," he says. "For an insurer it is also where we decide how much money to set aside for claims we haven't paid yet."</p>
 <div class="cast">
 <div><b>Peter Lund</b><span>Finance manager. Owns the close checklist and signs off the numbers.</span></div>
 <div><b>Sofie Holm (you)</b><span>Business analyst. Learns each step so she can write requirements and test cases.</span></div>
-<div><b>Jonas Krogh</b><span>Controller. Runs the CO allocations from Lesson 4.</span></div>
-<div><b>CNC machine, asset 10000045</b><span>Cuts table legs. Bought 01.01.2026 for DKK 600,000 net. Lives on cost centre 1000.</span></div>
+<div><b>Line Madsen</b><span>Actuary (aktuar). Estimates the claims Nordica still has to pay.</span></div>
+<div><b>Claims centre fit-out, asset 10000045</b><span>New offices and desks for claims handlers in Valby. Built by Kontorbyg A/S, ready 01.01.2026. Cost centre 1000 Claims handling.</span></div>
 </div>
 
 <h2 id="asset">1. What a fixed asset is</h2>
-<p>A <strong>fixed asset</strong> is something a company buys to <em>use</em>, not to sell, and that it will use for more than one year. Machines, vans, buildings, office furniture and laptops are typical fixed assets. Oak timber is not: it goes into tables and leaves the company within weeks.</p>
-<p>Why not just call the machine a DKK 600,000 expense in January? Because then January would look like a terrible month and the next nine years would look too good. The machine helps make tables for ten years, so its cost should be spread over those ten years. That spreading is called <strong>depreciation</strong>.</p>
-<div class="term"><h4>Depreciation</h4><p><strong>In simple words:</strong> each period, a slice of the asset's cost moves from the balance sheet (what the company owns) to the P&amp;L (what it cost to run the business).</p><p class="ex">Example: <b>DKK 600,000 ÷ 10 years = DKK 60,000 a year</b>, or <b>DKK 5,000 a month</b>. This simple "same amount every period" method is called <b>straight-line</b> depreciation.</p></div>
-<div class="term"><h4>Book value (net book value)</h4><p><strong>In simple words:</strong> what the asset is still worth in the books: cost minus all depreciation so far.</p><p class="ex">Example: after one year, <b>600,000 − 60,000 = DKK 540,000</b>. After ten years the book value is zero, even if the machine still works.</p></div>
+<p>A <strong>fixed asset</strong> is something a company buys to <em>use</em>, not to sell, and that it will use for more than one year. For an insurer these are typically office fit-outs, buildings, servers and company cars. Laptops are usually too cheap: Lesson 2 expensed them at once, because they are under the small-asset limit (confirm the limit with your team).</p>
+<p>Why not call the fit-out a DKK 600,000 expense in January? Then January would look like a terrible month and the next nine years would look too good. The offices help the claims handlers for ten years, so the cost is spread over ten years. That spreading is called <strong>depreciation</strong>.</p>
+<div class="term"><h4>Depreciation</h4><p><strong>In simple words:</strong> each period, a slice of the asset's cost moves from the balance sheet (what the company owns) to the P&amp;L (what it cost to run the business).</p><p class="ex">Example: <b>DKK 600,000 ÷ 10 years = DKK 60,000 a year</b>, or <b>DKK 5,000 a month</b>. This "same amount every period" method is called <b>straight-line</b> depreciation.</p></div>
+<div class="term"><h4>Book value (net book value)</h4><p><strong>In simple words:</strong> what the asset is still worth in the books: cost minus all depreciation so far.</p><p class="ex">Example: after one year, <b>600,000 − 60,000 = DKK 540,000</b>. After ten years the book value is zero, even if the offices still look fine.</p></div>
 
-<div class="fig" role="img" aria-label="Bar chart: the CNC machine's book value starts at DKK 600,000 and drops by DKK 60,000 each year, from 540,000 at the end of 2026 to 0 at the end of 2035">
+<div class="fig" role="img" aria-label="Bar chart: the fit-out's book value starts at DKK 600,000 and drops by DKK 60,000 each year, from 540,000 at the end of 2026 to 0 at the end of 2035">
 <svg viewBox="0 0 760 290">
 <line x1="50" y1="210" x2="730" y2="210" style="stroke:var(--muted);stroke-width:1.5"/>
 <rect class="bx hl" x="60" y="50" width="44" height="160" rx="3"/>
@@ -154,29 +154,32 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <rect x="400" y="256" width="22" height="14" rx="3" style="fill:none;stroke:var(--due);stroke-width:1.5;stroke-dasharray:4 3"/><text class="lab-out" x="430" y="268">DKK 60,000 depreciation that year</text>
 </svg>
 </div>
-<p class="cap">Straight-line depreciation of the CNC machine: the same DKK 60,000 slice every year until the book value reaches zero at the end of 2035.</p>
+<p class="cap">Straight-line depreciation of the fit-out: the same DKK 60,000 slice every year until the book value reaches zero at the end of 2035.</p>
+
+<div class="tip"><b>Why DKK 600,000 and not 480,000?</b>
+<p>Insurance is exempt from VAT in Denmark (<em>momsfritaget</em>). Nordica charges no VAT on premiums, and in general it cannot deduct the VAT it pays on purchases (financial companies pay <em>lønsumsafgift</em>, a payroll tax, instead). So the 25% VAT is simply part of the cost. Kontorbyg A/S invoiced DKK 480,000 plus DKK 120,000 VAT, and the whole <strong>DKK 600,000</strong> becomes the asset's cost. Confirm the exact tax treatment with your tax team.</p></div>
 
 <h2 id="master">2. Asset master data and the asset sub-ledger</h2>
-<p>Every fixed asset gets its own <strong>asset master record</strong>, created with <strong>AS01</strong> (or a Fiori app). Think of it as the machine's ID card: what it is, where it sits, and how it should be depreciated. Sofie and Peter open asset <strong>10000045</strong> together.</p>
-<div class="tbl"><table><thead><tr><th>Field</th><th>In simple words</th><th>CNC machine</th></tr></thead><tbody>
-<tr><td>Asset class</td><td>The group the asset belongs to. It decides the GL accounts and the default depreciation rules.</td><td>Machinery and equipment</td></tr>
-<tr><td>Company code</td><td>Which legal company owns it</td><td>DK01 Nordlys Møbler A/S</td></tr>
-<tr><td>Description</td><td>A name people recognise</td><td>CNC milling machine, hall 2</td></tr>
-<tr><td>Cost centre</td><td>Who "uses" it, so depreciation lands on the right cost centre</td><td>1000 Production Aarhus</td></tr>
+<p>Every fixed asset gets its own <strong>asset master record</strong>, created with <strong>AS01</strong> (or a Fiori app). Think of it as the asset's ID card: what it is, where it sits, and how it should be depreciated. Sofie and Peter open asset <strong>10000045</strong> together.</p>
+<div class="tbl"><table><thead><tr><th>Field</th><th>In simple words</th><th>Claims centre fit-out</th></tr></thead><tbody>
+<tr><td>Asset class</td><td>The group the asset belongs to. It decides the GL accounts and the default depreciation rules.</td><td>Office fit-out and equipment</td></tr>
+<tr><td>Company code</td><td>Which legal company owns it</td><td>NF01 Nordica Forsikring A/S</td></tr>
+<tr><td>Description</td><td>A name people recognise</td><td>Claims centre fit-out, Valby</td></tr>
+<tr><td>Cost centre</td><td>Who "uses" it, so depreciation lands on the right cost centre</td><td>1000 Claims handling</td></tr>
 <tr><td>Capitalisation date</td><td>The day it became an asset</td><td>01.01.2026</td></tr>
 <tr><td>Depreciation key</td><td>The method, as a short code</td><td>Straight-line, pro rata, down to zero</td></tr>
 <tr><td>Useful life</td><td>How long it will be depreciated</td><td>10 years (120 months)</td></tr>
 </tbody></table></div>
 
-<h3 id="areas">2.1 Depreciation areas: one machine, two sets of rules</h3>
-<p>The financial statements and the Danish tax return don't depreciate the machine in the same way. Tax rules differ, so SAP keeps a separate <strong>depreciation area</strong> for each purpose. Each area has its own useful life, method and values for the same asset.</p>
-<div class="tbl"><table><thead><tr><th>Area</th><th>Used for</th><th>CNC machine</th></tr></thead><tbody>
+<h3 id="areas">2.1 Depreciation areas: one asset, two sets of rules</h3>
+<p>The financial statements and the Danish tax return don't depreciate an asset in the same way. Tax rules differ, so SAP keeps a separate <strong>depreciation area</strong> for each purpose. Each area has its own useful life, method and values for the same asset.</p>
+<div class="tbl"><table><thead><tr><th>Area</th><th>Used for</th><th>Claims centre fit-out</th></tr></thead><tbody>
 <tr><td>Book depreciation (area 01)</td><td>The financial statements. This area posts to the general ledger every month.</td><td>10 years straight-line, DKK 5,000 a month</td></tr>
-<tr><td>Tax depreciation (area number varies)</td><td>Working out taxable profit under Danish tax rules</td><td>Different method and amounts, set up with the tax adviser</td></tr>
+<tr><td>Tax depreciation (area number varies)</td><td>Working out taxable profit under Danish tax rules</td><td>Different method and amounts, set up with the tax team</td></tr>
 </tbody></table></div>
 
 <h3 id="subledger">2.2 The asset sub-ledger</h3>
-<p>Remember suppliers and customers from Lessons 2 and 3? Each has its own detail (a <strong>sub-ledger</strong>), and the general ledger only sees the total on a <strong>reconciliation account</strong>. Assets work the same way. The asset sub-ledger knows every machine one by one. The general ledger only sees the totals on <strong>211000 Machinery and equipment</strong> and <strong>211900 Accumulated depreciation: machinery</strong>. Nobody posts to 211000 directly; every posting goes through an asset, so the two always agree.</p>
+<p>Remember suppliers (Lesson 2) and policyholders (Lesson 3)? Each has its own detail (a <strong>sub-ledger</strong>), and the general ledger only sees the total on a <strong>reconciliation account</strong>. Assets work the same way. The asset sub-ledger knows every asset one by one. The general ledger only sees the totals on <strong>211000 Office fit-out and equipment</strong> and <strong>211900 Accumulated depreciation</strong>. Nobody posts to 211000 directly; every posting goes through an asset, so the two always agree.</p>
 
 <div class="fig" role="img" aria-label="Asset sub-ledger and general ledger: asset 10000045 shows cost 600,000, accumulated depreciation minus 15,000 and book value 585,000. Every asset posting updates the general ledger accounts 211000 and 211900 at the same time, and depreciation expense goes to 481000 on cost centre 1000">
 <svg viewBox="0 0 760 260">
@@ -184,16 +187,16 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="lab-file" x="150" y="22" text-anchor="middle">Asset sub-ledger (detail)</text>
 <rect class="bx hl" x="20" y="34" width="260" height="150" rx="8"/>
 <text class="t" x="150" y="60" text-anchor="middle">Asset 10000045</text>
-<text class="s" x="150" y="78" text-anchor="middle">CNC milling machine · cost centre 1000</text>
+<text class="s" x="150" y="78" text-anchor="middle">Claims centre fit-out · cost centre 1000</text>
 <text class="s" x="40" y="106">Acquisition value</text><text class="s" x="260" y="106" text-anchor="end">600,000</text>
 <text class="s" x="40" y="128">Accumulated depreciation</text><text class="s" x="260" y="128" text-anchor="end">−15,000</text>
 <line x1="40" y1="140" x2="260" y2="140" style="stroke:var(--line);stroke-width:1.5"/>
 <text class="t" x="40" y="164">Book value 31.03</text><text class="t" x="260" y="164" text-anchor="end">585,000</text>
-<text class="s" x="150" y="212" text-anchor="middle">Other machines have their own</text>
+<text class="s" x="150" y="212" text-anchor="middle">Other assets have their own</text>
 <text class="s" x="150" y="228" text-anchor="middle">asset records, one each</text>
 <text class="lab-file" x="610" y="22" text-anchor="middle">General ledger (totals)</text>
 <rect class="bx" x="480" y="34" width="260" height="60" rx="8"/>
-<text class="t" x="610" y="58" text-anchor="middle">211000 Machinery</text><text class="s" x="610" y="78" text-anchor="middle">balance 600,000 (all machines)</text>
+<text class="t" x="610" y="58" text-anchor="middle">211000 Fit-out, equipment</text><text class="s" x="610" y="78" text-anchor="middle">balance 600,000 (all assets)</text>
 <rect class="bx" x="480" y="104" width="260" height="60" rx="8"/>
 <text class="t" x="610" y="128" text-anchor="middle">211900 Acc. depreciation</text><text class="s" x="610" y="148" text-anchor="middle">balance −15,000</text>
 <rect class="bx" x="480" y="174" width="260" height="60" rx="8"/>
@@ -204,17 +207,16 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <text class="lin-t" x="380" y="92" text-anchor="middle">same posting, both levels</text>
 </svg>
 </div>
-<p class="cap">The asset class "Machinery and equipment" points to 211000, 211900 and 481000 (this setup is called account determination). In S/4HANA all of it lands in the Universal Journal (ACDOCA).</p>
+<p class="cap">The asset class points to 211000, 211900 and 481000 (this setup is called account determination). In S/4HANA all of it lands in the Universal Journal (ACDOCA).</p>
 
-<h2 id="buy">3. Buying the machine (01.01.2026)</h2>
-<p>Nordlys bought the CNC machine from <strong>Maskin Nord A/S</strong> (a made-up machine supplier, BP 300180). The supplier invoice was DKK 600,000 plus 25% VAT. Because the invoice line points to asset 10000045 instead of a normal GL account, SAP updates the asset and the general ledger in one go. This is called an <strong>integrated acquisition</strong>: the asset, the supplier and the GL are all posted in one document.</p>
+<h2 id="buy">3. Buying the asset (01.01.2026)</h2>
+<p>Nordica's claims centre in Valby was fitted out by <strong>Kontorbyg A/S</strong> (BP 300180). The invoice was DKK 480,000 plus 25% VAT of DKK 120,000. Because the invoice line points to asset 10000045 instead of a normal GL account, SAP updates the asset and the general ledger in one go. This is called an <strong>integrated acquisition</strong>: the asset and the supplier are posted in one document.</p>
 <div class="tbl"><table><thead><tr><th>Account</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>211000 Machinery and equipment (via asset 10000045)</td><td>Debit</td><td class="num">600,000.00</td></tr>
-<tr><td>154000 Input VAT (købsmoms)</td><td>Debit</td><td class="num">150,000.00</td></tr>
-<tr><td>160000 Trade payables (Maskin Nord A/S)</td><td>Credit</td><td class="num">750,000.00</td></tr>
+<tr><td>211000 Office fit-out and equipment (via asset 10000045)</td><td>Debit</td><td class="num">600,000.00</td></tr>
+<tr><td>160000 Trade payables (Kontorbyg A/S)</td><td>Credit</td><td class="num">600,000.00</td></tr>
 </tbody></table></div>
-<p class="cap">Debits 600,000 + 150,000 = 750,000 = credits. The VAT is not part of the asset's cost, because Nordlys gets it back from SKAT.</p>
-<p>Most companies buy assets with a purchase order that has the asset as its account assignment, so the invoice in MIRO posts straight onto the asset (the same flow as Lesson 2, just pointing to an asset). A direct posting without a purchase order is also possible.</p>
+<p class="cap">Debit 600,000 = credit 600,000. There is no input VAT line: Nordica can't deduct the VAT, so the 120,000 is part of the asset's cost (480,000 + 120,000).</p>
+<p>Most companies buy assets with a purchase order that has the asset as its account assignment, so the invoice in MIRO posts straight onto the asset (the same flow as Lesson 2, pointing to an asset). A direct posting without a purchase order is also possible.</p>
 <p>Sofie opens the <strong>Asset Explorer (AW01N)</strong>. It shows the asset's values for each year and each depreciation area, including <em>planned</em> depreciation that hasn't been posted yet:</p>
 <div class="tbl"><table><thead><tr><th>Asset Explorer, area 01, fiscal year 2026</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>Acquisition value at start of year</td><td class="num">0.00</td></tr>
@@ -225,10 +227,10 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 </tbody></table></div>
 
 <h2 id="dep">4. The monthly depreciation run (AFAB)</h2>
-<p>Depreciation is not typed in by hand. Every month a batch program, the <strong>depreciation run (AFAB)</strong>, calculates the planned amount for every asset and posts it to the general ledger. Peter runs it first as a <strong>test run</strong>, checks the list, then runs it for real. For the CNC machine it posts:</p>
+<p>Depreciation is not typed in by hand. Every month a batch program, the <strong>depreciation run (AFAB)</strong>, calculates the planned amount for every asset and posts it to the general ledger. Peter runs it first as a <strong>test run</strong>, checks the list, then runs it for real. For the fit-out it posts:</p>
 <div class="tbl"><table><thead><tr><th>Account</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>481000 Depreciation (cost centre 1000)</td><td>Debit</td><td class="num">5,000.00</td></tr>
-<tr><td>211900 Accumulated depreciation: machinery</td><td>Credit</td><td class="num">5,000.00</td></tr>
+<tr><td>211900 Accumulated depreciation</td><td>Credit</td><td class="num">5,000.00</td></tr>
 </tbody></table></div>
 <p>Notice that 211000 is not touched: the original cost stays visible, and the depreciation piles up on its own account. Book value = 211000 minus 211900.</p>
 
@@ -241,232 +243,268 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p class="cap">600,000 − 15,000 = 585,000. The 5,000 a month on cost centre 1000 is also what Jonas sees in his cost centre report (Lesson 4).</p>
 
 <h3 id="retire">4.2 Selling or scrapping an asset</h3>
-<p>When an asset leaves the company, it is <strong>retired</strong>. SAP removes its cost and accumulated depreciation, and compares the book value with what the company got for it. Imagine Nordlys sells the CNC machine on 31.12.2028, after three years:</p>
+<p>When an asset leaves the company, it is <strong>retired</strong>. SAP removes its cost and accumulated depreciation, and compares the book value with what the company got for it. Imagine Nordica moves out of Valby on 31.12.2028, after three years, and the fit-out is scrapped:</p>
 <div class="tbl"><table><thead><tr><th>Step</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>Cost</td><td class="num">600,000.00</td></tr>
 <tr><td>Accumulated depreciation (36 months × 5,000)</td><td class="num">−180,000.00</td></tr>
-<tr><td>Book value at sale</td><td class="num">420,000.00</td></tr>
-<tr><td>Sold for (net, without VAT)</td><td class="num">450,000.00</td></tr>
-<tr><td><strong>Gain on sale</strong> (450,000 − 420,000)</td><td class="num"><strong>30,000.00</strong></td></tr>
+<tr><td>Book value at retirement</td><td class="num">420,000.00</td></tr>
+<tr><td>Proceeds</td><td class="num">0.00</td></tr>
+<tr><td><strong>Loss on retirement</strong> (0 − 420,000)</td><td class="num"><strong>−420,000.00</strong></td></tr>
 </tbody></table></div>
-<p>If it were sold for DKK 400,000 instead, there would be a <strong>loss</strong> of DKK 20,000. If it is simply scrapped for nothing, the whole book value is a loss. The sales invoice to the buyer also carries 25% output VAT, like any sale.</p>
+<p>If the landlord paid DKK 100,000 for the fit-out, the loss would be DKK 320,000. For an asset that is sold, such as a company car, it works the same way: proceeds above the book value are a <strong>gain</strong>, proceeds below it are a <strong>loss</strong>.</p>
 
 <h3 id="auc">4.3 Assets under construction</h3>
-<p>Some assets are built over months, for example a new painting line. While it's being built, costs are collected on an <strong>asset under construction</strong> (AuC). An AuC is not depreciated, because it isn't in use yet. When the line is ready, the AuC is <strong>settled</strong> to a normal asset, and depreciation starts from then.</p>
+<p>Some assets take months to build, for example a new claims centre in Aarhus. While it's being built, costs are collected on an <strong>asset under construction</strong> (AuC). An AuC is not depreciated, because it isn't in use yet. When the centre opens, the AuC is <strong>settled</strong> to a normal asset, and depreciation starts from then.</p>
 
-<h2 id="checklist">5. The month-end close checklist</h2>
-<p>Closing a month means: make sure everything that belongs in March is in March, check it, then lock March so nobody can change it. Peter's checklist has ten steps. The order matters, because later steps use the results of earlier ones.</p>
+<h2 id="reserves">5. Insurance reserves at month-end</h2>
+<p>This is the part that is special for an insurer. A normal company records what has happened. An insurer must also record <em>promises</em>: cover it has been paid for but not yet delivered, and claims that have happened but are not paid yet. These promises are called <strong>reserves</strong> (<em>hensættelser</em>) and they appear as liabilities on the balance sheet. Two kinds matter at month-end.</p>
 
-<div class="fig" role="img" aria-label="Month-end close in ten steps, shown as a snake: 1 sub-ledgers done, 2 bank reconciled, 3 GR/IR review, 4 accruals, 5 depreciation, then 6 foreign currency valuation, 7 CO allocations, 8 VAT report, 9 close the period, 10 financial statements and review">
-<svg viewBox="0 0 760 270">
-<defs><marker id="cl-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<rect class="bx" x="20" y="30" width="128" height="72" rx="8"/><circle class="num" cx="36" cy="46" r="10"/><text class="numt" x="36" y="50" text-anchor="middle">1</text><text class="t" x="90" y="70" text-anchor="middle">Sub-ledgers</text><text class="s" x="84" y="88" text-anchor="middle">AP and AR done</text>
-<rect class="bx" x="168" y="30" width="128" height="72" rx="8"/><circle class="num" cx="184" cy="46" r="10"/><text class="numt" x="184" y="50" text-anchor="middle">2</text><text class="t" x="238" y="70" text-anchor="middle">Bank</text><text class="s" x="232" y="88" text-anchor="middle">reconciled</text>
-<rect class="bx" x="316" y="30" width="128" height="72" rx="8"/><circle class="num" cx="332" cy="46" r="10"/><text class="numt" x="332" y="50" text-anchor="middle">3</text><text class="t" x="386" y="70" text-anchor="middle">GR/IR</text><text class="s" x="380" y="88" text-anchor="middle">reviewed</text>
-<rect class="bx" x="464" y="30" width="128" height="72" rx="8"/><circle class="num" cx="480" cy="46" r="10"/><text class="numt" x="480" y="50" text-anchor="middle">4</text><text class="t" x="534" y="70" text-anchor="middle">Accruals</text><text class="s" x="528" y="88" text-anchor="middle">accounting fees</text>
-<rect class="bx hl" x="612" y="30" width="128" height="72" rx="8"/><circle class="num" cx="628" cy="46" r="10"/><text class="numt" x="628" y="50" text-anchor="middle">5</text><text class="t" x="682" y="70" text-anchor="middle">Depreciation</text><text class="s" x="676" y="88" text-anchor="middle">AFAB</text>
-<rect class="bx" x="612" y="160" width="128" height="72" rx="8"/><circle class="num" cx="628" cy="176" r="10"/><text class="numt" x="628" y="180" text-anchor="middle">6</text><text class="t" x="682" y="200" text-anchor="middle">FX valuation</text><text class="s" x="676" y="218" text-anchor="middle">FAGL_FCV</text>
-<rect class="bx" x="464" y="160" width="128" height="72" rx="8"/><circle class="num" cx="480" cy="176" r="10"/><text class="numt" x="480" y="180" text-anchor="middle">7</text><text class="t" x="534" y="200" text-anchor="middle">CO allocations</text><text class="s" x="528" y="218" text-anchor="middle">Lesson 4</text>
-<rect class="bx" x="316" y="160" width="128" height="72" rx="8"/><circle class="num" cx="332" cy="176" r="10"/><text class="numt" x="332" y="180" text-anchor="middle">8</text><text class="t" x="386" y="200" text-anchor="middle">VAT report</text><text class="s" x="380" y="218" text-anchor="middle">momsangivelse</text>
-<rect class="bx" x="168" y="160" width="128" height="72" rx="8"/><circle class="num" cx="184" cy="176" r="10"/><text class="numt" x="184" y="180" text-anchor="middle">9</text><text class="t" x="238" y="200" text-anchor="middle">Close period</text><text class="s" x="232" y="218" text-anchor="middle">OB52</text>
-<rect class="bx hl" x="20" y="160" width="128" height="72" rx="8"/><circle class="num" cx="36" cy="176" r="10"/><text class="numt" x="36" y="180" text-anchor="middle">10</text><text class="t" x="90" y="200" text-anchor="middle">Statements</text><text class="s" x="84" y="218" text-anchor="middle">and review</text>
-<path class="gfile" d="M148,66 H166" marker-end="url(#cl-b)"/><path class="gfile" d="M296,66 H314" marker-end="url(#cl-b)"/><path class="gfile" d="M444,66 H462" marker-end="url(#cl-b)"/><path class="gfile" d="M592,66 H610" marker-end="url(#cl-b)"/>
-<path class="gfile" d="M676,102 V158" marker-end="url(#cl-b)"/>
-<path class="gfile" d="M612,196 H594" marker-end="url(#cl-b)"/><path class="gfile" d="M464,196 H446" marker-end="url(#cl-b)"/><path class="gfile" d="M316,196 H298" marker-end="url(#cl-b)"/><path class="gfile" d="M168,196 H150" marker-end="url(#cl-b)"/>
-<text class="lab-file" x="380" y="130" text-anchor="middle">get everything in → value it → report it → lock it</text>
-<text class="lin-t" x="380" y="258" text-anchor="middle">Steps 1 to 5 put March's numbers in; 6 to 8 adjust and report; 9 and 10 lock and review</text>
+<div class="fig" role="img" aria-label="Premium side: written premium 2,400,000 minus the change in unearned premium reserve 800,000 equals earned premium 1,600,000. Claims side: claims paid 760,000 plus the change in claims reserves 300,000, made of RBNS 50,000 and IBNR 250,000, equals claims incurred 1,060,000">
+<svg viewBox="0 0 760 260">
+<defs><marker id="cl-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<text class="lab-file" x="20" y="22">Premium side (Lesson 3)</text>
+<rect class="bx" x="20" y="32" width="200" height="72" rx="8"/><text class="t" x="120" y="62" text-anchor="middle">Written premium</text><text class="s" x="120" y="84" text-anchor="middle">billed in March: 2,400,000</text>
+<rect class="bx" x="280" y="32" width="200" height="72" rx="8"/><text class="t" x="380" y="62" text-anchor="middle">Change in UPR</text><text class="s" x="380" y="84" text-anchor="middle">not yet earned: −800,000</text>
+<rect class="bx hl" x="540" y="32" width="200" height="72" rx="8"/><text class="t" x="640" y="62" text-anchor="middle">Earned premium</text><text class="s" x="640" y="84" text-anchor="middle">cover given in March: 1,600,000</text>
+<path class="gfile" d="M220,68 H278" marker-end="url(#cl-r)"/><path class="gfile" d="M480,68 H538" marker-end="url(#cl-r)"/>
+<text class="lab-file" x="20" y="146">Claims side</text>
+<rect class="bx" x="20" y="156" width="200" height="82" rx="8"/><text class="t" x="120" y="188" text-anchor="middle">Claims paid</text><text class="s" x="120" y="210" text-anchor="middle">via FS-CD: 760,000</text>
+<rect class="bx" x="280" y="156" width="200" height="82" rx="8"/><text class="t" x="380" y="184" text-anchor="middle">Change in reserves</text><text class="s" x="380" y="204" text-anchor="middle">RBNS 50,000 + IBNR 250,000</text><text class="s" x="380" y="222" text-anchor="middle">= 300,000</text>
+<rect class="bx hl" x="540" y="156" width="200" height="82" rx="8"/><text class="t" x="640" y="188" text-anchor="middle">Claims incurred</text><text class="s" x="640" y="210" text-anchor="middle">cost of March: 1,060,000</text>
+<path class="gout" d="M220,197 H278" marker-end="url(#cl-r2)"/><path class="gout" d="M480,197 H538" marker-end="url(#cl-r2)"/>
+<defs><marker id="cl-r2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--due)"/></marker></defs>
+<text class="lin-t" x="380" y="254" text-anchor="middle">Premium: money in minus cover for later. Claims: money out plus claims still to pay.</text>
 </svg>
 </div>
-<p class="cap">Peter's close for March 2026. Real companies often have 40 or more tasks and track them in a closing tool (SAP has the Financial Closing cockpit, called Advanced Financial Closing in newer releases).</p>
+<p class="cap">The numbers are the company totals for March 2026. Each reserve is a liability on the balance sheet and a cost or a reduction of income in the P&amp;L.</p>
 
-<h3 id="steps1">5.1 Steps 1 to 3: is everything in?</h3>
+<h3 id="upr">5.1 Unearned premium reserve (UPR)</h3>
+<p>In Lesson 3, Hygge Hjem A/S paid DKK 120,000 on 13.03 for a commercial property policy (ERH-2026-0042) that covers a whole year, 01.03.2026 to 28.02.2027. Nordica has not <em>earned</em> all of that yet. At 31.03 only one month of twelve has been delivered:</p>
+<div class="tbl"><table><thead><tr><th>Hygge Hjem policy at 31.03.2026</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>Annual premium (the 1.1% insurance tax of 1,320 is not Nordica's money, see 6.5)</td><td class="num">120,000.00</td></tr>
+<tr><td>Earned: 1 month of 12 (120,000 ÷ 12)</td><td class="num">10,000.00</td></tr>
+<tr><td><strong>Unearned: 11 months, goes into the UPR</strong></td><td class="num"><strong>110,000.00</strong></td></tr>
+</tbody></table></div>
+<p>For the whole company the written premium in March was DKK 2,400,000, and the change in UPR was −800,000, so the <strong>earned premium is 1,600,000</strong>. The journal moves the unearned part out of income and into a liability account:</p>
+<div class="tbl"><table><thead><tr><th>31.03.2026, company total</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>300500 Change in unearned premium reserve</td><td>Debit</td><td class="num">800,000.00</td></tr>
+<tr><td>250000 Unearned premium reserve (UPR)</td><td>Credit</td><td class="num">800,000.00</td></tr>
+</tbody></table></div>
+
+<h3 id="claims-res">5.2 Claims reserves: RBNS and IBNR</h3>
+<p>Claims are paid after they happen, sometimes months or years after. At month-end Nordica must still count them as a cost of March, because the accident happened in March. That money is set aside as <strong>claims reserves</strong> (<em>erstatningshensættelser</em>).</p>
+<div class="term"><h4>RBNS: reported but not settled</h4><p><strong>In simple words:</strong> the policyholder has told us about the claim, but we haven't paid it yet. The claims handler estimates the cost case by case.</p><p class="ex">Example: a customer reports a hail-damaged car on 27.03. The handler expects <b>DKK 30,000</b> and sets that as the reserve. Across all open cases, RBNS went up by <b>DKK 50,000</b> in March.</p></div>
+<div class="term"><h4>IBNR: incurred but not reported</h4><p><strong>In simple words:</strong> the accident has happened, but the customer hasn't told us yet. Nobody can estimate it case by case, so the actuary estimates the total from history and statistics.</p><p class="ex">Example: a water leak that happened on 29.03 in a house whose owners are on holiday. Actuary Line Madsen's model raised IBNR by <b>DKK 250,000</b> in March.</p></div>
+<div class="tbl"><table><thead><tr><th>31.03.2026, company total</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
+<tr><td>405000 Change in claims reserves</td><td>Debit</td><td class="num">300,000.00</td></tr>
+<tr><td>260000 Claims reserves (RBNS and IBNR)</td><td>Credit</td><td class="num">300,000.00</td></tr>
+</tbody></table></div>
+<p class="cap">Change in reserves = RBNS +50,000 + IBNR +250,000 = 300,000. Claims incurred = claims paid 760,000 + 300,000 = 1,060,000.</p>
+
+<h3 id="owners">5.3 Who owns the numbers, and who posts them</h3>
+<div class="tbl"><table><thead><tr><th>Number</th><th>Owner (decides the amount)</th><th>Posting</th></tr></thead><tbody>
+<tr><td>UPR</td><td>Actuarial and finance, from the policy system's premium data</td><td>Monthly journal entry, often loaded from a file or interface</td></tr>
+<tr><td>RBNS</td><td>Claims handlers, case by case in the claims system</td><td>Monthly journal from the claims system's totals</td></tr>
+<tr><td>IBNR</td><td>Actuary (Line Madsen), from statistical models</td><td>Monthly journal entry, approved by the actuary and Peter</td></tr>
+</tbody></table></div>
+<p>Finance does <em>not</em> invent these figures. Claims and actuarial own the amounts, and finance <strong>posts</strong> them, checks that they match the source reports, and keeps the audit trail. Most insurers receive them as a ready-made journal from the actuarial models and load it as a manual posting (FB50 or a Fiori journal entry app) or through an interface. Note that these reserves are posted as the <em>change</em> for the month. They are not reversed on 01.04 like an accrual.</p>
+<p><strong>Reinsurance, briefly:</strong> Nordica buys cover from reinsurers such as Rhein Re AG for very large losses. The reinsurer's share of the reserves and claims is recorded too (for example receivables from reinsurers on 141000), so the P&amp;L can show the result both gross and net of reinsurance. Your actuarial and finance team owns the rules for this.</p>
+
+<h2 id="checklist">6. The month-end close checklist</h2>
+<p>Closing a month means: make sure everything that belongs in March is in March, check it, then lock March so nobody can change it. Peter's checklist has twelve steps. The order matters, because later steps use the results of earlier ones.</p>
+
+<div class="fig" role="img" aria-label="Month-end close in twelve steps shown as two rows: 1 FS-CD to GL, 2 bank, 3 GR/IR, 4 accruals, 5 depreciation, 6 FX valuation, then 7 reserves, 8 allocations, 9 investments valued, 10 insurance tax, 11 close period, 12 reports and review">
+<svg viewBox="0 0 760 270">
+<defs><marker id="cl-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+<rect class="bx" x="10" y="30" width="110" height="72" rx="8"/><circle class="num" cx="26" cy="46" r="10"/><text class="numt" x="26" y="50" text-anchor="middle">1</text><text class="t" x="68" y="72" text-anchor="middle">FS-CD to GL</text><text class="s" x="65" y="90" text-anchor="middle">runs finished</text>
+<rect class="bx" x="135" y="30" width="110" height="72" rx="8"/><circle class="num" cx="151" cy="46" r="10"/><text class="numt" x="151" y="50" text-anchor="middle">2</text><text class="t" x="193" y="72" text-anchor="middle">Bank</text><text class="s" x="190" y="90" text-anchor="middle">reconciled</text>
+<rect class="bx" x="260" y="30" width="110" height="72" rx="8"/><circle class="num" cx="276" cy="46" r="10"/><text class="numt" x="276" y="50" text-anchor="middle">3</text><text class="t" x="318" y="72" text-anchor="middle">GR/IR</text><text class="s" x="315" y="90" text-anchor="middle">reviewed</text>
+<rect class="bx" x="385" y="30" width="110" height="72" rx="8"/><circle class="num" cx="401" cy="46" r="10"/><text class="numt" x="401" y="50" text-anchor="middle">4</text><text class="t" x="443" y="72" text-anchor="middle">Accruals</text><text class="s" x="440" y="90" text-anchor="middle">actuarial fees</text>
+<rect class="bx hl" x="510" y="30" width="110" height="72" rx="8"/><circle class="num" cx="526" cy="46" r="10"/><text class="numt" x="526" y="50" text-anchor="middle">5</text><text class="t" x="568" y="72" text-anchor="middle">Depreciation</text><text class="s" x="565" y="90" text-anchor="middle">AFAB</text>
+<rect class="bx" x="635" y="30" width="110" height="72" rx="8"/><circle class="num" cx="651" cy="46" r="10"/><text class="numt" x="651" y="50" text-anchor="middle">6</text><text class="t" x="693" y="72" text-anchor="middle">FX valuation</text><text class="s" x="690" y="90" text-anchor="middle">FAGL_FCV</text>
+<rect class="bx hl" x="635" y="160" width="110" height="72" rx="8"/><circle class="num" cx="651" cy="176" r="10"/><text class="numt" x="651" y="180" text-anchor="middle">7</text><text class="t" x="693" y="202" text-anchor="middle">Reserves</text><text class="s" x="690" y="220" text-anchor="middle">UPR, RBNS, IBNR</text>
+<rect class="bx" x="510" y="160" width="110" height="72" rx="8"/><circle class="num" cx="526" cy="176" r="10"/><text class="numt" x="526" y="180" text-anchor="middle">8</text><text class="t" x="568" y="202" text-anchor="middle">Allocations</text><text class="s" x="565" y="220" text-anchor="middle">Lesson 4</text>
+<rect class="bx" x="385" y="160" width="110" height="72" rx="8"/><circle class="num" cx="401" cy="176" r="10"/><text class="numt" x="401" y="180" text-anchor="middle">9</text><text class="t" x="443" y="202" text-anchor="middle">Investments</text><text class="s" x="440" y="220" text-anchor="middle">valued</text>
+<rect class="bx" x="260" y="160" width="110" height="72" rx="8"/><circle class="num" cx="276" cy="176" r="10"/><text class="numt" x="276" y="180" text-anchor="middle">10</text><text class="t" x="318" y="202" text-anchor="middle">Insurance tax</text><text class="s" x="315" y="220" text-anchor="middle">1.1%</text>
+<rect class="bx" x="135" y="160" width="110" height="72" rx="8"/><circle class="num" cx="151" cy="176" r="10"/><text class="numt" x="151" y="180" text-anchor="middle">11</text><text class="t" x="193" y="202" text-anchor="middle">Close period</text><text class="s" x="190" y="220" text-anchor="middle">OB52</text>
+<rect class="bx hl" x="10" y="160" width="110" height="72" rx="8"/><circle class="num" cx="26" cy="176" r="10"/><text class="numt" x="26" y="180" text-anchor="middle">12</text><text class="t" x="68" y="202" text-anchor="middle">Reports</text><text class="s" x="65" y="220" text-anchor="middle">and review</text>
+<path class="gfile" d="M120,66 H133" marker-end="url(#cl-b)"/><path class="gfile" d="M245,66 H258" marker-end="url(#cl-b)"/><path class="gfile" d="M370,66 H383" marker-end="url(#cl-b)"/><path class="gfile" d="M495,66 H508" marker-end="url(#cl-b)"/><path class="gfile" d="M620,66 H633" marker-end="url(#cl-b)"/>
+<path class="gfile" d="M690,102 V158" marker-end="url(#cl-b)"/>
+<path class="gfile" d="M635,196 H622" marker-end="url(#cl-b)"/><path class="gfile" d="M510,196 H497" marker-end="url(#cl-b)"/><path class="gfile" d="M385,196 H372" marker-end="url(#cl-b)"/><path class="gfile" d="M260,196 H247" marker-end="url(#cl-b)"/><path class="gfile" d="M135,196 H122" marker-end="url(#cl-b)"/>
+<text class="lab-file" x="330" y="134" text-anchor="middle">get everything in → value it → report it → lock it</text>
+<text class="lin-t" x="380" y="258" text-anchor="middle">Steps 1 to 6 put March's numbers in; 7 to 10 value and report; 11 and 12 lock and review</text>
+</svg>
+</div>
+<p class="cap">Peter's close for March 2026. Real insurers often have 50 or more tasks and track them in a closing tool (SAP has the Financial Closing cockpit, called Advanced Financial Closing in newer releases).</p>
+
+<h3 id="steps1">6.1 Steps 1 to 3: is everything in?</h3>
 <ol class="timeline">
-<li><span class="d">1. Sub-ledgers done (31.03):</span> all March supplier invoices are posted (Maria checks her in-tray), and all March deliveries are billed. Hygge Hjem's billing of 15.03 is in, and its payment of 27.03 is cleared.</li>
+<li><span class="d">1. FS-CD runs finished and transferred (01.04):</span> premium billing, incoming payments and claims payouts are processed in FS-CD, which posts <strong>daily totals</strong> to the general ledger. Sofie checks that the March transfers are complete and that the balance on 140000 (premium receivables) equals the open items in FS-CD. Hygge Hjem's premium was billed on 01.03 and paid on 13.03, so it is cleared. See the <a href="/accounting">FS-CD accounting lesson</a> for how the transfer works. Ordinary supplier invoices (FI accounts payable) are all posted too: Maria checks her in-tray.</li>
 <li><span class="d">2. Bank reconciled (01.04):</span> the last March bank statement from Danske Bank is loaded, and the balance on 110000 matches the bank's closing balance to the krone. Nothing is left on 113100 Bank incoming clearing.</li>
-<li><span class="d">3. GR/IR reviewed (01.04):</span> Sofie lists open items on 191100 GR/IR clearing. The oak (goods received 05.03, invoiced 08.03) has cleared. Anything left over is either goods received but not yet invoiced, or invoiced but not yet received. Each one gets an owner and an explanation.</li>
+<li><span class="d">3. GR/IR reviewed (01.04):</span> Sofie lists open items on 191100 GR/IR clearing. The 40 laptops for claims handlers (goods received 05.03, invoiced 08.03) have cleared. Anything left over is either goods received but not yet invoiced, or invoiced but not yet received. Each one gets an owner and an explanation.</li>
 </ol>
 
-<h3 id="accruals">5.2 Step 4: accruals</h3>
-<p>Electricity needs nothing here: the March bill of DKK 18,000 was already posted and paid on 04.03 (Lesson 1). But Nordlys's external accountant helped with the March bookkeeping, and her invoice of <strong>DKK 12,000</strong> (net) won't arrive until mid-April. If Nordlys waits for the invoice, March looks DKK 12,000 too cheap and April too expensive. So Peter posts an <strong>accrual</strong>: a cost for March, owed to someone, without an invoice yet. The cost goes to a new account, <strong>476500 Accounting and audit fees</strong>, on cost centre 3000 Administration. The other side goes to a new account, <strong>190000 Accrued expenses</strong> (a liability: money owed but not yet invoiced).</p>
+<h3 id="accruals">6.2 Step 4: accruals</h3>
+<p>Telephony for the claims call centre (DKK 18,000) was already billed and paid on 04.03, so it needs nothing here. But Nordica's external actuarial consultant helped with the March reporting, and her invoice of <strong>DKK 12,000</strong> won't arrive until mid-April. If Nordica waits for the invoice, March looks DKK 12,000 too cheap and April too expensive. So Peter posts an <strong>accrual</strong>: a cost for March, owed to someone, without an invoice yet. The cost goes to <strong>476500 Accounting, actuarial and audit fees</strong>, on cost centre 3000 Administration. The other side goes to <strong>190000 Accrued expenses</strong> (a liability: money owed but not yet invoiced).</p>
 <div class="tbl"><table><thead><tr><th>31.03.2026</th><th>Debit / Credit</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>476500 Accounting and audit fees (cost centre 3000)</td><td>Debit</td><td class="num">12,000.00</td></tr>
+<tr><td>476500 Accounting, actuarial and audit fees (cost centre 3000)</td><td>Debit</td><td class="num">12,000.00</td></tr>
 <tr><td>190000 Accrued expenses</td><td>Credit</td><td class="num">12,000.00</td></tr>
 </tbody></table></div>
-<p>The entry is posted with a <strong>reversal date of 01.04.2026</strong>. On 01.04 SAP posts the exact opposite. When the real invoice arrives in April and is posted to 476500, the reversal and the invoice cancel out, so April carries no accounting cost for March. March shows the cost once; April doesn't show it twice.</p>
+<p>The entry is posted with a <strong>reversal date of 01.04.2026</strong>. On 01.04 SAP posts the exact opposite. When the real invoice arrives in April and is posted to 476500, the reversal and the invoice cancel out, so April carries no actuarial cost for March. March shows the cost once; April doesn't show it twice. Compare this with the reserves in section 5: reserves are <em>not</em> reversed, because they are estimates that are updated each month.</p>
 
-<h3 id="steps5">5.3 Steps 5 and 6: depreciation and foreign currency</h3>
+<h3 id="steps5">6.3 Steps 5 and 6: depreciation and foreign currency</h3>
 <p><strong>Depreciation:</strong> Peter runs AFAB for period 03.2026 as described in section 4.</p>
-<p><strong>Foreign currency valuation (FAGL_FCV):</strong> on 20.03 Nordlys posted an invoice from a German supplier of table fittings for <strong>EUR 10,000</strong>. On that day the rate was 7.46, so the payable was booked at <strong>DKK 74,600</strong>. On 31.03 the rate is 7.45. The balance sheet must show what Nordlys would owe at today's rate:</p>
+<p><strong>Foreign currency valuation (FAGL_FCV):</strong> on 20.03 Nordica was billed a reinsurance premium by <strong>Rhein Re AG</strong> (BP 500010) of <strong>EUR 10,000</strong>. On that day the rate was 7.46, so the payable to the reinsurer (165000) was booked at <strong>DKK 74,600</strong>. On 31.03 the rate is 7.45. The balance sheet must show what Nordica would owe at today's rate:</p>
 <div class="tbl"><table><thead><tr><th>Calculation</th><th class="num">DKK</th></tr></thead><tbody>
 <tr><td>Booked: 10,000 × 7.46</td><td class="num">74,600.00</td></tr>
 <tr><td>Valued at month-end: 10,000 × 7.45</td><td class="num">74,500.00</td></tr>
-<tr><td><strong>Difference: Nordlys owes less, an unrealised gain</strong></td><td class="num"><strong>100.00</strong></td></tr>
+<tr><td><strong>Difference: Nordica owes less, an unrealised gain</strong></td><td class="num"><strong>100.00</strong></td></tr>
 </tbody></table></div>
-<p>FAGL_FCV posts the DKK 100: the payable goes down (debit, on a valuation adjustment account) and an <strong>unrealised exchange rate gain</strong> is credited to the P&amp;L. "Unrealised" means it isn't real money yet: the rate can move again before Nordlys pays. Many companies reverse the valuation on the first day of the next month and value again at the next month-end. The accounts used are set up in configuration.</p>
+<p>FAGL_FCV posts the DKK 100: the payable goes down and an <strong>unrealised exchange rate gain</strong> is credited to the P&amp;L. "Unrealised" means it isn't real money yet: the rate can move again before Nordica pays. Many companies reverse the valuation on the first day of the next month and value again at the next month-end. The accounts used are set up in configuration.</p>
 
-<h3 id="steps7">5.4 Steps 7 and 8: CO allocations and the VAT report</h3>
-<p><strong>CO allocations:</strong> now that all March costs are in (including the accrual and depreciation), Jonas runs the IT assessment and the other cycles from Lesson 4, and settles internal order 700100 if needed. Running them earlier would have missed costs.</p>
-<p><strong>VAT report:</strong> the Danish VAT return (<em>momsangivelse</em>) is filed with SKAT, the Danish tax agency. It is output VAT minus input VAT for the period. In this story Nordlys reports monthly (large companies do; smaller ones report quarterly or half-yearly). Using only the oak invoice and the sale (we leave out the VAT on smaller bills, such as electricity, to keep the example short):</p>
+<h3 id="steps7">6.4 Steps 7 and 8: reserves and CO allocations</h3>
+<p><strong>Reserves:</strong> now that the premium and claims data for March are final, the UPR, RBNS and IBNR journals from section 5 are posted. They need the FS-CD transfer in step 1 to be complete, because the written premium and claims paid come from there.</p>
+<p><strong>CO allocations:</strong> now that all March costs are in (including the accrual and depreciation), Jonas runs the IT assessment and the other cycles from Lesson 4, and settles internal order 700100 "Spring motor campaign 2026" to cost centre 2000. Running them earlier would have missed costs.</p>
+
+<h3 id="steps9">6.5 Steps 9 and 10: investments and insurance tax</h3>
+<p><strong>Investments valued:</strong> Nordica invests the premiums it holds in bonds until claims must be paid. At month-end the investment team's bonds are valued at market price and interest earned is booked. In March this gave <strong>DKK 40,000</strong> of investment income (bond interest and value changes) on 600000. The investment team owns the valuation; finance posts and checks it.</p>
+<p><strong>Insurance tax:</strong> premiums for non-life insurance carry an <strong>insurance tax</strong> (<em>skadesforsikringsafgift</em>). In this course we use a simple 1.1%. Nordica doesn't keep it: FS-CD adds it to the bill, and it sits on 290100 until Nordica pays it to <strong>Skattestyrelsen</strong>, the Danish tax agency. Motor liability cover has its own separate tax, which we ignore here.</p>
 <div class="tbl"><table><thead><tr><th>March 2026</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>Output VAT on 175000 (sale to Hygge Hjem)</td><td class="num">30,000.00</td></tr>
-<tr><td>Input VAT on 154000 (oak from Jysk Træ)</td><td class="num">−20,000.00</td></tr>
-<tr><td><strong>VAT to pay to SKAT</strong></td><td class="num"><strong>10,000.00</strong></td></tr>
+<tr><td>Written premium, all lines</td><td class="num">2,400,000.00</td></tr>
+<tr><td><strong>Insurance tax collected at 1.1% (to pay to Skattestyrelsen)</strong></td><td class="num"><strong>26,400.00</strong></td></tr>
+<tr><td>Check with the Hygge Hjem policy: 1.1% × 120,000</td><td class="num">1,320.00</td></tr>
 </tbody></table></div>
-<p>In January it was the other way round: the machine's DKK 150,000 input VAT was much bigger than the output VAT, so Nordlys got money back. The VAT report in SAP lists every invoice by <strong>tax code</strong>, which is why correct tax codes on every invoice matter so much.</p>
+<p>An insurer does <em>not</em> file an ordinary VAT return (<em>momsangivelse</em>) for its insurance business, because insurance is VAT-exempt. Instead the insurance tax is reported and paid, and the payroll tax (<em>lønsumsafgift</em>) has its own return. The deadlines and exact rules are for your tax team, so confirm with them. The finance job is to make sure the tax account 290100 matches the premium billed.</p>
 
-<h3 id="steps9">5.5 Steps 9 and 10: lock the period and review</h3>
+<h3 id="steps11">6.6 Steps 11 and 12: lock the period and review</h3>
 <p><strong>Close the period (OB52):</strong> in Lesson 1 you saw that postings are only allowed into <em>open</em> posting periods. Peter now opens period 04.2026 for everyone and closes 03.2026, so nobody can post into March by accident. Often the period is first left open for a small finance group for a day or two, then closed for everyone.</p>
-<p><strong>Financial statements and review:</strong> Peter runs the balance sheet and P&amp;L for March, compares them with February and with the budget, and asks "why?" for every big change. Then he signs off.</p>
+<p><strong>Reports and review:</strong> Peter runs the P&amp;L and balance sheet for March, the claims and premium reports by line of business, and the combined ratio from Lesson 4. He compares them with February and the budget, and asks "why?" for every big change. Then he signs off.</p>
 
-<h2 id="statements">6. The financial statements in simple words</h2>
+<h2 id="statements">7. The financial statements of an insurer</h2>
 <p>All this work produces two main reports:</p>
-<div class="term"><h4>Profit and loss statement (P&amp;L, income statement)</h4><p><strong>In simple words:</strong> a video of a period. Revenue minus costs = profit (or loss) for the month or year.</p></div>
-<div class="term"><h4>Balance sheet</h4><p><strong>In simple words:</strong> a photo on one day. What the company owns (<b>assets</b>) on one side, and who it belongs to on the other: outsiders (<b>liabilities</b>, money owed) and the owners (<b>equity</b>). Assets = liabilities + equity, always.</p></div>
-<p>The two are linked: the profit of the period becomes part of equity. That's why one wrong posting can make both reports wrong.</p>
+<div class="term"><h4>Profit and loss statement (P&amp;L, income statement)</h4><p><strong>In simple words:</strong> a video of a period. For an insurer it starts with <em>earned premium</em>, takes off claims and running costs to give the <em>technical result</em> (the result of the insurance business itself), then adds investment income.</p></div>
+<div class="term"><h4>Balance sheet</h4><p><strong>In simple words:</strong> a photo on one day. What the company owns (<b>assets</b>) on one side, and who it belongs to on the other: outsiders (<b>liabilities</b>, including the reserves) and the owners (<b>equity</b>). Assets = liabilities + equity, always.</p></div>
+<p>The two are linked: the result of the period becomes part of equity.</p>
 
-<div class="fig" role="img" aria-label="The March profit of DKK 35,100 from the P&amp;L flows into equity on the balance sheet. Assets of 982,000 equal liabilities of 196,500 plus equity of 785,500">
+<div class="fig" role="img" aria-label="The March result before tax of DKK 230,000 from the P&amp;L flows into equity on the balance sheet. Assets of 20,342,900 equal liabilities of 16,112,900 plus equity of 4,230,000">
 <svg viewBox="0 0 760 280">
 <defs><marker id="cl-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker></defs>
 <text class="lab-file" x="130" y="22" text-anchor="middle">P&amp;L March (a video)</text>
 <rect class="bx" x="20" y="34" width="220" height="196" rx="8"/>
-<text class="s" x="36" y="60">Revenue</text><text class="s" x="224" y="60" text-anchor="end">120,000</text>
-<text class="s" x="36" y="82">Rent</text><text class="s" x="224" y="82" text-anchor="end">−50,000</text>
-<text class="s" x="36" y="104">Electricity</text><text class="s" x="224" y="104" text-anchor="end">−18,000</text>
-<text class="s" x="36" y="126">Depreciation</text><text class="s" x="224" y="126" text-anchor="end">−5,000</text>
-<text class="s" x="36" y="148">Accounting fees</text><text class="s" x="224" y="148" text-anchor="end">−12,000</text>
-<text class="s" x="36" y="170">FX gain</text><text class="s" x="224" y="170" text-anchor="end">100</text>
-<line x1="36" y1="182" x2="224" y2="182" style="stroke:var(--line);stroke-width:1.5"/>
-<text class="t" x="36" y="210">Profit</text><text class="t" x="224" y="210" text-anchor="end">35,100</text>
+<text class="s" x="36" y="60">Earned premium</text><text class="s" x="224" y="60" text-anchor="end">1,600,000</text>
+<text class="s" x="36" y="82">Claims incurred</text><text class="s" x="224" y="82" text-anchor="end">−1,060,000</text>
+<text class="s" x="36" y="104">Operating expenses</text><text class="s" x="224" y="104" text-anchor="end">−350,000</text>
+<line x1="36" y1="116" x2="224" y2="116" style="stroke:var(--line);stroke-width:1.5"/>
+<text class="t" x="36" y="138">Technical result</text><text class="t" x="224" y="138" text-anchor="end">190,000</text>
+<text class="s" x="36" y="162">Investment income</text><text class="s" x="224" y="162" text-anchor="end">40,000</text>
+<line x1="36" y1="174" x2="224" y2="174" style="stroke:var(--line);stroke-width:1.5"/>
+<text class="t" x="36" y="198">Result before tax</text><text class="t" x="224" y="198" text-anchor="end">230,000</text>
 <text class="lab-file" x="560" y="22" text-anchor="middle">Balance sheet 31.03 (a photo)</text>
 <rect class="bx" x="380" y="34" width="170" height="196" rx="8"/>
 <text class="t" x="465" y="60" text-anchor="middle">Assets</text>
-<text class="s" x="465" y="120" text-anchor="middle">machine, stock,</text>
-<text class="s" x="465" y="138" text-anchor="middle">bank</text>
-<text class="t" x="465" y="210" text-anchor="middle">982,000</text>
+<text class="s" x="465" y="112" text-anchor="middle">investments, bank,</text>
+<text class="s" x="465" y="130" text-anchor="middle">premiums due,</text>
+<text class="s" x="465" y="148" text-anchor="middle">fit-out</text>
+<text class="t" x="465" y="210" text-anchor="middle">20,342,900</text>
 <rect class="bx" x="570" y="34" width="170" height="80" rx="8"/>
 <text class="t" x="655" y="60" text-anchor="middle">Liabilities</text>
-<text class="s" x="655" y="80" text-anchor="middle">owed to others</text>
-<text class="t" x="655" y="102" text-anchor="middle">196,500</text>
+<text class="s" x="655" y="80" text-anchor="middle">reserves and payables</text>
+<text class="t" x="655" y="102" text-anchor="middle">16,112,900</text>
 <rect class="bx hl" x="570" y="124" width="170" height="106" rx="8"/>
 <text class="t" x="655" y="150" text-anchor="middle">Equity</text>
 <text class="s" x="655" y="170" text-anchor="middle">owners' share,</text>
-<text class="s" x="655" y="186" text-anchor="middle">incl. March profit</text>
-<text class="t" x="655" y="212" text-anchor="middle">785,500</text>
+<text class="s" x="655" y="186" text-anchor="middle">incl. March result</text>
+<text class="t" x="655" y="212" text-anchor="middle">4,230,000</text>
 <path class="gin" d="M240,206 C290,272 600,268 652,234" marker-end="url(#cl-c)"/>
-<text class="lab-in" x="60" y="262">profit adds to equity →</text>
+<text class="lab-in" x="40" y="262">result adds to equity →</text>
 <text class="t" x="560" y="137" text-anchor="middle">=</text>
 </svg>
 </div>
-<p class="cap">A deliberately tiny, made-up picture. A real P&amp;L also has wages, materials, IT costs and much more.</p>
+<p class="cap">The result is shown before corporate income tax to keep it simple. The balance sheet is a deliberately simplified, made-up picture.</p>
 
-<h3 id="pl">6.1 A slice of the March P&amp;L</h3>
-<p>Using only the March postings from this course's story:</p>
-<div class="tbl"><table><thead><tr><th>Line</th><th>Account</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>Sales revenue (10 oak tables)</td><td>800000</td><td class="num">120,000.00</td></tr>
-<tr><td>Rent</td><td>470000</td><td class="num">−50,000.00</td></tr>
-<tr><td>Electricity (billed and paid 04.03)</td><td>473000</td><td class="num">−18,000.00</td></tr>
-<tr><td>Depreciation (CNC machine)</td><td>481000</td><td class="num">−5,000.00</td></tr>
-<tr><td>Accounting and audit fees (the accrual)</td><td>476500</td><td class="num">−12,000.00</td></tr>
-<tr><td>Unrealised exchange rate gain</td><td>(valuation)</td><td class="num">100.00</td></tr>
-<tr><td><strong>Profit for the slice</strong></td><td></td><td class="num"><strong>35,100.00</strong></td></tr>
+<h3 id="pl">7.1 The March P&amp;L by line of business</h3>
+<p>Nordica's lines of business (profit centres PC-MOTOR and PC-HOME) show the same layout. All figures are in DKK for March 2026:</p>
+<div class="tbl"><table><thead><tr><th>Line</th><th class="num">Motor</th><th class="num">Home</th><th class="num">Total</th></tr></thead><tbody>
+<tr><td>Gross written premium (via FS-CD)</td><td class="num">1,500,000</td><td class="num">900,000</td><td class="num">2,400,000</td></tr>
+<tr><td>Change in UPR</td><td class="num">−500,000</td><td class="num">−300,000</td><td class="num">−800,000</td></tr>
+<tr><td><strong>Earned premium</strong></td><td class="num"><strong>1,000,000</strong></td><td class="num"><strong>600,000</strong></td><td class="num"><strong>1,600,000</strong></td></tr>
+<tr><td>Claims paid (via FS-CD)</td><td class="num">−500,000</td><td class="num">−260,000</td><td class="num">−760,000</td></tr>
+<tr><td>Change in claims reserves (RBNS + IBNR)</td><td class="num">−200,000</td><td class="num">−100,000</td><td class="num">−300,000</td></tr>
+<tr><td><strong>Claims incurred</strong></td><td class="num"><strong>−700,000</strong></td><td class="num"><strong>−360,000</strong></td><td class="num"><strong>−1,060,000</strong></td></tr>
+<tr><td>Operating expenses (after allocations)</td><td class="num">−200,000</td><td class="num">−150,000</td><td class="num">−350,000</td></tr>
+<tr><td><strong>Technical result</strong></td><td class="num"><strong>100,000</strong></td><td class="num"><strong>90,000</strong></td><td class="num"><strong>190,000</strong></td></tr>
+<tr><td>Investment income (company level)</td><td class="num"></td><td class="num"></td><td class="num">40,000</td></tr>
+<tr><td><strong>Result before tax</strong></td><td class="num"></td><td class="num"></td><td class="num"><strong>230,000</strong></td></tr>
 </tbody></table></div>
-<p class="cap">120,000 − 50,000 − 18,000 − 5,000 − 12,000 + 100 = 35,100. VAT is not in the P&amp;L: it is money passing through to SKAT, so it sits on balance sheet accounts.</p>
+<p class="cap">Check: 1,600,000 − 1,060,000 − 350,000 = 190,000, and 190,000 + 40,000 = 230,000. Insurance tax is not in the P&amp;L: it passes through to Skattestyrelsen.</p>
+<p>The 350,000 operating expenses are made of the costs you met in earlier lessons: rent 50,000, telephony 18,000, IT 24,000, depreciation 5,000, the spring motor campaign 65,000, the laptops 100,000, and salaries and other costs 88,000 (including the 12,000 actuarial accrual). Check: 50 + 18 + 24 + 5 + 65 + 100 + 88 = 350 (thousand). The tiny DKK 100 currency gain is left out to keep the numbers round.</p>
+<p><strong>Combined ratio</strong> (Lesson 4): (claims incurred + operating expenses) ÷ earned premium = (1,060,000 + 350,000) ÷ 1,600,000 = <strong>88.1%</strong>. Under 100% means the insurance business itself made money before investment income.</p>
 
-<h3 id="bs">6.2 Check it yourself: does the balance sheet balance?</h3>
-<p>Here is a tiny, made-up balance sheet for Nordlys on 31.03.2026. The bank and equity figures are invented to keep it small (the bank balance is already after paying the electricity bill on 04.03); the rest come from the story.</p>
+<h3 id="bs">7.2 Check it yourself: does the balance sheet balance?</h3>
+<p>Here is a tiny, made-up balance sheet for Nordica on 31.03.2026. The investments, bank, receivables and earlier equity figures are invented; the fit-out, reserves movements, payables, accrual, tax and result come from the story.</p>
 <div class="tbl"><table><thead><tr><th>Assets</th><th class="num">DKK</th><th>Liabilities and equity</th><th class="num">DKK</th></tr></thead><tbody>
-<tr><td>CNC machine, book value</td><td class="num">585,000</td><td>Payable: Jysk Træ (due 07.04)</td><td class="num">100,000</td></tr>
-<tr><td>Oak timber in stock</td><td class="num">80,000</td><td>Payable: German supplier (revalued)</td><td class="num">74,500</td></tr>
-<tr><td>Bank: Danske Bank</td><td class="num">317,000</td><td>Accrued accounting fees (190000)</td><td class="num">12,000</td></tr>
-<tr><td>Receivable: Hygge Hjem (paid 27.03)</td><td class="num">0</td><td>VAT owed to SKAT</td><td class="num">10,000</td></tr>
-<tr><td></td><td></td><td>Equity: capital and earlier profits</td><td class="num">750,400</td></tr>
-<tr><td></td><td></td><td>Equity: March profit</td><td class="num">35,100</td></tr>
-<tr><td><strong>Total assets</strong></td><td class="num"><strong>982,000</strong></td><td><strong>Total liabilities and equity</strong></td><td class="num"><strong>982,000</strong></td></tr>
+<tr><td>Investments (bonds)</td><td class="num">16,000,000</td><td>Unearned premium reserve (250000)</td><td class="num">9,600,000</td></tr>
+<tr><td>Bank: Danske Bank</td><td class="num">2,557,900</td><td>Claims reserves, RBNS + IBNR (260000)</td><td class="num">6,300,000</td></tr>
+<tr><td>Premium receivables (140000)</td><td class="num">1,200,000</td><td>Trade payables: laptops (due 07.04)</td><td class="num">100,000</td></tr>
+<tr><td>Fit-out, book value</td><td class="num">585,000</td><td>Payable to Rhein Re (revalued)</td><td class="num">74,500</td></tr>
+<tr><td></td><td></td><td>Accrued expenses (190000)</td><td class="num">12,000</td></tr>
+<tr><td></td><td></td><td>Insurance tax payable (290100)</td><td class="num">26,400</td></tr>
+<tr><td></td><td></td><td>Equity: capital and earlier profits</td><td class="num">4,000,000</td></tr>
+<tr><td></td><td></td><td>Equity: March result</td><td class="num">230,000</td></tr>
+<tr><td><strong>Total assets</strong></td><td class="num"><strong>20,342,900</strong></td><td><strong>Total liabilities and equity</strong></td><td class="num"><strong>20,342,900</strong></td></tr>
 </tbody></table></div>
-<p>Add it up: assets 585,000 + 80,000 + 317,000 = <strong>982,000</strong>. Liabilities 100,000 + 74,500 + 12,000 + 10,000 = <strong>196,500</strong>. Equity 750,400 + 35,100 = <strong>785,500</strong>. And 196,500 + 785,500 = <strong>982,000</strong>. It balances. In SAP, the balance sheet can never be out of balance, because every document has debits equal to credits. If a report doesn't balance, look for a wrong report setup, not a wrong posting.</p>
+<p>Add it up: assets 16,000,000 + 2,557,900 + 1,200,000 + 585,000 = <strong>20,342,900</strong>. Liabilities 9,600,000 + 6,300,000 + 100,000 + 74,500 + 12,000 + 26,400 = <strong>16,112,900</strong>. Equity 4,000,000 + 230,000 = <strong>4,230,000</strong>. And 16,112,900 + 4,230,000 = <strong>20,342,900</strong>. It balances. Notice that the two reserves are by far the biggest liabilities: that is typical for an insurer. In SAP, the balance sheet can never be out of balance, because every document has debits equal to credits. If a report doesn't balance, look for a wrong report setup, not a wrong posting.</p>
 
-<h2 id="yearend">7. Year-end in brief</h2>
-<p>December is closed like any other month, plus some extra work. The year-end close for 2026 will happen in January and February 2027.</p>
-
-<div class="fig" role="img" aria-label="Fiscal year 2026 has twelve normal posting periods for January to December and four special periods 13 to 16 for year-end adjustments. Balance carry-forward then moves balance sheet balances into 2027 and P&amp;L results into retained earnings">
-<svg viewBox="0 0 760 250">
-<defs><marker id="cl-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
-<text class="lab-file" x="20" y="22">Fiscal year 2026</text>
-<g>
-<rect class="bx" x="20" y="34" width="38" height="44" rx="5"/><text class="t" x="39" y="61" text-anchor="middle">1</text>
-<rect class="bx" x="62" y="34" width="38" height="44" rx="5"/><text class="t" x="81" y="61" text-anchor="middle">2</text>
-<rect class="bx hl" x="104" y="34" width="38" height="44" rx="5"/><text class="t" x="123" y="61" text-anchor="middle">3</text>
-<rect class="bx" x="146" y="34" width="38" height="44" rx="5"/><text class="t" x="165" y="61" text-anchor="middle">4</text>
-<rect class="bx" x="188" y="34" width="38" height="44" rx="5"/><text class="t" x="207" y="61" text-anchor="middle">5</text>
-<rect class="bx" x="230" y="34" width="38" height="44" rx="5"/><text class="t" x="249" y="61" text-anchor="middle">6</text>
-<rect class="bx" x="272" y="34" width="38" height="44" rx="5"/><text class="t" x="291" y="61" text-anchor="middle">7</text>
-<rect class="bx" x="314" y="34" width="38" height="44" rx="5"/><text class="t" x="333" y="61" text-anchor="middle">8</text>
-<rect class="bx" x="356" y="34" width="38" height="44" rx="5"/><text class="t" x="375" y="61" text-anchor="middle">9</text>
-<rect class="bx" x="398" y="34" width="38" height="44" rx="5"/><text class="t" x="417" y="61" text-anchor="middle">10</text>
-<rect class="bx" x="440" y="34" width="38" height="44" rx="5"/><text class="t" x="459" y="61" text-anchor="middle">11</text>
-<rect class="bx" x="482" y="34" width="38" height="44" rx="5"/><text class="t" x="501" y="61" text-anchor="middle">12</text>
-</g>
-<rect x="540" y="34" width="38" height="44" rx="5" style="fill:var(--box);stroke:var(--due);stroke-width:2"/><text class="t" x="559" y="61" text-anchor="middle">13</text>
-<rect x="582" y="34" width="38" height="44" rx="5" style="fill:var(--box);stroke:var(--due);stroke-width:2"/><text class="t" x="601" y="61" text-anchor="middle">14</text>
-<rect x="624" y="34" width="38" height="44" rx="5" style="fill:var(--box);stroke:var(--due);stroke-width:2"/><text class="t" x="643" y="61" text-anchor="middle">15</text>
-<rect x="666" y="34" width="38" height="44" rx="5" style="fill:var(--box);stroke:var(--due);stroke-width:2"/><text class="t" x="685" y="61" text-anchor="middle">16</text>
-<text class="s" x="270" y="98" text-anchor="middle">12 normal periods: January to December (March is 3)</text>
-<text class="lab-out" x="622" y="98" text-anchor="middle">special periods</text>
-<text class="s" x="622" y="114" text-anchor="middle">year-end adjustments</text>
-<path class="gfile" d="M380,130 V158" marker-end="url(#cl-d)"/>
-<text class="lab-file" x="392" y="148">balance carry-forward (FAGLGVTR)</text>
-<rect class="bx hl" x="40" y="164" width="330" height="64" rx="8"/>
-<text class="t" x="205" y="190" text-anchor="middle">Balance sheet accounts</text>
-<text class="s" x="205" y="210" text-anchor="middle">balances move into 2027 as opening balances</text>
-<rect class="bx hl" x="390" y="164" width="330" height="64" rx="8"/>
-<text class="t" x="555" y="190" text-anchor="middle">P&amp;L accounts</text>
-<text class="s" x="555" y="210" text-anchor="middle">start 2027 at zero; profit goes to equity</text>
-</svg>
-</div>
-<p class="cap">Special periods use the posting date 31.12 but are kept apart from December, so December's own figures stay clean.</p>
-
-<div class="tbl"><table><thead><tr><th>Year-end task</th><th>In simple words</th><th>Nordlys example</th></tr></thead><tbody>
-<tr><td>Special periods 13 to 16</td><td>Extra periods after December for year-end adjustments, such as auditor corrections. They belong to the same year.</td><td>An auditor's correction in February 2027 is posted to period 13 of 2026</td></tr>
-<tr><td>Year-end depreciation</td><td>Make sure all depreciation for the year has been posted, including any one-off write-downs if an asset lost value</td><td>December's AFAB run brings the CNC machine to DKK 60,000 for 2026 and a book value of 540,000</td></tr>
+<h2 id="yearend">8. Year-end and reporting in brief</h2>
+<p>December is closed like any other month, plus some extra work. Fiscal year 2026 has 12 normal periods (March is period 3) and 4 <strong>special periods, 13 to 16</strong>, for year-end adjustments. The year-end close for 2026 happens in January and February 2027.</p>
+<div class="tbl"><table><thead><tr><th>Year-end task</th><th>In simple words</th><th>Nordica example</th></tr></thead><tbody>
+<tr><td>Special periods 13 to 16</td><td>Extra periods after December for year-end adjustments, such as auditor corrections. They belong to the same year, so December's own figures stay clean.</td><td>An auditor's correction to the IBNR in February 2027 is posted to period 13 of 2026</td></tr>
+<tr><td>Year-end depreciation</td><td>Make sure all depreciation for the year has been posted, including any one-off write-downs</td><td>December's AFAB run brings the fit-out to DKK 60,000 for 2026 and a book value of 540,000</td></tr>
 <tr><td>Asset year-end closing (AJAB)</td><td>Locks the asset fiscal year, so no more asset postings can go into 2026. It only works when all depreciation is posted with no errors.</td><td>Run after the auditor agrees the asset values</td></tr>
-<tr><td>Balance carry-forward (FAGLGVTR)</td><td>Moves balance sheet balances into the new year and moves the year's profit or loss into a retained earnings account in equity. P&amp;L accounts start the new year at zero.</td><td>The machine's 600,000 and −60,000 start 2027 as opening balances</td></tr>
-<tr><td>Audit and annual report</td><td>An external auditor (<em>revisor</em>) checks the books. The annual report is filed with the Danish Business Authority (Erhvervsstyrelsen).</td><td>The auditor asks for the asset register and the GR/IR list</td></tr>
+<tr><td>Balance carry-forward (FAGLGVTR)</td><td>Moves balance sheet balances into the new year and moves the year's result into retained earnings in equity. P&amp;L accounts start the new year at zero.</td><td>The UPR and claims reserves start 2027 as opening balances, and so do the fit-out's 600,000 and −60,000</td></tr>
+<tr><td>Audit and annual report</td><td>An external auditor (<em>revisor</em>) checks the books and the annual report is published.</td><td>The auditor asks for the reserve calculations from Line Madsen's team</td></tr>
 </tbody></table></div>
 <p class="cap">In S/4HANA, the old separate fiscal year change for assets is normally handled by the general balance carry-forward. Check your release.</p>
+<p>An insurer also reports in ways other companies don't. <strong>IFRS 17</strong> is the international accounting standard for insurance contracts. <strong>Solvency II</strong> and the Danish statutory reports to <strong>Finanstilsynet</strong>, the Danish Financial Supervisory Authority, check that Nordica has enough capital to pay its claims. These need specialised tools and teams: the detailed IFRS 17 measurement is usually done in a separate system that receives data from SAP. As a BA you don't need the detail. You do need to know that the SAP ledger is the source of the numbers, so the data must be right and traceable. Your actuarial and finance teams own the rest.</p>
 
-<h2 id="ba">8. BA toolkit for assets and closing</h2>
-<h3 id="ba-questions">8.1 Questions to ask</h3>
+<h2 id="ba">9. BA toolkit for assets, reserves and closing</h2>
+<h3 id="ba-questions">9.1 Questions to ask</h3>
 <ul>
-<li>Which asset classes do we need, and which GL accounts does each one post to?</li>
+<li>Which asset classes do we need, and which GL accounts does each one post to? From what amount is something an asset (the capitalisation limit)?</li>
 <li>Which depreciation areas are needed (book, tax, group)? Who owns the tax rules?</li>
-<li>From what amount is something an asset rather than an expense (a capitalisation limit, for example DKK 30,000)?</li>
-<li>Are assets bought with purchase orders? Who creates the asset master record, and when?</li>
+<li>How do UPR, RBNS and IBNR numbers reach SAP: a file, an interface or a manual journal? Who prepares, who approves, and what is the cut-off date?</li>
+<li>Do the reserves have to be split by line of business (motor, home) and by reinsurance share? Are they posted gross and net?</li>
+<li>When are the FS-CD transfers to the GL complete each month, and how is the 140000 balance reconciled to FS-CD?</li>
 <li>What does the close checklist look like, with owners and deadlines for each task? Which tasks are automated?</li>
 <li>Which accruals are posted every month, and how are they estimated?</li>
-<li>Which foreign currencies and rate types are used for month-end valuation? Where do the rates come from?</li>
+<li>Which foreign currencies and rate types are used for month-end valuation? Who owns the insurance tax and payroll tax reporting?</li>
 <li>How many working days does finance have to close a month? Who may post after the period is closed?</li>
 </ul>
 
-<h3 id="ba-tests">8.2 Test scenarios</h3>
+<h3 id="ba-tests">9.2 Test scenarios</h3>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th>What to check</th></tr></thead><tbody>
-<tr><td>Buy an asset with a purchase order and invoice</td><td>Asset value 600,000 on 211000, input VAT 150,000, payable 750,000; AW01N shows planned depreciation</td></tr>
+<tr><td>Buy an asset with a purchase order and invoice</td><td>Asset value 600,000 on 211000 against 160000, no input VAT line; AW01N shows planned depreciation</td></tr>
 <tr><td>Depreciation run for one period, test then real</td><td>DKK 5,000 to 481000 on cost centre 1000 and 211900; the same run twice posts nothing new</td></tr>
-<tr><td>Sell an asset above and below book value</td><td>Correct gain or loss, cost and accumulated depreciation removed, output VAT on the sale</td></tr>
-<tr><td>Accrual with reversal date</td><td>Cost in March, reversal on 01.04, no double cost when the April invoice arrives</td></tr>
-<tr><td>Foreign currency valuation of an open EUR invoice</td><td>Gain of DKK 100 at 7.45; reversed on 01.04 if that is the agreed method</td></tr>
+<tr><td>Retire an asset before the end of its life</td><td>Cost and accumulated depreciation removed, loss or gain equals proceeds minus book value</td></tr>
+<tr><td>UPR journal for a new annual policy</td><td>Hygge Hjem: 110,000 unearned at 31.03; company change in UPR agrees with the policy system's report</td></tr>
+<tr><td>Reserve journal (RBNS and IBNR)</td><td>Debit 405000, credit 260000 for 300,000; totals match the claims and actuarial reports; not reversed on 01.04</td></tr>
+<tr><td>Accrual with reversal date</td><td>Cost 12,000 in March on cost centre 3000, reversal on 01.04, no double cost when the April invoice arrives</td></tr>
+<tr><td>Foreign currency valuation of an open EUR payable</td><td>Gain of DKK 100 at 7.45; reversed on 01.04 if that is the agreed method</td></tr>
+<tr><td>FS-CD transfer to the GL for the last day of the month</td><td>Daily totals complete before the reserve journals; 140000 equals open items in FS-CD</td></tr>
+<tr><td>Insurance tax on March premiums</td><td>290100 balance 26,400 = 1.1% × 2,400,000, and agrees with the tax billed in FS-CD</td></tr>
 <tr><td>Post into a closed period</td><td>Posting into 03.2026 is refused after OB52 is changed</td></tr>
-<tr><td>VAT report for March</td><td>Output 30,000, input 20,000, payable 10,000, every invoice has a tax code</td></tr>
-<tr><td>Balance carry-forward to 2027</td><td>Balance sheet accounts carried forward, P&amp;L accounts at zero, profit in retained earnings</td></tr>
+<tr><td>Balance carry-forward to 2027</td><td>Balance sheet accounts carried forward, P&amp;L accounts at zero, result in retained earnings</td></tr>
 </tbody></table></div>
 
-<h3 id="ba-codes">8.3 Screens worth knowing</h3>
+<h3 id="ba-codes">9.3 Screens worth knowing</h3>
 <div class="tbl"><table><thead><tr><th>Code</th><th>What it does</th><th>When you'd use it</th></tr></thead><tbody>
 <tr><td>AS01 / AS03</td><td>Create / display an asset master record</td><td>Set up or look at asset 10000045</td></tr>
 <tr><td>AW01N</td><td>Asset Explorer</td><td>See values, planned and posted depreciation per area and year</td></tr>
 <tr><td>AFAB</td><td>Depreciation run</td><td>Post the monthly depreciation</td></tr>
 <tr><td>AJAB</td><td>Asset year-end closing</td><td>Lock the asset fiscal year</td></tr>
+<tr><td>FB50</td><td>Enter a GL journal entry</td><td>Post a reserve or accrual journal by hand (or use a Fiori journal entry app)</td></tr>
 <tr><td>FAGL_FCV</td><td>Foreign currency valuation</td><td>Revalue open EUR items at month-end</td></tr>
-<tr><td>FS10N</td><td>GL account balances</td><td>Check 211000, 211900, 190000 or 191100 period by period</td></tr>
+<tr><td>FS10N</td><td>GL account balances</td><td>Check 211000, 211900, 250000, 260000, 190000 or 290100 period by period</td></tr>
 <tr><td>OB52</td><td>Open and close posting periods</td><td>Close March, open April</td></tr>
 <tr><td>F.01</td><td>Financial statements (classic report)</td><td>Balance sheet and P&amp;L; in Fiori, use "Display Financial Statement"</td></tr>
 <tr><td>FAGLGVTR</td><td>Balance carry-forward</td><td>Start the new fiscal year</td></tr>
@@ -474,17 +512,17 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 <p class="cap">Codes come from general SAP knowledge and differ by release. Many S/4HANA projects use Fiori apps instead of these transactions; confirm the names in your own system.</p>
 
 <div class="tip"><b>A closing tip</b>
-<p>Ask Peter for the close checklist on your first week, and sit with him for one month-end. Most "the numbers look wrong" questions you'll get as a BA can be answered by asking: which step of the close produced this posting, and was it run in the right order?</p></div>
+<p>Ask Peter for the close checklist in your first week, and sit with him for one month-end. Most "the numbers look wrong" questions you'll get as a BA can be answered by asking: which step of the close produced this posting, and was it run in the right order? For reserves, add one more: who owns this number, and where did the journal come from?</p></div>
 
 <h2 id="test">Test yourself</h2>
-<p>10 questions on fixed assets and the month-end close. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
+<p>10 questions on fixed assets, insurance reserves and the month-end close. Pick one answer for each, then press <strong>Submit answers</strong> to see your score and the reason behind every answer. You get a new set of questions every time.</p>
 <div id="quiz" data-page="fico-close"></div>
 
 <!-- Suggestion box is switched off for now. To turn it back on, remove the comment markers around it and around suggest.js below.
 <div id="suggest"></div>
 -->
 
-<footer>Fixed Assets and Month-End Close in SAP FICO. Names, amounts, account numbers and codes are illustrative examples for learning. Tax, VAT and reporting rules change over time; confirm current rules with your finance team and auditor.
+<footer>Fixed Assets, Insurance Reserves and Month-End Close in SAP FICO. Names, amounts, account numbers and codes are illustrative examples for learning. Tax, insurance accounting and reporting rules change over time; confirm current rules with your finance, actuarial and tax teams and your auditor.
 <p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
 </main>
 </div>
@@ -492,8 +530,8 @@ footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var
 var toc=document.getElementById('toc');
 document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
 </script>
-<script src="/lms.js?v=20261021d" defer></script>
-<script src="/quiz.js?v=20261021d" defer></script>
+<script src="/lms.js?v=20261021e" defer></script>
+<script src="/quiz.js?v=20261021e" defer></script>
 <!-- <script src="/suggest.js" defer></script> -->
 </body>
 </html>
