@@ -1,9 +1,9 @@
 # anbu-site
 
-## SAP Academy (https://learn-sap.vercel.app)
+## SAP Learning Notes (https://learn-sap.vercel.app)
 Static pages deployed to the Vercel project `sap-fscd-guide`. The live address is `learn-sap.vercel.app`; the old `sap-fscd-guide.vercel.app` redirects to it (host rule in `vercel.json`).
 
-The site is a small LMS ("SAP Academy") with several courses. `lms.js` holds every course outline (`COURSES`): add every new lesson to its course there.
+The site is a small LMS ("SAP Learning Notes") with several courses. `lms.js` holds every course outline (`COURSES`): add every new lesson to its course there.
 - `/` is the home page listing all courses (`index.html`, `<body data-page="home">`).
 - Each course has a dashboard: `/fscd` (`fscd.html`) and `/fico` (`fico.html`), with `<body data-page="dashboard" data-course="ID">`.
 - FSCD lessons are top-level pages (`/basics`, `/payments`, ...); FICO lessons live in `fico/` (`/fico/basics`, `/fico/ap`, ...) with lesson IDs and quiz names prefixed `fico-`.
@@ -18,5 +18,5 @@ Every lesson page must have:
   Upload the same file to Cloudinary (cloud `dnqfhp432`, raw asset, public_id `sap-fscd-guide/quiz/NAME.json`, folder `sap-fscd-guide/quiz`); quiz.js reads Cloudinary first and falls back to the local copy.
 - The shared colour theme: `<link rel="stylesheet" href="/theme.css">` right after the page's `</style>`.
 - The suggestion box, commented out for now: `<!-- <div id="suggest"></div> -->` and `<!-- <script src="/suggest.js" defer></script> -->`. The owner will ask to switch it back on (FormSubmit did not deliver).
-- Shared files (`lms.js`, `lms.css`, `theme.css`, `quiz.js`) are linked with a version tag, e.g. `/lms.js?v=20261021b`. When you change one of them, bump the tag on every page so browsers fetch the new copy.
+- Shared files (`lms.js`, `lms.css`, `theme.css`, `quiz.js`) are linked with a version tag, e.g. `/lms.js?v=20261022b`. When you change one of them, bump the tag on every page so browsers fetch the new copy.
 - Deploy to a preview first, check every file's hash, then deploy the same file list to production.
