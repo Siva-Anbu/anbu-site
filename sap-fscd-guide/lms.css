@@ -2,6 +2,7 @@
    certificate). Uses the colour tokens from each page and theme.css. */
 :root{--bar:56px}
 body{padding-top:var(--bar)}
+html,body{overscroll-behavior-y:none}   /* no elastic over-scroll past the end of the page (iPhone) */
 footer{padding-right:70px}   /* keeps footer text clear of the round back-to-top button, so no blank space is needed below the page */
 body::before{display:none}
 .lms-skip{position:absolute;left:-9999px;top:8px;z-index:100;background:var(--accent);color:#fff;padding:8px 14px;border-radius:6px}
