@@ -1,7 +1,8 @@
 /* Course shell styles (top bar, outline sidebar, lesson chrome, dashboard,
    certificate). Uses the colour tokens from each page and theme.css. */
 :root{--bar:56px}
-body{padding-top:var(--bar);padding-bottom:76px}
+body{padding-top:var(--bar)}
+footer{padding-right:70px}   /* keeps footer text clear of the round back-to-top button, so no blank space is needed below the page */
 body::before{display:none}
 .lms-skip{position:absolute;left:-9999px;top:8px;z-index:100;background:var(--accent);color:#fff;padding:8px 14px;border-radius:6px}
 .lms-skip:focus{left:12px}
@@ -66,7 +67,7 @@ nav#toc .lms-sec a.on{color:var(--accent);border-left-color:var(--accent);font-w
 .lms-pn-next{text-align:right;grid-column:2}
 
 /* Dashboard */
-.lms-wrap{max-width:980px;margin:0 auto;padding:32px 24px 48px}
+.lms-wrap{max-width:980px;margin:0 auto;padding:32px 24px 24px}
 .lms-hero{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:28px;align-items:center;padding:28px;border-radius:16px;background:linear-gradient(120deg,var(--band1),var(--band2));border:1px solid var(--line)}
 .lms-hero h1{margin:.1em 0 .3em;color:var(--fg)}
 .lms-hero .lede{border:0;padding:0;margin:0 0 18px;color:var(--fg);opacity:.85}
