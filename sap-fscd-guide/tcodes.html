@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick reference: T-codes in FSCD | FSCD Notes</title>
+<meta name="description" content="A quick lookup list of the transaction codes used most often in SAP FSCD, grouped by topic.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+.find{margin:1em 0}
+.find input{width:100%;font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+.find input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tc td:first-child{white-space:nowrap;font-family:Consolas,"Courier New",monospace;font-size:14px}
+.nomatch{display:none;color:var(--muted);margin:1em 0}
+</style>
+<link rel="stylesheet" href="/theme.css?v=20261022b">
+<link rel="stylesheet" href="/lms.css?v=20261022b">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="tcodes">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">Frequently used T-codes in FSCD</h1>
+<p class="lede">A lookup list of the transaction codes (T-codes) you will use most often in SAP FSCD (FS-CD), grouped by topic. Keep this page open next to your SAP system. Reference only, there is no test on this page.</p>
+<div class="tip"><b>How to use this page</b>
+<p>Type part of a code or a word (for example "payment" or "KS") in the box to narrow the lists. Codes and descriptions come from general SAP knowledge and public lists. They can differ by release and by project, so confirm each one in your own system (SE93 shows the official description) and ask a colleague if unsure. Check which codes your role is allowed to use.</p></div>
+<div class="find"><input id="tc-find" type="search" placeholder="Filter the lists: a code or a word" aria-label="Filter the T-code lists"></div>
+<p id="tc-none" class="nomatch">Nothing matches. Try a shorter word.</p>
+<h2 id="bp">1. Business partner and contract account</h2>
+<p>A business partner is the person or company. A contract account holds that partner's billing and payment settings.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>BP</td><td>Create, change and display a business partner (policyholder, broker, claimant)</td><td>Check an address or bank details</td></tr>
+<tr><td>CAA1</td><td>Create a contract account</td><td>Set up the account for one policyholder's billing and payments</td></tr>
+<tr><td>CAA2</td><td>Change a contract account</td><td>Change a payment method or the dunning procedure</td></tr>
+<tr><td>CAA3</td><td>Display a contract account</td><td>See which payment method and bank account a customer uses</td></tr>
+<tr><td>FPP1 / FPP2 / FPP3</td><td>Create / change / display a contract partner (older transactions from before BP)</td><td>You may meet these in old notes. In a current system use BP</td></tr>
+</tbody></table></div>
+<h2 id="posting">2. Posting and document processing</h2>
+<p>Every posting in FSCD is a document with items. These codes show you the documents, the balance and the open items.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FPL9</td><td>Account balance: all items of a contract account</td><td>Always the first stop for "why does this customer owe this amount?"</td></tr>
+<tr><td>FPE3</td><td>Display one posting document</td><td>Open a document and read its items, dates and posting reason</td></tr>
+<tr><td>FPE1</td><td>Create (post) a document by hand</td><td>Test data or a manual correction, usually operations work</td></tr>
+<tr><td>FPE2</td><td>Change a posted document (only the fields that are allowed to change)</td><td>A small correction without reversing the document</td></tr>
+<tr><td>FP08</td><td>Reverse a document (FP08M for a mass reversal)</td><td>Undo a wrong posting. Confirm with your team how reversals are done in your project</td></tr>
+<tr><td>FPO1</td><td>Open item list at a key date</td><td>Reconciliation: compare open items at month-end with the ledger</td></tr>
+<tr><td>FPCJ</td><td>Cash desk</td><td>Customer service books a payment taken in person</td></tr>
+<tr><td>FPCJR</td><td>Cash desk evaluation</td><td>Check what the cash desk booked</td></tr>
+</tbody></table></div>
+<h2 id="payments">3. Payments in and out</h2>
+<p>Incoming premiums, direct debits, returns and payouts.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FP05</td><td>Process a payment lot (a batch of incoming payments)</td><td>Post payments from a bank file or statement</td></tr>
+<tr><td>FPCPL</td><td>Payment clarification worklist</td><td>Work through payments that could not be matched to a customer</td></tr>
+<tr><td>FPY1</td><td>Payment run (direct debit, card and reference-based payments)</td><td>The run that builds the collection files and claim payouts</td></tr>
+<tr><td>FP03M</td><td>Mass run: release items for collection</td><td>Release due items so they can be collected</td></tr>
+<tr><td>FP03L</td><td>List of collection items</td><td>See which items are on their way to collection</td></tr>
+<tr><td>FP09</td><td>Process a returns lot (bounced or rejected payments)</td><td>Post failed direct debits sent back by the bank</td></tr>
+<tr><td>FPCRL</td><td>Returns clarification worklist</td><td>Work through returns that could not be matched</td></tr>
+<tr><td>FPM4</td><td>Returns history</td><td>See the returns for a customer or account</td></tr>
+</tbody></table></div>
+<h2 id="dunning">4. Dunning, instalment plans and write-offs</h2>
+<p>Reminders for late payers, payment plans and closing debts that will not be paid.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FPVA</td><td>Dunning proposal run</td><td>Find out who should get a reminder and at which level</td></tr>
+<tr><td>FPVB</td><td>Dunning activity run</td><td>Send the reminders and post the dunning fees</td></tr>
+<tr><td>FPM3</td><td>Dunning history (descriptions vary between sources, check in your system)</td><td>Which reminders did this customer get, and when?</td></tr>
+<tr><td>FPR1 / FPR2 / FPR3</td><td>Create / change / display an instalment plan</td><td>Set up a payment plan for a customer in difficulty</td></tr>
+<tr><td>FP04</td><td>Write off items (FP04M for a mass write-off, FP04H for the history)</td><td>Close a debt that will never be collected</td></tr>
+</tbody></table></div>
+<h2 id="gl">5. General ledger and month-end</h2>
+<p>FSCD is a sub-ledger. It sends totals to the general ledger, and finance checks they agree.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FPG1</td><td>Transfer FSCD totals to the general ledger</td><td>The batch job (often nightly) that creates the ledger postings</td></tr>
+<tr><td>FPG4</td><td>Close reconciliation keys in a mass run</td><td>Closed keys are ready for the transfer</td></tr>
+<tr><td>FPG5</td><td>Show which general ledger documents belong to FSCD documents</td><td>Trace an FSCD posting into the ledger</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Good to know</b>
+<p>The normal FI display transaction FB03 does not show FSCD documents directly. Use FPE3 to read the FSCD document, and FPG5 to find the ledger document it ended up in.</p></div>
+<h2 id="tools">6. Helper transactions and tables</h2>
+<p>Tools for looking things up and for checking data. Read-only use is the safe habit.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>SE16N</td><td>Browse table data (read-only)</td><td>Quick data checks. Ask before using it in production</td></tr>
+<tr><td>SE93</td><td>Look up a transaction code and its description</td><td>Confirm what a code does in your system</td></tr>
+<tr><td>SLG1</td><td>Application log</td><td>Read the messages of a run, for example the GL transfer</td></tr>
+<tr><td>SM37</td><td>Job overview</td><td>Check whether the nightly jobs ran</td></tr>
+<tr><td>SU53</td><td>Last authorization check</td><td>Find out which permission was missing after a "not authorized" message</td></tr>
+<tr><td>FKKVK / FKKVKP</td><td>Tables: contract accounts / link between partner and account</td><td>Find all accounts of one business partner</td></tr>
+<tr><td>DFKKKO / DFKKOP</td><td>Tables: document header / document items</td><td>List open premium items for a report requirement</td></tr>
+<tr><td>DFKKZP</td><td>Table: payment lot items</td><td>Find where an unmatched payment is parked</td></tr>
+</tbody></table></div>
+<h2 id="more">Go back to the lessons</h2>
+<p><a href="/basics">FSCD basics</a> · <a href="/payments">Nordic payment methods</a> · <a href="/dunning">Dunning, returns and collections</a> · <a href="/accounting">From FSCD to the general ledger</a></p>
+<footer>FSCD Notes. Names, numbers, codes and screens in the lessons are illustrative examples for learning, not real data or real SAP screenshots. Transaction codes can differ by release and project.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+var find=document.getElementById('tc-find'),none=document.getElementById('tc-none');
+find.addEventListener('input',function(){var q=find.value.trim().toLowerCase(),shown=0;
+document.querySelectorAll('.tc tbody tr').forEach(function(r){var m=!q||r.textContent.toLowerCase().indexOf(q)>-1;r.style.display=m?'':'none';if(m)shown++});
+document.querySelectorAll('.tc').forEach(function(t){var any=t.querySelector('tbody tr:not([style*="none"])');t.style.display=any?'':'none'});
+none.style.display=shown?'none':'block'});
+</script>
+<script src="/lms.js?v=20261022b" defer></script>
+</body>
+</html>

@@ -34,6 +34,10 @@
         { title: 'Beyond FSCD: SAP BRIM', lessons: [
           { id: 'brim', url: '/brim', title: 'SAP BRIM for insurance', mins: 20,
             blurb: 'Subscriptions, usage-based pricing, convergent invoicing and partner settlement, and how BRIM works next to FSCD.' }
+        ] },
+        { title: 'Quick reference: T-codes', lessons: [
+          { id: 'tcodes', url: '/tcodes', title: 'Frequently used T-codes in FSCD', mins: 10, ref: true,
+            blurb: 'A lookup list of the transaction codes you use most, grouped by topic. Reference only, no test.' }
         ] }
       ]
     },
@@ -62,6 +66,10 @@
         { title: 'Assets, reserves and closing', lessons: [
           { id: 'fico-close', url: '/fico/close', title: 'Fixed assets, insurance reserves and month-end close', mins: 20,
             blurb: 'Depreciation, accruals, currency valuation, premium and claims reserves (RBNS, IBNR), insurance tax, the close and the insurer’s financial statements.' }
+        ] },
+        { title: 'Quick reference: T-codes', lessons: [
+          { id: 'fico-tcodes', url: '/fico/tcodes', title: 'Frequently used T-codes in FICO', mins: 10, ref: true,
+            blurb: 'A lookup list of the transaction codes you use most, grouped by topic. Reference only, no test.' }
         ] }
       ]
     }
@@ -73,7 +81,9 @@
     c.modules.forEach(function (m, mi) {
       m.lessons.forEach(function (l) { l.module = mi; l.index = c.lessons.length; c.lessons.push(l); });
     });
-    c.mins = c.lessons.reduce(function (s, l) { return s + l.mins; }, 0);
+    // Reference pages have no test and do not count towards progress or the completion note
+    c.core = c.lessons.filter(function (l) { return !l.ref; });
+    c.mins = c.core.reduce(function (s, l) { return s + l.mins; }, 0);
   });
 
   function load(key) {
@@ -82,8 +92,8 @@
   }
   function progress(c) {
     var st = load(c.key);
-    var done = c.lessons.filter(function (l) { return st.lessons[l.id] && st.lessons[l.id].done; }).length;
-    return { state: st, done: done, pct: Math.round(done / c.lessons.length * 100) };
+    var done = c.core.filter(function (l) { return st.lessons[l.id] && st.lessons[l.id].done; }).length;
+    return { state: st, done: done, pct: Math.round(done / c.core.length * 100) };
   }
 
   function el(tag, cls, text) {
@@ -107,7 +117,7 @@
   var main = document.querySelector('main');
   if (main && !main.id) main.id = 'content';
 
-  var lessons = course ? course.lessons : [];
+  var lessons = course ? course.core : [];   // lessons that count towards progress
   var state = course ? load(course.key) : null;
   function save() { try { localStorage.setItem(course.key, JSON.stringify(state)); } catch (e) {} }
   function rec(id) { return state.lessons[id] || (state.lessons[id] = {}); }
@@ -200,7 +210,7 @@
   function lessonPage() {
     var r = rec(lesson.id);
     r.visited = true;
-    state.last = lesson.id;
+    if (!lesson.ref) state.last = lesson.id;
     save();
 
     var read = el('div', 'lms-read');
@@ -230,7 +240,7 @@
           var lli = el('li', 'lms-les' + (l === lesson ? ' cur' : '') + (rec(l.id).done ? ' done' : ''));
           var a = link(l.url);
           if (l === lesson) a.setAttribute('aria-current', 'page');
-          a.appendChild(el('span', 'lms-ic', rec(l.id).done ? '✓' : String(l.index + 1)));
+          a.appendChild(el('span', 'lms-ic', l.ref ? 'R' : rec(l.id).done ? '✓' : String(l.index + 1)));
           var t = el('span', 'lms-les-t', l.title);
           t.appendChild(el('small', null, l.mins + ' min'));
           a.appendChild(t);
@@ -283,14 +293,14 @@
     crumbs.appendChild(el('span', null, '›'));
     crumbs.appendChild(el('span', null, 'Module ' + (lesson.module + 1) + ': ' + course.modules[lesson.module].title));
     crumbs.appendChild(el('span', null, '›'));
-    crumbs.appendChild(el('span', null, 'Lesson ' + (lesson.index + 1) + ' of ' + lessons.length));
+    crumbs.appendChild(el('span', null, lesson.ref ? 'Quick reference' : 'Lesson ' + (lesson.index + 1) + ' of ' + lessons.length));
     main.insertBefore(crumbs, h1);
     var lede = h1.nextElementSibling;
     var meta = el('div', 'lms-meta');
-    meta.appendChild(el('span', 'lms-chip', '⏱ ' + lesson.mins + ' min read'));
-    meta.appendChild(el('span', 'lms-chip', '📝 10-question test'));
+    meta.appendChild(el('span', 'lms-chip', lesson.ref ? '📖 Reference page' : '⏱ ' + lesson.mins + ' min read'));
+    meta.appendChild(el('span', 'lms-chip', lesson.ref ? 'No test' : '📝 10-question test'));
     var status = el('span', 'lms-chip');
-    meta.appendChild(status);
+    if (!lesson.ref) meta.appendChild(status);
     (lede && lede.classList.contains('lede') ? lede : h1).insertAdjacentElement('afterend', meta);
 
     // Completion box and previous / next
@@ -306,13 +316,13 @@
     toggle.type = 'button';
     box.appendChild(boxText);
     box.appendChild(toggle);
-    main.insertBefore(box, footer);
+    if (!lesson.ref) main.insertBefore(box, footer);
     toggle.addEventListener('click', function () { setDone(!rec(lesson.id).done); });
 
     var pn = el('nav', 'lms-pn');
     pn.setAttribute('aria-label', 'Lesson navigation');
-    var prev = lessons[lesson.index - 1];
-    var next = lessons[lesson.index + 1];
+    var prev = course.lessons[lesson.index - 1];
+    var next = course.lessons[lesson.index + 1];
     pn.appendChild(prev ? card(prev.url, '← Previous lesson', prev.title, 'prev') : el('span'));
     pn.appendChild(next ? card(next.url, 'Next lesson →', next.title, 'next')
                         : card(course.home, 'Finish →', 'Back to your dashboard', 'next'));
@@ -348,7 +358,7 @@
       save();
       paintLesson();
     }
-    paintLesson();
+    if (!lesson.ref) paintLesson();
 
     document.addEventListener('quiz:submitted', function (ev) {
       var d = ev.detail, r2 = rec(lesson.id);
@@ -397,7 +407,7 @@
       var head = el('div', 'lms-course-h');
       head.appendChild(el('span', 'lms-logo', c.logo));
       var ttl = el('div');
-      ttl.appendChild(el('p', 'lms-modnum', 'Course ' + (ci + 1) + ' · ' + c.lessons.length + ' lessons · ' + c.mins + ' min'));
+      ttl.appendChild(el('p', 'lms-modnum', 'Course ' + (ci + 1) + ' · ' + c.core.length + ' lessons · ' + c.mins + ' min'));
       ttl.appendChild(link(c.home, 'lms-course-t', c.title));
       head.appendChild(ttl);
       card.appendChild(head);
@@ -411,10 +421,10 @@
       fl.style.width = p.pct + '%';
       tr.appendChild(fl);
       pr.appendChild(tr);
-      pr.appendChild(el('span', null, p.done + ' of ' + c.lessons.length + ' lessons · ' + p.pct + '%'));
+      pr.appendChild(el('span', null, p.done + ' of ' + c.core.length + ' lessons · ' + p.pct + '%'));
       card.appendChild(pr);
       var started = c.lessons.some(function (l) { return p.state.lessons[l.id] && p.state.lessons[l.id].visited; });
-      card.appendChild(link(c.home, 'lms-btn', p.done === c.lessons.length ? 'Review the course' : started ? 'Continue →' : 'Start the course →'));
+      card.appendChild(link(c.home, 'lms-btn', p.done === c.core.length ? 'Review the course' : started ? 'Continue →' : 'Start the course →'));
       grid.appendChild(card);
     });
     root.appendChild(grid);
@@ -457,18 +467,18 @@
         mod.appendChild(mh);
         m.lessons.forEach(function (l) {
           var r = rec(l.id);
-          var row = el('div', 'lms-row' + (r.done ? ' done' : ''));
-          row.appendChild(el('span', 'lms-ic', r.done ? '✓' : String(l.index + 1)));
+          var row = el('div', 'lms-row' + (r.done && !l.ref ? ' done' : ''));
+          row.appendChild(el('span', 'lms-ic', l.ref ? 'R' : r.done ? '✓' : String(l.index + 1)));
           var info = el('div', 'lms-row-info');
           info.appendChild(link(l.url, 'lms-row-t', l.title));
           info.appendChild(el('p', null, l.blurb));
           var facts = el('p', 'lms-facts');
-          facts.textContent = '⏱ ' + l.mins + ' min · ' +
+          facts.textContent = l.ref ? '📖 Reference page · no test' : '⏱ ' + l.mins + ' min · ' +
             (r.best != null ? 'Best test score ' + r.best + '/' + r.total : 'Test not taken yet') +
             (r.done ? ' · Completed' : r.visited ? ' · In progress' : '');
           info.appendChild(facts);
           row.appendChild(info);
-          row.appendChild(link(l.url, 'lms-btn' + (r.done ? ' alt' : ''), r.done ? 'Review' : r.visited ? 'Continue' : 'Start'));
+          row.appendChild(link(l.url, 'lms-btn' + (r.done || l.ref ? ' alt' : ''), l.ref ? 'Open' : r.done ? 'Review' : r.visited ? 'Continue' : 'Start'));
           mod.appendChild(row);
         });
         root.appendChild(mod);

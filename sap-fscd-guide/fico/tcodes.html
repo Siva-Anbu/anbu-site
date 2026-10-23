@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick reference: T-codes in FICO | FICO Notes</title>
+<meta name="description" content="A quick lookup list of the transaction codes used most often in SAP FICO, grouped by topic.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2328;--muted:#5b616b;--line:#e3e0d8;--accent:#0a6ed1;--head:#f1efe9;--card:#fff;--tip:#eef6ff;--tipline:#bcd8f5;--ok:#1a7f37;--due:#b35900;--bad:#c62828;--box:#f4f2ec}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--fg:#e6e6e6;--muted:#9aa1ab;--line:#2c3036;--accent:#5aa9f0;--head:#1e2126;--card:#1a1d21;--tip:#16222f;--tipline:#2b4560;--ok:#4cc26a;--due:#f0a050;--bad:#ef6b6b;--box:#20242a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:48px;padding:40px 24px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;max-height:calc(100vh - 48px);overflow:auto}
+nav b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav a.sub{padding-left:22px;font-size:13px}
+nav a:hover{color:var(--accent);border-color:var(--accent)}
+main{min-width:0;max-width:840px}
+.pages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:14px}
+.pages a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;color:var(--muted);background:var(--card)}
+.pages a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+h1{font-size:2.2rem;line-height:1.2;margin:0 0 6px}
+.lede{color:var(--muted);margin-top:0;font-size:1.05rem}
+h2{font-size:1.45rem;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h3{font-size:1.12rem;margin:1.8em 0 .5em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:1em 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--head);font-weight:600}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.tip{background:var(--tip);border:1px solid var(--tipline);border-radius:8px;padding:12px 16px;margin:1.2em 0}
+.tip p{margin:.3em 0}
+.tip b:first-child{display:block;margin-bottom:2px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1em 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.cast b{display:block;font-size:15px}
+.cast span{color:var(--muted)}
+.term{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.term h4{margin:0 0 4px;font-size:1rem}
+.term p{margin:.25em 0;font-size:15px}
+.term .ex{color:var(--muted)}
+.term .ex b{color:var(--fg);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.in{color:var(--ok)}.out{color:var(--due)}
+.timeline{list-style:none;padding:0;margin:1em 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:600}
+/* Diagrams */
+.fig{margin:1.4em 0 .4em;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;padding:12px}
+.fig svg{display:block;width:100%;min-width:620px;height:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.fig .bx{fill:var(--box);stroke:var(--line);stroke-width:1.5}
+.fig .bx.hl{stroke:var(--accent);stroke-width:2}
+.fig .t{fill:var(--fg);font-size:14px;font-weight:600}
+.fig .s{fill:var(--muted);font-size:12px}
+.fig .lin{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.fig .gin{stroke:var(--ok);stroke-width:2.2;fill:none}
+.fig .gout{stroke:var(--due);stroke-width:2.2;fill:none}
+.fig .gbad{stroke:var(--bad);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.fig .gfile{stroke:var(--accent);stroke-width:2;fill:none}
+.fig .lin-t{font-size:12.5px;fill:var(--fg)}
+.fig .lin-t,.fig .lab-bad,.fig .lab-file{paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+.fig .lab-in{fill:var(--ok);font-size:13px;font-weight:600}
+.fig .lab-out{fill:var(--due);font-size:13px;font-weight:600}
+.fig .lab-bad{fill:var(--bad);font-size:12.5px;font-weight:600}
+.fig .lab-file{fill:var(--accent);font-size:12.5px;font-weight:600}
+.fig .num{fill:var(--accent)}
+.fig .numt{fill:#fff;font-size:11px;font-weight:700}
+.cap{font-size:13px;color:var(--muted);margin:0 0 1em}
+.copy{margin:.6em 0 0;font-weight:600;color:var(--fg)}
+footer{margin-top:3em;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:1em}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:24px 16px;gap:0}nav{display:none}h1{font-size:1.7rem}}
+.find{margin:1em 0}
+.find input{width:100%;font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+.find input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tc td:first-child{white-space:nowrap;font-family:Consolas,"Courier New",monospace;font-size:14px}
+.nomatch{display:none;color:var(--muted);margin:1em 0}
+</style>
+<link rel="stylesheet" href="/theme.css?v=20261022b">
+<link rel="stylesheet" href="/lms.css?v=20261022b">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0f766e">
+</head>
+<body data-lesson="fico-tcodes">
+<div class="layout">
+<nav id="toc"><b>Contents</b></nav>
+<main>
+<h1 id="top">Frequently used T-codes in FICO</h1>
+<p class="lede">A lookup list of the transaction codes (T-codes) you will use most often in SAP FI and CO, grouped by topic. Keep this page open next to your SAP system. Reference only, there is no test on this page.</p>
+<div class="tip"><b>How to use this page</b>
+<p>Type part of a code or a word (for example "payment" or "KS") in the box to narrow the lists. Codes and descriptions come from general SAP knowledge and public lists. They can differ by release and by project, so confirm each one in your own system (SE93 shows the official description) and ask a colleague if unsure. Check which codes your role is allowed to use.</p></div>
+<div class="find"><input id="tc-find" type="search" placeholder="Filter the lists: a code or a word" aria-label="Filter the T-code lists"></div>
+<p id="tc-none" class="nomatch">Nothing matches. Try a shorter word.</p>
+<h2 id="gl">1. General ledger accounts and postings</h2>
+<p>The general ledger is the main book. These codes create accounts, post entries and show them.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FS00</td><td>Maintain a GL account (all in one place)</td><td>Create or change an account, or check its settings</td></tr>
+<tr><td>FSP0</td><td>Maintain a GL account at chart of accounts level</td><td>Change what is shared by all company codes</td></tr>
+<tr><td>FSS0</td><td>Maintain a GL account at company code level</td><td>Change settings that belong to one company code</td></tr>
+<tr><td>FB50</td><td>Enter a GL account document</td><td>A simple journal entry between GL accounts</td></tr>
+<tr><td>F-02</td><td>Enter a GL account posting (classic screen)</td><td>The same idea with the older screen</td></tr>
+<tr><td>FB03</td><td>Display a document</td><td>Read any FI document by its number</td></tr>
+<tr><td>FB02</td><td>Change a document</td><td>Change the few fields that may still be changed</td></tr>
+<tr><td>FB08</td><td>Reverse a document</td><td>Undo a wrong posting with a reversal document</td></tr>
+<tr><td>FBL3N</td><td>GL account line items</td><td>See every posting on one account</td></tr>
+<tr><td>FAGLL03</td><td>GL account line items (Universal Journal view)</td><td>The same, with the extra fields of the Universal Journal</td></tr>
+<tr><td>FAGLB03</td><td>GL account balances</td><td>See the balance per period for an account</td></tr>
+<tr><td>F-03</td><td>Clear a GL account</td><td>Match open items on a clearing account</td></tr>
+<tr><td>FBCJ</td><td>Cash journal</td><td>Post small cash payments and receipts</td></tr>
+</tbody></table></div>
+<h2 id="ap">2. Accounts payable: suppliers and invoices</h2>
+<p>Buying from suppliers and paying them. At an insurer, claim payments go through FS-CD, not here.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>BP</td><td>Business partner: create or change a supplier (current systems)</td><td>Set up Nordic IT Supply ApS as a supplier</td></tr>
+<tr><td>XK01 / XK02 / XK03</td><td>Create / change / display a supplier (older transactions)</td><td>You may meet these in older systems and notes</td></tr>
+<tr><td>ME21N</td><td>Create a purchase order</td><td>Order the laptops</td></tr>
+<tr><td>ME23N</td><td>Display a purchase order</td><td>Check what was ordered and at which price</td></tr>
+<tr><td>MIGO</td><td>Post a goods receipt</td><td>Record that the laptops arrived</td></tr>
+<tr><td>MIRO</td><td>Enter a supplier invoice against a purchase order</td><td>Match invoice, order and receipt (three-way match)</td></tr>
+<tr><td>FB60</td><td>Enter a supplier invoice without a purchase order</td><td>Rent, subscriptions and other direct costs</td></tr>
+<tr><td>FB65</td><td>Enter a supplier credit memo</td><td>A supplier gives money back</td></tr>
+<tr><td>FBL1N</td><td>Supplier line items</td><td>See all open and paid invoices of one supplier</td></tr>
+<tr><td>FK10N</td><td>Supplier balance display</td><td>Check what you owe one supplier</td></tr>
+<tr><td>F110</td><td>Automatic payment run</td><td>Pay all due invoices in one go</td></tr>
+<tr><td>F-53</td><td>Post an outgoing payment by hand</td><td>A single payment outside the payment run</td></tr>
+<tr><td>F-44</td><td>Clear a supplier account</td><td>Match invoices and payments by hand</td></tr>
+<tr><td>FBZP</td><td>Payment program settings (usually done by the configuration team)</td><td>Look up how payment methods and banks are set up</td></tr>
+</tbody></table></div>
+<h2 id="ar">3. Accounts receivable: customer invoices and payments</h2>
+<p>For money owed by non-insurance customers, such as reinsurers. Premiums are handled in FS-CD.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>FB70</td><td>Enter a customer invoice</td><td>Bill a reinsurer or another counterparty</td></tr>
+<tr><td>FB75</td><td>Enter a customer credit memo</td><td>Reduce what a customer owes</td></tr>
+<tr><td>F-28</td><td>Post an incoming payment</td><td>Book the money when it arrives</td></tr>
+<tr><td>F-32</td><td>Clear a customer account</td><td>Match invoices and payments by hand</td></tr>
+<tr><td>FBL5N</td><td>Customer line items</td><td>See all open and paid items of one customer</td></tr>
+<tr><td>FD10N</td><td>Customer balance display</td><td>Check what one customer owes</td></tr>
+</tbody></table></div>
+<h2 id="co">4. Controlling: cost centres, orders and profit centres</h2>
+<p>Where costs are collected and shared out, for example to lines of business.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>KS01 / KS02 / KS03</td><td>Create / change / display a cost centre</td><td>Set up Claims handling as a cost centre</td></tr>
+<tr><td>KSB1</td><td>Cost centre line items (actual)</td><td>See what was posted to a cost centre</td></tr>
+<tr><td>KO01 / KO02 / KO03</td><td>Create / change / display an internal order</td><td>A campaign or project with its own budget</td></tr>
+<tr><td>KOB1</td><td>Internal order line items (actual)</td><td>See what was posted to an order</td></tr>
+<tr><td>KO88</td><td>Settle one internal order</td><td>Send the order costs to the cost centre or account</td></tr>
+<tr><td>KO8G</td><td>Settle many orders in a mass run</td><td>Month-end order settlement</td></tr>
+<tr><td>KSU1 / KSU5</td><td>Create / execute an assessment cycle</td><td>Share IT costs to the departments</td></tr>
+<tr><td>KSV1 / KSV5</td><td>Create / execute a distribution cycle</td><td>Share primary costs with the original cost type</td></tr>
+<tr><td>KE51 / KE52 / KE53</td><td>Create / change / display a profit centre</td><td>One profit centre per line of business</td></tr>
+<tr><td>KE5Z</td><td>Profit centre line items</td><td>See what was posted to a line of business</td></tr>
+<tr><td>KE30</td><td>Profitability analysis report</td><td>Look at results by line of business</td></tr>
+</tbody></table></div>
+<h2 id="fa">5. Fixed assets</h2>
+<p>Things the company owns and writes off over time, such as an office fit-out.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>AS01 / AS02 / AS03</td><td>Create / change / display an asset master record</td><td>Set up the office fit-out as an asset</td></tr>
+<tr><td>AW01N</td><td>Asset explorer</td><td>See value, depreciation and postings of one asset</td></tr>
+<tr><td>F-90</td><td>Post an asset purchase from a supplier</td><td>Buy an asset with an invoice</td></tr>
+<tr><td>ABZON</td><td>Post an asset acquisition without a supplier</td><td>Book an asset with a counter-entry, for example in a test or a migration</td></tr>
+<tr><td>AFAB</td><td>Run the depreciation</td><td>The month-end step that posts depreciation</td></tr>
+<tr><td>F-92</td><td>Post an asset sale to a customer</td><td>Sell an asset and book the result</td></tr>
+<tr><td>ABAVN</td><td>Scrap an asset</td><td>Remove an asset that is thrown away</td></tr>
+<tr><td>ABUMN</td><td>Transfer an asset within a company code</td><td>Move an asset to another cost centre</td></tr>
+</tbody></table></div>
+<h2 id="close">6. Month-end and reporting</h2>
+<p>The steps that finish a period and the reports that prove it is right.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>OB52</td><td>Open and close posting periods</td><td>Open March, close February</td></tr>
+<tr><td>FBS1</td><td>Enter an accrual or deferral document</td><td>Book a cost that belongs to this month but is invoiced later</td></tr>
+<tr><td>FAGL_FCV</td><td>Foreign currency valuation</td><td>Revalue open items in EUR at the month-end rate</td></tr>
+<tr><td>FAGLGVTR</td><td>Balance carry-forward</td><td>The year-end step that opens the new year</td></tr>
+<tr><td>F.01</td><td>Financial statements (balance sheet and profit and loss)</td><td>Check the figures before the close is signed off</td></tr>
+</tbody></table></div>
+<div class="tip"><b>Good to know</b>
+<p>S/4HANA stores FI and CO postings together in one table, ACDOCA (the Universal Journal). Several older reports and codes still exist next to the newer ones, so the same question can often be answered in two ways. Ask your team which one your project uses.</p></div>
+<h2 id="tools">7. Helper transactions and tables</h2>
+<p>Tools for looking things up and for checking data. Read-only use is the safe habit.</p>
+<div class="tbl tc"><table><thead><tr><th>T-code</th><th>What it does</th><th>When you would use it</th></tr></thead><tbody>
+<tr><td>SE16N</td><td>Browse table data (read-only)</td><td>Quick data checks. Ask before using it in production</td></tr>
+<tr><td>SE93</td><td>Look up a transaction code and its description</td><td>Confirm what a code does in your system</td></tr>
+<tr><td>SLG1</td><td>Application log</td><td>Read the messages of a run, such as the payment run</td></tr>
+<tr><td>SM37</td><td>Job overview</td><td>Check whether a scheduled job ran</td></tr>
+<tr><td>SU53</td><td>Last authorization check</td><td>Find out which permission was missing after a "not authorized" message</td></tr>
+<tr><td>ACDOCA</td><td>Table: Universal Journal line items (S/4HANA)</td><td>The main source of FI and CO postings in a current system</td></tr>
+<tr><td>BKPF</td><td>Table: FI document header</td><td>Find a document by date, type or user</td></tr>
+<tr><td>BSEG</td><td>Table: FI document line items (older view)</td><td>Line items in older systems and some reports</td></tr>
+<tr><td>SKA1 / SKB1</td><td>Tables: GL accounts at chart of accounts / company code level</td><td>Check which accounts exist and how they are set up</td></tr>
+<tr><td>CSKS</td><td>Table: cost centres</td><td>List cost centres and their owners</td></tr>
+<tr><td>ANLA</td><td>Table: asset master records</td><td>List assets and their classes</td></tr>
+</tbody></table></div>
+<h2 id="more">Go back to the lessons</h2>
+<p><a href="/fico/basics">FICO basics</a> · <a href="/fico/ap">Accounts payable</a> · <a href="/fico/ar">Premiums and receivables</a> · <a href="/fico/controlling">Controlling</a> · <a href="/fico/close">Assets, reserves and closing</a></p>
+<footer>FICO Notes. Names, numbers, codes and screens in the lessons are illustrative examples for learning, not real data or real SAP screenshots. Transaction codes can differ by release and project.
+<p class="copy">© 2026 Anbuselvan Sivaraju. All rights reserved.</p></footer>
+</main>
+</div>
+<script>
+var toc=document.getElementById('toc');
+document.querySelectorAll('main h2, main h3').forEach(function(h){var a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent;if(h.tagName==='H3')a.className='sub';toc.appendChild(a)});
+var find=document.getElementById('tc-find'),none=document.getElementById('tc-none');
+find.addEventListener('input',function(){var q=find.value.trim().toLowerCase(),shown=0;
+document.querySelectorAll('.tc tbody tr').forEach(function(r){var m=!q||r.textContent.toLowerCase().indexOf(q)>-1;r.style.display=m?'':'none';if(m)shown++});
+document.querySelectorAll('.tc').forEach(function(t){var any=t.querySelector('tbody tr:not([style*="none"])');t.style.display=any?'':'none'});
+none.style.display=shown?'none':'block'});
+</script>
+<script src="/lms.js?v=20261022b" defer></script>
+</body>
+</html>
