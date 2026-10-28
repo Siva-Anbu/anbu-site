@@ -407,7 +407,15 @@
       'Tax and accounting points are simplified. Please confirm anything important with your finance, tax or SAP experts and with SAP’s own documentation.'
     ].forEach(function (t) { ul.appendChild(el('li', null, t)); });
     about.appendChild(ul);
-    about.appendChild(el('p', 'lms-about-f', 'Last updated: October 2026'));
+    var aboutF = el('p', 'lms-about-f');
+    aboutF.appendChild(el('span', null, 'Last updated: October 2026'));
+    var by = el('span', null, 'Shared by Anbuselvan Sivaraju · ');
+    var byLink = link('https://www.linkedin.com/in/anbuselvan-sivaraju', null, 'Connect on LinkedIn');
+    byLink.target = '_blank';
+    byLink.rel = 'noopener noreferrer';
+    by.appendChild(byLink);
+    aboutF.appendChild(by);
+    about.appendChild(aboutF);
     root.appendChild(about);
 
     root.appendChild(el('h2', null, 'Choose a topic'));
