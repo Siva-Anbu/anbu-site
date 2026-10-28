@@ -199,7 +199,18 @@
   var foot = document.querySelector('footer');
   if (foot) {
     var note = el('p', 'lms-note', 'These are study notes to help new joiners get started, not official SAP guidance. Please confirm important points with your team.');
-    foot.insertBefore(note, foot.querySelector('.copy'));
+    var copyP = foot.querySelector('.copy');
+    foot.insertBefore(note, copyP);
+    if (copyP) {
+      var li = el('span');
+      li.style.fontWeight = '400';
+      li.appendChild(document.createTextNode(' · Connect with me on '));
+      var liLink = link('https://www.linkedin.com/in/anbuselvan-sivaraju', null, 'LinkedIn');
+      liLink.target = '_blank';
+      liLink.rel = 'noopener noreferrer';
+      li.appendChild(liLink);
+      copyP.appendChild(li);
+    }
   }
 
   if (lesson) lessonPage();
